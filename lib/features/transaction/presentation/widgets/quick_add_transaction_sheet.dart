@@ -1,16 +1,25 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../../app/theme/app_colors.dart';
 import '../../../../app/theme/app_radius.dart';
 import '../../../../app/theme/app_spacing.dart';
 import '../../../../core/extensions/context_extensions.dart';
 import '../../../../core/utils/currency_formatter.dart';
 import '../../../../core/utils/date_formatter.dart';
+import '../../../../core/utils/icon_helper.dart';
 import '../../../../shared/widgets/app_bottom_sheet.dart';
 import '../../../../shared/widgets/app_button.dart';
 import '../../../../shared/widgets/app_text_field.dart';
 import '../../../../shared/widgets/quick_action_fab.dart';
+import '../../../category/domain/entities/category_entity.dart';
+import '../../../category/presentation/controllers/categories_controller.dart';
+import '../../../category/presentation/widgets/category_picker_sheet.dart';
+import '../../../wallet/domain/entities/wallet_entity.dart';
+import '../../../wallet/presentation/controllers/wallets_controller.dart';
+import '../../domain/entities/transaction_entity.dart';
+import '../controllers/transactions_controller.dart';
 
-class QuickAddTransactionSheet extends StatefulWidget {
+class QuickAddTransactionSheet extends ConsumerStatefulWidget {
   final QuickActionType initialType;
 
   const QuickAddTransactionSheet({
@@ -31,18 +40,19 @@ class QuickAddTransactionSheet extends StatefulWidget {
   }
 
   @override
-  State<QuickAddTransactionSheet> createState() => _QuickAddTransactionSheetState();
+  ConsumerState<QuickAddTransactionSheet> createState() => _QuickAddTransactionSheetState();
 }
 
-class _QuickAddTransactionSheetState extends State<QuickAddTransactionSheet> {
+class _QuickAddTransactionSheetState extends ConsumerState<QuickAddTransactionSheet> {
   late QuickActionType _type;
   final TextEditingController _amountController = TextEditingController();
   final TextEditingController _noteController = TextEditingController();
 
-  final String _selectedCategory = 'Ăn uống';
-  final String _selectedWallet = 'Tiền mặt';
-  final String _selectedToWallet = 'Tài khoản Ngân hàng';
+  CategoryEntity? _selectedCategory;
+  WalletEntity? _selectedWallet;
+  WalletEntity? _selectedToWallet;
   DateTime _selectedDate = DateTime.now();
+  bool _isLoading = false;
 
   @override
   void initState() {
@@ -57,22 +67,71 @@ class _QuickAddTransactionSheetState extends State<QuickAddTransactionSheet> {
     super.dispose();
   }
 
-  void _onSave() {
-    final amountText = _amountController.text.replaceAll(RegExp(r'[^0-9]'), '');
+  String get _transactionTypeString {
+    switch (_type) {
+      case QuickActionType.expense:
+        return 'expense';
+      case QuickActionType.income:
+        return 'income';
+      case QuickActionType.transfer:
+        return 'transfer';
+    }
+  }
+
+  Future<void> _onSave() async {
+    final amountText = _amountController.text.replaceAll(RegExp(r'[^0-9.]'), '');
     final amount = double.tryParse(amountText);
 
     if (amount == null || amount <= 0) {
-      context.showSnackBar('Vui lòng nhập số tiền hợp lệ', isError: true);
+      context.showSnackBar('Vui lòng nhập số tiền hợp lệ (> 0)', isError: true);
       return;
     }
 
-    Navigator.of(context).pop();
-    context.showSnackBar('Đã ghi nhận giao dịch ${CurrencyFormatter.format(amount)} thành công!');
+    if (_selectedWallet == null) {
+      context.showSnackBar('Vui lòng chọn ví tiền', isError: true);
+      return;
+    }
+
+    if (_type == QuickActionType.transfer) {
+      if (_selectedToWallet == null) {
+        context.showSnackBar('Vui lòng chọn ví nhận tiền', isError: true);
+        return;
+      }
+      if (_selectedWallet!.id == _selectedToWallet!.id) {
+        context.showSnackBar('Ví chuyển và ví nhận không được trùng nhau', isError: true);
+        return;
+      }
+    }
+
+    final newTx = TransactionEntity(
+      id: '',
+      type: _transactionTypeString,
+      amount: amount,
+      currency: _selectedWallet!.currency,
+      walletId: _selectedWallet!.id,
+      toWalletId: _type == QuickActionType.transfer ? _selectedToWallet?.id : null,
+      categoryId: _type != QuickActionType.transfer ? _selectedCategory?.id : null,
+      note: _noteController.text.trim().isNotEmpty ? _noteController.text.trim() : null,
+      occurredAt: _selectedDate,
+      createdAt: DateTime.now(),
+      updatedAt: DateTime.now(),
+    );
+
+    setState(() => _isLoading = true);
+    final success = await ref.read(transactionsControllerProvider.notifier).addTransaction(newTx);
+    setState(() => _isLoading = false);
+
+    if (success && mounted) {
+      Navigator.of(context).pop();
+      context.showSnackBar('Đã ghi nhận giao dịch ${CurrencyFormatter.format(amount)} thành công!');
+    }
   }
 
   @override
   Widget build(BuildContext context) {
     final isDark = context.isDarkMode;
+    final walletsAsync = ref.watch(walletsStreamProvider);
+    final categoriesAsync = ref.watch(categoriesStreamProvider(_transactionTypeString));
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -115,42 +174,81 @@ class _QuickAddTransactionSheetState extends State<QuickAddTransactionSheet> {
         ),
         const SizedBox(height: AppSpacing.md),
 
-        // Category & Wallet Selector Row
-        Row(
-          children: [
-            if (_type != QuickActionType.transfer) ...[
-              Expanded(
-                child: _buildSelectorTile(
-                  label: 'Danh mục',
-                  value: _selectedCategory,
-                  icon: Icons.category_outlined,
-                  onTap: () {
-                    // Show category picker in future phase
-                  },
-                ),
-              ),
-              const SizedBox(width: AppSpacing.sm),
-            ],
-            Expanded(
-              child: _buildSelectorTile(
-                label: _type == QuickActionType.transfer ? 'Ví nguồn' : 'Ví tiền',
-                value: _selectedWallet,
-                icon: Icons.account_balance_wallet_outlined,
-                onTap: () {},
-              ),
-            ),
-            if (_type == QuickActionType.transfer) ...[
-              const SizedBox(width: AppSpacing.sm),
-              Expanded(
-                child: _buildSelectorTile(
-                  label: 'Ví đích',
-                  value: _selectedToWallet,
-                  icon: Icons.move_to_inbox_outlined,
-                  onTap: () {},
-                ),
-              ),
-            ],
-          ],
+        // Wallets & Categories Real Data Resolution
+        walletsAsync.when(
+          loading: () => const SizedBox.shrink(),
+          error: (err, _) => Text('Lỗi: $err'),
+          data: (wallets) {
+            if (wallets.isEmpty) {
+              return const Text('Bạn cần tạo ít nhất một ví tiền.');
+            }
+            _selectedWallet ??= wallets.first;
+            if (_type == QuickActionType.transfer && _selectedToWallet == null && wallets.length > 1) {
+              _selectedToWallet = wallets[1];
+            }
+
+            return categoriesAsync.when(
+              loading: () => const SizedBox.shrink(),
+              error: (err, _) => Text('Lỗi: $err'),
+              data: (categories) {
+                if (categories.isNotEmpty && _selectedCategory == null) {
+                  _selectedCategory = categories.first;
+                }
+
+                return Column(
+                  children: [
+                    // Category & Wallet Selector Row
+                    Row(
+                      children: [
+                        if (_type != QuickActionType.transfer) ...[
+                          Expanded(
+                            child: _buildSelectorTile(
+                              label: 'Danh mục',
+                              value: _selectedCategory?.name ?? 'Chọn danh mục',
+                              icon: IconHelper.getIcon(_selectedCategory?.icon),
+                              color: IconHelper.getColor(_selectedCategory?.color),
+                              onTap: () async {
+                                final selected = await CategoryPickerSheet.show(
+                                  context,
+                                  selectedCategoryId: _selectedCategory?.id,
+                                  type: _transactionTypeString,
+                                );
+                                if (selected != null) {
+                                  setState(() => _selectedCategory = selected);
+                                }
+                              },
+                            ),
+                          ),
+                          const SizedBox(width: AppSpacing.sm),
+                        ],
+                        Expanded(
+                          child: _buildSelectorTile(
+                            label: _type == QuickActionType.transfer ? 'Ví nguồn' : 'Ví tiền',
+                            value: _selectedWallet?.name ?? 'Chọn ví',
+                            icon: IconHelper.getIcon(_selectedWallet?.icon),
+                            color: IconHelper.getColor(_selectedWallet?.color),
+                            onTap: () => _showWalletPicker(context, wallets, isSource: true),
+                          ),
+                        ),
+                        if (_type == QuickActionType.transfer) ...[
+                          const SizedBox(width: AppSpacing.sm),
+                          Expanded(
+                            child: _buildSelectorTile(
+                              label: 'Ví đích',
+                              value: _selectedToWallet?.name ?? 'Chọn ví nhận',
+                              icon: IconHelper.getIcon(_selectedToWallet?.icon),
+                              color: IconHelper.getColor(_selectedToWallet?.color),
+                              onTap: () => _showWalletPicker(context, wallets, isSource: false),
+                            ),
+                          ),
+                        ],
+                      ],
+                    ),
+                  ],
+                );
+              },
+            );
+          },
         ),
         const SizedBox(height: AppSpacing.sm),
 
@@ -177,9 +275,58 @@ class _QuickAddTransactionSheetState extends State<QuickAddTransactionSheet> {
         AppButton(
           text: 'Lưu giao dịch',
           onPressed: _onSave,
+          isLoading: _isLoading,
           variant: AppButtonVariant.primary,
         ),
       ],
+    );
+  }
+
+  void _showWalletPicker(BuildContext context, List<WalletEntity> wallets, {required bool isSource}) {
+    showModalBottomSheet(
+      context: context,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(AppRadius.lg)),
+      ),
+      builder: (ctx) => SafeArea(
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Padding(
+              padding: const EdgeInsets.all(AppSpacing.md),
+              child: Text(
+                isSource ? 'Chọn Ví Nguồn' : 'Chọn Ví Nhận',
+                style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w700),
+              ),
+            ),
+            const Divider(height: 1),
+            ...wallets.map(
+              (w) => ListTile(
+                leading: Container(
+                  padding: const EdgeInsets.all(6),
+                  decoration: BoxDecoration(
+                    color: IconHelper.getColor(w.color).withValues(alpha: 0.15),
+                    shape: BoxShape.circle,
+                  ),
+                  child: Icon(IconHelper.getIcon(w.icon), color: IconHelper.getColor(w.color), size: 20),
+                ),
+                title: Text(w.name, style: const TextStyle(fontWeight: FontWeight.w600)),
+                subtitle: Text('Số dư: ${CurrencyFormatter.format(w.balance, currency: w.currency)}'),
+                onTap: () {
+                  Navigator.of(ctx).pop();
+                  setState(() {
+                    if (isSource) {
+                      _selectedWallet = w;
+                    } else {
+                      _selectedToWallet = w;
+                    }
+                  });
+                },
+              ),
+            ),
+          ],
+        ),
+      ),
     );
   }
 
@@ -187,7 +334,12 @@ class _QuickAddTransactionSheetState extends State<QuickAddTransactionSheet> {
     final isSelected = _type == type;
     return Expanded(
       child: GestureDetector(
-        onTap: () => setState(() => _type = type),
+        onTap: () {
+          setState(() {
+            _type = type;
+            _selectedCategory = null;
+          });
+        },
         child: AnimatedContainer(
           duration: const Duration(milliseconds: 200),
           padding: const EdgeInsets.symmetric(vertical: 8),
@@ -213,6 +365,7 @@ class _QuickAddTransactionSheetState extends State<QuickAddTransactionSheet> {
     required String label,
     required String value,
     required IconData icon,
+    Color? color,
     required VoidCallback onTap,
   }) {
     final isDark = context.isDarkMode;
@@ -230,7 +383,7 @@ class _QuickAddTransactionSheetState extends State<QuickAddTransactionSheet> {
         ),
         child: Row(
           children: [
-            Icon(icon, size: 16, color: AppColors.primary),
+            Icon(icon, size: 16, color: color ?? AppColors.primary),
             const SizedBox(width: 6),
             Expanded(
               child: Column(
