@@ -36,21 +36,24 @@ class DashboardSummary {
 final isBalanceVisibleProvider = StateProvider<bool>((ref) => true);
 
 // Recent 5 transactions for dashboard
-final recentTransactionsProvider = StreamProvider<List<TransactionEntity>>((ref) {
+final recentTransactionsProvider = StreamProvider<List<TransactionEntity>>((
+  ref,
+) {
   final useCase = ref.watch(getTransactionsUseCaseProvider);
   return useCase.watch(filter: const TransactionFilter());
 });
 
 // Current month transactions for quick dashboard calculations
-final currentMonthTransactionsProvider = StreamProvider<List<TransactionEntity>>((ref) {
-  final useCase = ref.watch(getTransactionsUseCaseProvider);
-  final now = DateTime.now();
-  final startOfMonth = DateTime(now.year, now.month, 1);
-  final endOfMonth = DateTime(now.year, now.month + 1, 0, 23, 59, 59, 999);
-  return useCase.watch(
-    filter: TransactionFilter(startDate: startOfMonth, endDate: endOfMonth),
-  );
-});
+final currentMonthTransactionsProvider =
+    StreamProvider<List<TransactionEntity>>((ref) {
+      final useCase = ref.watch(getTransactionsUseCaseProvider);
+      final now = DateTime.now();
+      final startOfMonth = DateTime(now.year, now.month, 1);
+      final endOfMonth = DateTime(now.year, now.month + 1, 0, 23, 59, 59, 999);
+      return useCase.watch(
+        filter: TransactionFilter(startDate: startOfMonth, endDate: endOfMonth),
+      );
+    });
 
 final dashboardSummaryProvider = Provider<DashboardSummary>((ref) {
   final totalBalance = ref.watch(totalNetWorthProvider);
@@ -87,9 +90,12 @@ final dashboardSummaryProvider = Provider<DashboardSummary>((ref) {
 
   final budget = budgetAsync.valueOrNull;
   final totalBudgetLimit = budget?.totalLimit ?? 0.0;
-  final remainingBudget = totalBudgetLimit > 0 ? (totalBudgetLimit - monthlyExpense) : 0.0;
-  final budgetProgressPercentage =
-      totalBudgetLimit > 0 ? (monthlyExpense / totalBudgetLimit) * 100 : 0.0;
+  final remainingBudget = totalBudgetLimit > 0
+      ? (totalBudgetLimit - monthlyExpense)
+      : 0.0;
+  final budgetProgressPercentage = totalBudgetLimit > 0
+      ? (monthlyExpense / totalBudgetLimit) * 100
+      : 0.0;
 
   return DashboardSummary(
     totalBalance: totalBalance,

@@ -6,7 +6,8 @@ sealed class AppException implements Exception {
   const AppException({required this.message, this.code, this.details});
 
   @override
-  String toString() => '$runtimeType(message: $message, code: $code, details: $details)';
+  String toString() =>
+      '$runtimeType(message: $message, code: $code, details: $details)';
 }
 
 class NetworkException extends AppException {
@@ -21,11 +22,7 @@ class NetworkException extends AppException {
 }
 
 class DatabaseException extends AppException {
-  const DatabaseException({
-    required super.message,
-    super.code,
-    super.details,
-  });
+  const DatabaseException({required super.message, super.code, super.details});
 }
 
 class ValidationException extends AppException {
@@ -45,11 +42,7 @@ class UnauthorizedException extends AppException {
 }
 
 class CacheException extends AppException {
-  const CacheException({
-    required super.message,
-    super.code,
-    super.details,
-  });
+  const CacheException({required super.message, super.code, super.details});
 }
 
 class UnexpectedException extends AppException {

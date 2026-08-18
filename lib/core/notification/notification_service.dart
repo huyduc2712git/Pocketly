@@ -19,8 +19,13 @@ class NotificationServiceImpl implements NotificationService {
   }
 
   @override
-  Future<void> scheduleDailyReminder({required int hour, required int minute}) async {
-    AppLogger.info('NotificationService: Scheduled daily reminder at $hour:$minute');
+  Future<void> scheduleDailyReminder({
+    required int hour,
+    required int minute,
+  }) async {
+    AppLogger.info(
+      'NotificationService: Scheduled daily reminder at $hour:$minute',
+    );
   }
 
   @override

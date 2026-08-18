@@ -121,7 +121,9 @@ void main() {
 
       final insights = service.evaluateAllRules(thisMonthAnalytics: thisMonth);
       expect(insights.any((i) => i.type == 'savings_achievement'), isTrue);
-      final achievement = insights.firstWhere((i) => i.type == 'savings_achievement');
+      final achievement = insights.firstWhere(
+        (i) => i.type == 'savings_achievement',
+      );
       expect(achievement.severity, equals(InsightSeverity.positive));
     });
 

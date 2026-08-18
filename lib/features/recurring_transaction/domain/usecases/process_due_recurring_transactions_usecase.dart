@@ -34,7 +34,9 @@ class ProcessDueRecurringTransactionsUseCase {
           walletId: item.walletId,
           toWalletId: item.toWalletId,
           categoryId: item.categoryId,
-          note: item.note != null ? '${item.note} (Định kỳ)' : 'Giao dịch định kỳ',
+          note: item.note != null
+              ? '${item.note} (Định kỳ)'
+              : 'Giao dịch định kỳ',
           occurredAt: item.nextExecutionDate,
           createdAt: now,
           updatedAt: now,

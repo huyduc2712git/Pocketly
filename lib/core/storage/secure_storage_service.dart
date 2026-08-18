@@ -11,7 +11,7 @@ class SecureStorageService implements StorageService {
   final FlutterSecureStorage _storage;
 
   const SecureStorageService({FlutterSecureStorage? storage})
-      : _storage = storage ?? const FlutterSecureStorage();
+    : _storage = storage ?? const FlutterSecureStorage();
 
   static const String keyAccessToken = 'access_token';
   static const String keyRefreshToken = 'refresh_token';

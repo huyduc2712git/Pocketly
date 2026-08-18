@@ -36,25 +36,30 @@ void main() {
       expect(result.isFailure, isTrue);
     });
 
-    test('Validation fails when transfer destination is same as source', () async {
-      final tx = TransactionEntity(
-        id: 'tx_invalid_transfer',
-        type: 'transfer',
-        amount: 100000.0,
-        walletId: 'wallet_default_cash',
-        toWalletId: 'wallet_default_cash',
-        occurredAt: DateTime.now(),
-        createdAt: DateTime.now(),
-        updatedAt: DateTime.now(),
-      );
+    test(
+      'Validation fails when transfer destination is same as source',
+      () async {
+        final tx = TransactionEntity(
+          id: 'tx_invalid_transfer',
+          type: 'transfer',
+          amount: 100000.0,
+          walletId: 'wallet_default_cash',
+          toWalletId: 'wallet_default_cash',
+          occurredAt: DateTime.now(),
+          createdAt: DateTime.now(),
+          updatedAt: DateTime.now(),
+        );
 
-      final result = await useCase(tx);
-      expect(result.isFailure, isTrue);
-    });
+        final result = await useCase(tx);
+        expect(result.isFailure, isTrue);
+      },
+    );
 
     test('Adding Expense deducts exact amount from source wallet', () async {
       // Cash initial balance seeded as 2,500,000
-      final initialWallet = await (db.select(db.walletsTable)..where((tbl) => tbl.id.equals('wallet_default_cash'))).getSingle();
+      final initialWallet = await (db.select(
+        db.walletsTable,
+      )..where((tbl) => tbl.id.equals('wallet_default_cash'))).getSingle();
       expect(initialWallet.balance, equals(2500000.0));
 
       final tx = TransactionEntity(
@@ -72,7 +77,9 @@ void main() {
       final result = await useCase(tx);
       expect(result.isSuccess, isTrue);
 
-      final updatedWallet = await (db.select(db.walletsTable)..where((tbl) => tbl.id.equals('wallet_default_cash'))).getSingle();
+      final updatedWallet = await (db.select(
+        db.walletsTable,
+      )..where((tbl) => tbl.id.equals('wallet_default_cash'))).getSingle();
       expect(updatedWallet.balance, equals(2150000.0)); // 2,500,000 - 350,000
     });
 
@@ -93,31 +100,46 @@ void main() {
       final result = await useCase(tx);
       expect(result.isSuccess, isTrue);
 
-      final updatedWallet = await (db.select(db.walletsTable)..where((tbl) => tbl.id.equals('wallet_bank_primary'))).getSingle();
-      expect(updatedWallet.balance, equals(20800000.0)); // 15,800,000 + 5,000,000
+      final updatedWallet = await (db.select(
+        db.walletsTable,
+      )..where((tbl) => tbl.id.equals('wallet_bank_primary'))).getSingle();
+      expect(
+        updatedWallet.balance,
+        equals(20800000.0),
+      ); // 15,800,000 + 5,000,000
     });
 
-    test('Adding Transfer deducts from source and adds to destination', () async {
-      // Bank (15,800,000) -> Cash (2,500,000)
-      final tx = TransactionEntity(
-        id: 'tx_transfer_1',
-        type: 'transfer',
-        amount: 2000000.0,
-        walletId: 'wallet_bank_primary',
-        toWalletId: 'wallet_default_cash',
-        occurredAt: DateTime.now(),
-        createdAt: DateTime.now(),
-        updatedAt: DateTime.now(),
-      );
+    test(
+      'Adding Transfer deducts from source and adds to destination',
+      () async {
+        // Bank (15,800,000) -> Cash (2,500,000)
+        final tx = TransactionEntity(
+          id: 'tx_transfer_1',
+          type: 'transfer',
+          amount: 2000000.0,
+          walletId: 'wallet_bank_primary',
+          toWalletId: 'wallet_default_cash',
+          occurredAt: DateTime.now(),
+          createdAt: DateTime.now(),
+          updatedAt: DateTime.now(),
+        );
 
-      final result = await useCase(tx);
-      expect(result.isSuccess, isTrue);
+        final result = await useCase(tx);
+        expect(result.isSuccess, isTrue);
 
-      final sourceWallet = await (db.select(db.walletsTable)..where((tbl) => tbl.id.equals('wallet_bank_primary'))).getSingle();
-      final destWallet = await (db.select(db.walletsTable)..where((tbl) => tbl.id.equals('wallet_default_cash'))).getSingle();
+        final sourceWallet = await (db.select(
+          db.walletsTable,
+        )..where((tbl) => tbl.id.equals('wallet_bank_primary'))).getSingle();
+        final destWallet = await (db.select(
+          db.walletsTable,
+        )..where((tbl) => tbl.id.equals('wallet_default_cash'))).getSingle();
 
-      expect(sourceWallet.balance, equals(13800000.0)); // 15,800,000 - 2,000,000
-      expect(destWallet.balance, equals(4500000.0)); // 2,500,000 + 2,000,000
-    });
+        expect(
+          sourceWallet.balance,
+          equals(13800000.0),
+        ); // 15,800,000 - 2,000,000
+        expect(destWallet.balance, equals(4500000.0)); // 2,500,000 + 2,000,000
+      },
+    );
   });
 }

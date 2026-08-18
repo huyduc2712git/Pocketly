@@ -7,20 +7,21 @@ class CurrencyText extends StatelessWidget {
   final String currency;
   final double fontSize;
 
-  const CurrencyText({
-    super.key,
-    required this.currency,
-    this.fontSize = 11.0,
-  });
+  const CurrencyText({super.key, required this.currency, this.fontSize = 11.0});
 
   @override
   Widget build(BuildContext context) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
 
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: AppSpacing.xs, vertical: 2),
+      padding: const EdgeInsets.symmetric(
+        horizontal: AppSpacing.xs,
+        vertical: 2,
+      ),
       decoration: BoxDecoration(
-        color: isDark ? AppColors.darkCardElevated : AppColors.lightCardElevated,
+        color: isDark
+            ? AppColors.darkCardElevated
+            : AppColors.lightCardElevated,
         borderRadius: AppRadius.borderXs,
         border: Border.all(
           color: isDark ? AppColors.darkBorder : AppColors.lightBorder,
@@ -32,7 +33,9 @@ class CurrencyText extends StatelessWidget {
         style: TextStyle(
           fontSize: fontSize,
           fontWeight: FontWeight.w700,
-          color: isDark ? AppColors.darkTextSecondary : AppColors.lightTextSecondary,
+          color: isDark
+              ? AppColors.darkTextSecondary
+              : AppColors.lightTextSecondary,
           letterSpacing: 0.5,
         ),
       ),

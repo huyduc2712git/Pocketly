@@ -10,22 +10,23 @@ final syncRepositoryProvider = Provider<SyncRepository>((ref) {
   return SyncRepositoryImpl(db: db);
 });
 
-final processSyncQueueUseCaseProvider = Provider<ProcessSyncQueueUseCase>((ref) {
+final processSyncQueueUseCaseProvider = Provider<ProcessSyncQueueUseCase>((
+  ref,
+) {
   final repo = ref.watch(syncRepositoryProvider);
   return ProcessSyncQueueUseCase(repo);
 });
 
-final pendingSyncTasksStreamProvider = StreamProvider<List<SyncTaskEntity>>((ref) {
+final pendingSyncTasksStreamProvider = StreamProvider<List<SyncTaskEntity>>((
+  ref,
+) {
   final repo = ref.watch(syncRepositoryProvider);
   return repo.watchPendingTasks();
 });
 
 final pendingSyncCountProvider = Provider<int>((ref) {
   final tasksAsync = ref.watch(pendingSyncTasksStreamProvider);
-  return tasksAsync.maybeWhen(
-    data: (tasks) => tasks.length,
-    orElse: () => 0,
-  );
+  return tasksAsync.maybeWhen(data: (tasks) => tasks.length, orElse: () => 0);
 });
 
 class SyncController extends StateNotifier<AsyncValue<void>> {
@@ -43,6 +44,6 @@ class SyncController extends StateNotifier<AsyncValue<void>> {
 
 final syncControllerProvider =
     StateNotifierProvider<SyncController, AsyncValue<void>>((ref) {
-  final useCase = ref.watch(processSyncQueueUseCaseProvider);
-  return SyncController(useCase);
-});
+      final useCase = ref.watch(processSyncQueueUseCaseProvider);
+      return SyncController(useCase);
+    });

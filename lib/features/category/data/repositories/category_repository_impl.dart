@@ -54,10 +54,13 @@ class CategoryRepositoryImpl implements CategoryRepository {
   @override
   Future<Result<CategoryEntity>> getCategoryById(String id) async {
     try {
-      final row = await (db.select(db.categoriesTable)..where((tbl) => tbl.id.equals(id)))
-          .getSingleOrNull();
+      final row = await (db.select(
+        db.categoriesTable,
+      )..where((tbl) => tbl.id.equals(id))).getSingleOrNull();
       if (row == null) {
-        return const Result.failure(DatabaseFailure(message: 'Không tìm thấy danh mục'));
+        return const Result.failure(
+          DatabaseFailure(message: 'Không tìm thấy danh mục'),
+        );
       }
       return Result.success(_toEntity(row));
     } catch (e) {
@@ -83,7 +86,9 @@ class CategoryRepositoryImpl implements CategoryRepository {
       );
 
       await db.into(db.categoriesTable).insert(companion);
-      return Result.success(category.copyWith(id: id, createdAt: now, updatedAt: now));
+      return Result.success(
+        category.copyWith(id: id, createdAt: now, updatedAt: now),
+      );
     } catch (e) {
       return Result.failure(ErrorHandler.handleException(e));
     }
@@ -93,7 +98,9 @@ class CategoryRepositoryImpl implements CategoryRepository {
   Future<Result<CategoryEntity>> updateCategory(CategoryEntity category) async {
     try {
       final now = DateTime.now();
-      await (db.update(db.categoriesTable)..where((tbl) => tbl.id.equals(category.id))).write(
+      await (db.update(
+        db.categoriesTable,
+      )..where((tbl) => tbl.id.equals(category.id))).write(
         CategoriesTableCompanion(
           name: Value(category.name),
           type: Value(category.type),
@@ -112,7 +119,9 @@ class CategoryRepositoryImpl implements CategoryRepository {
   @override
   Future<Result<void>> deleteCategory(String id) async {
     try {
-      await (db.delete(db.categoriesTable)..where((tbl) => tbl.id.equals(id))).go();
+      await (db.delete(
+        db.categoriesTable,
+      )..where((tbl) => tbl.id.equals(id))).go();
       return const Result.success(null);
     } catch (e) {
       return Result.failure(ErrorHandler.handleException(e));

@@ -27,23 +27,28 @@ class QuickAddTransactionSheet extends ConsumerStatefulWidget {
     this.initialType = QuickActionType.expense,
   });
 
-  static Future<void> show(BuildContext context, {QuickActionType initialType = QuickActionType.expense}) {
+  static Future<void> show(
+    BuildContext context, {
+    QuickActionType initialType = QuickActionType.expense,
+  }) {
     return AppBottomSheet.show(
       context: context,
       title: initialType == QuickActionType.income
           ? 'Thêm Khoản Thu'
           : initialType == QuickActionType.transfer
-              ? 'Chuyển Tiền Giữa Các Ví'
-              : 'Thêm Khoản Chi',
+          ? 'Chuyển Tiền Giữa Các Ví'
+          : 'Thêm Khoản Chi',
       child: QuickAddTransactionSheet(initialType: initialType),
     );
   }
 
   @override
-  ConsumerState<QuickAddTransactionSheet> createState() => _QuickAddTransactionSheetState();
+  ConsumerState<QuickAddTransactionSheet> createState() =>
+      _QuickAddTransactionSheetState();
 }
 
-class _QuickAddTransactionSheetState extends ConsumerState<QuickAddTransactionSheet> {
+class _QuickAddTransactionSheetState
+    extends ConsumerState<QuickAddTransactionSheet> {
   late QuickActionType _type;
   final TextEditingController _amountController = TextEditingController();
   final TextEditingController _noteController = TextEditingController();
@@ -79,7 +84,10 @@ class _QuickAddTransactionSheetState extends ConsumerState<QuickAddTransactionSh
   }
 
   Future<void> _onSave() async {
-    final amountText = _amountController.text.replaceAll(RegExp(r'[^0-9.]'), '');
+    final amountText = _amountController.text.replaceAll(
+      RegExp(r'[^0-9.]'),
+      '',
+    );
     final amount = double.tryParse(amountText);
 
     if (amount == null || amount <= 0) {
@@ -98,7 +106,10 @@ class _QuickAddTransactionSheetState extends ConsumerState<QuickAddTransactionSh
         return;
       }
       if (_selectedWallet!.id == _selectedToWallet!.id) {
-        context.showSnackBar('Ví chuyển và ví nhận không được trùng nhau', isError: true);
+        context.showSnackBar(
+          'Ví chuyển và ví nhận không được trùng nhau',
+          isError: true,
+        );
         return;
       }
     }
@@ -109,21 +120,31 @@ class _QuickAddTransactionSheetState extends ConsumerState<QuickAddTransactionSh
       amount: amount,
       currency: _selectedWallet!.currency,
       walletId: _selectedWallet!.id,
-      toWalletId: _type == QuickActionType.transfer ? _selectedToWallet?.id : null,
-      categoryId: _type != QuickActionType.transfer ? _selectedCategory?.id : null,
-      note: _noteController.text.trim().isNotEmpty ? _noteController.text.trim() : null,
+      toWalletId: _type == QuickActionType.transfer
+          ? _selectedToWallet?.id
+          : null,
+      categoryId: _type != QuickActionType.transfer
+          ? _selectedCategory?.id
+          : null,
+      note: _noteController.text.trim().isNotEmpty
+          ? _noteController.text.trim()
+          : null,
       occurredAt: _selectedDate,
       createdAt: DateTime.now(),
       updatedAt: DateTime.now(),
     );
 
     setState(() => _isLoading = true);
-    final success = await ref.read(transactionsControllerProvider.notifier).addTransaction(newTx);
+    final success = await ref
+        .read(transactionsControllerProvider.notifier)
+        .addTransaction(newTx);
     setState(() => _isLoading = false);
 
     if (success && mounted) {
       Navigator.of(context).pop();
-      context.showSnackBar('Đã ghi nhận giao dịch ${CurrencyFormatter.format(amount)} thành công!');
+      context.showSnackBar(
+        'Đã ghi nhận giao dịch ${CurrencyFormatter.format(amount)} thành công!',
+      );
     }
   }
 
@@ -131,7 +152,9 @@ class _QuickAddTransactionSheetState extends ConsumerState<QuickAddTransactionSh
   Widget build(BuildContext context) {
     final isDark = context.isDarkMode;
     final walletsAsync = ref.watch(walletsStreamProvider);
-    final categoriesAsync = ref.watch(categoriesStreamProvider(_transactionTypeString));
+    final categoriesAsync = ref.watch(
+      categoriesStreamProvider(_transactionTypeString),
+    );
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -141,14 +164,28 @@ class _QuickAddTransactionSheetState extends ConsumerState<QuickAddTransactionSh
         Container(
           padding: const EdgeInsets.all(4),
           decoration: BoxDecoration(
-            color: isDark ? AppColors.darkCardElevated : AppColors.lightCardElevated,
+            color: isDark
+                ? AppColors.darkCardElevated
+                : AppColors.lightCardElevated,
             borderRadius: AppRadius.borderMd,
           ),
           child: Row(
             children: [
-              _buildTypeTab('Chi tiêu', QuickActionType.expense, AppColors.expense),
-              _buildTypeTab('Thu nhập', QuickActionType.income, AppColors.income),
-              _buildTypeTab('Chuyển khoản', QuickActionType.transfer, AppColors.transfer),
+              _buildTypeTab(
+                'Chi tiêu',
+                QuickActionType.expense,
+                AppColors.expense,
+              ),
+              _buildTypeTab(
+                'Thu nhập',
+                QuickActionType.income,
+                AppColors.income,
+              ),
+              _buildTypeTab(
+                'Chuyển khoản',
+                QuickActionType.transfer,
+                AppColors.transfer,
+              ),
             ],
           ),
         ),
@@ -161,7 +198,10 @@ class _QuickAddTransactionSheetState extends ConsumerState<QuickAddTransactionSh
           hint: '0',
           keyboardType: TextInputType.number,
           autofocus: true,
-          prefixIcon: const Icon(Icons.monetization_on_outlined, color: AppColors.primary),
+          prefixIcon: const Icon(
+            Icons.monetization_on_outlined,
+            color: AppColors.primary,
+          ),
         ),
         const SizedBox(height: AppSpacing.sm),
 
@@ -170,7 +210,10 @@ class _QuickAddTransactionSheetState extends ConsumerState<QuickAddTransactionSh
           controller: _noteController,
           label: 'Ghi chú',
           hint: 'Ăn tối, Mua sắm, Đổ xăng...',
-          prefixIcon: const Icon(Icons.edit_note_rounded, color: AppColors.darkTextMuted),
+          prefixIcon: const Icon(
+            Icons.edit_note_rounded,
+            color: AppColors.darkTextMuted,
+          ),
         ),
         const SizedBox(height: AppSpacing.md),
 
@@ -183,7 +226,9 @@ class _QuickAddTransactionSheetState extends ConsumerState<QuickAddTransactionSh
               return const Text('Bạn cần tạo ít nhất một ví tiền.');
             }
             _selectedWallet ??= wallets.first;
-            if (_type == QuickActionType.transfer && _selectedToWallet == null && wallets.length > 1) {
+            if (_type == QuickActionType.transfer &&
+                _selectedToWallet == null &&
+                wallets.length > 1) {
               _selectedToWallet = wallets[1];
             }
 
@@ -206,7 +251,9 @@ class _QuickAddTransactionSheetState extends ConsumerState<QuickAddTransactionSh
                               label: 'Danh mục',
                               value: _selectedCategory?.name ?? 'Chọn danh mục',
                               icon: IconHelper.getIcon(_selectedCategory?.icon),
-                              color: IconHelper.getColor(_selectedCategory?.color),
+                              color: IconHelper.getColor(
+                                _selectedCategory?.color,
+                              ),
                               onTap: () async {
                                 final selected = await CategoryPickerSheet.show(
                                   context,
@@ -223,11 +270,17 @@ class _QuickAddTransactionSheetState extends ConsumerState<QuickAddTransactionSh
                         ],
                         Expanded(
                           child: _buildSelectorTile(
-                            label: _type == QuickActionType.transfer ? 'Ví nguồn' : 'Ví tiền',
+                            label: _type == QuickActionType.transfer
+                                ? 'Ví nguồn'
+                                : 'Ví tiền',
                             value: _selectedWallet?.name ?? 'Chọn ví',
                             icon: IconHelper.getIcon(_selectedWallet?.icon),
                             color: IconHelper.getColor(_selectedWallet?.color),
-                            onTap: () => _showWalletPicker(context, wallets, isSource: true),
+                            onTap: () => _showWalletPicker(
+                              context,
+                              wallets,
+                              isSource: true,
+                            ),
                           ),
                         ),
                         if (_type == QuickActionType.transfer) ...[
@@ -237,8 +290,14 @@ class _QuickAddTransactionSheetState extends ConsumerState<QuickAddTransactionSh
                               label: 'Ví đích',
                               value: _selectedToWallet?.name ?? 'Chọn ví nhận',
                               icon: IconHelper.getIcon(_selectedToWallet?.icon),
-                              color: IconHelper.getColor(_selectedToWallet?.color),
-                              onTap: () => _showWalletPicker(context, wallets, isSource: false),
+                              color: IconHelper.getColor(
+                                _selectedToWallet?.color,
+                              ),
+                              onTap: () => _showWalletPicker(
+                                context,
+                                wallets,
+                                isSource: false,
+                              ),
                             ),
                           ),
                         ],
@@ -282,7 +341,11 @@ class _QuickAddTransactionSheetState extends ConsumerState<QuickAddTransactionSh
     );
   }
 
-  void _showWalletPicker(BuildContext context, List<WalletEntity> wallets, {required bool isSource}) {
+  void _showWalletPicker(
+    BuildContext context,
+    List<WalletEntity> wallets, {
+    required bool isSource,
+  }) {
     showModalBottomSheet(
       context: context,
       shape: const RoundedRectangleBorder(
@@ -296,7 +359,10 @@ class _QuickAddTransactionSheetState extends ConsumerState<QuickAddTransactionSh
               padding: const EdgeInsets.all(AppSpacing.md),
               child: Text(
                 isSource ? 'Chọn Ví Nguồn' : 'Chọn Ví Nhận',
-                style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w700),
+                style: const TextStyle(
+                  fontSize: 16,
+                  fontWeight: FontWeight.w700,
+                ),
               ),
             ),
             const Divider(height: 1),
@@ -308,10 +374,19 @@ class _QuickAddTransactionSheetState extends ConsumerState<QuickAddTransactionSh
                     color: IconHelper.getColor(w.color).withValues(alpha: 0.15),
                     shape: BoxShape.circle,
                   ),
-                  child: Icon(IconHelper.getIcon(w.icon), color: IconHelper.getColor(w.color), size: 20),
+                  child: Icon(
+                    IconHelper.getIcon(w.icon),
+                    color: IconHelper.getColor(w.color),
+                    size: 20,
+                  ),
                 ),
-                title: Text(w.name, style: const TextStyle(fontWeight: FontWeight.w600)),
-                subtitle: Text('Số dư: ${CurrencyFormatter.format(w.balance, currency: w.currency)}'),
+                title: Text(
+                  w.name,
+                  style: const TextStyle(fontWeight: FontWeight.w600),
+                ),
+                subtitle: Text(
+                  'Số dư: ${CurrencyFormatter.format(w.balance, currency: w.currency)}',
+                ),
                 onTap: () {
                   Navigator.of(ctx).pop();
                   setState(() {
@@ -373,7 +448,10 @@ class _QuickAddTransactionSheetState extends ConsumerState<QuickAddTransactionSh
       onTap: onTap,
       borderRadius: AppRadius.borderMd,
       child: Container(
-        padding: const EdgeInsets.symmetric(horizontal: AppSpacing.sm, vertical: 10),
+        padding: const EdgeInsets.symmetric(
+          horizontal: AppSpacing.sm,
+          vertical: 10,
+        ),
         decoration: BoxDecoration(
           color: isDark ? AppColors.darkCard : AppColors.lightCard,
           borderRadius: AppRadius.borderMd,
@@ -402,7 +480,9 @@ class _QuickAddTransactionSheetState extends ConsumerState<QuickAddTransactionSh
                     style: TextStyle(
                       fontSize: 12,
                       fontWeight: FontWeight.w600,
-                      color: isDark ? AppColors.darkTextPrimary : AppColors.lightTextPrimary,
+                      color: isDark
+                          ? AppColors.darkTextPrimary
+                          : AppColors.lightTextPrimary,
                     ),
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,

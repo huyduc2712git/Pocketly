@@ -24,25 +24,38 @@ void main() {
       updatedAt: DateTime.now(),
     );
 
-    test('Initial checkAuthStatus sets Authenticated when user is logged in', () async {
-      when(() => mockRepository.isAuthenticated()).thenAnswer((_) async => true);
-      when(() => mockRepository.getCurrentUser())
-          .thenAnswer((_) async => Result.success(testUser));
+    test(
+      'Initial checkAuthStatus sets Authenticated when user is logged in',
+      () async {
+        when(
+          () => mockRepository.isAuthenticated(),
+        ).thenAnswer((_) async => true);
+        when(
+          () => mockRepository.getCurrentUser(),
+        ).thenAnswer((_) async => Result.success(testUser));
 
-      final controller = AuthController(mockRepository);
-      await pumpEventQueue();
+        final controller = AuthController(mockRepository);
+        await pumpEventQueue();
 
-      expect(controller.state, isA<Authenticated>());
-      final state = controller.state as Authenticated;
-      expect(state.user.name, equals('Test User'));
-    });
+        expect(controller.state, isA<Authenticated>());
+        final state = controller.state as Authenticated;
+        expect(state.user.name, equals('Test User'));
+      },
+    );
 
     test('Login success updates state to Authenticated', () async {
-      when(() => mockRepository.isAuthenticated()).thenAnswer((_) async => false);
-      when(() => mockRepository.loginAsGuest())
-          .thenAnswer((_) async => Result.success(testUser));
-      when(() => mockRepository.login(email: 'alex@example.com', password: 'password123'))
-          .thenAnswer((_) async => Result.success(testUser));
+      when(
+        () => mockRepository.isAuthenticated(),
+      ).thenAnswer((_) async => false);
+      when(
+        () => mockRepository.loginAsGuest(),
+      ).thenAnswer((_) async => Result.success(testUser));
+      when(
+        () => mockRepository.login(
+          email: 'alex@example.com',
+          password: 'password123',
+        ),
+      ).thenAnswer((_) async => Result.success(testUser));
 
       final controller = AuthController(mockRepository);
       await pumpEventQueue();
@@ -52,17 +65,25 @@ void main() {
       expect(controller.state, isA<Authenticated>());
     });
 
-    test('Logout clears session and updates state to Unauthenticated', () async {
-      when(() => mockRepository.isAuthenticated()).thenAnswer((_) async => true);
-      when(() => mockRepository.getCurrentUser())
-          .thenAnswer((_) async => Result.success(testUser));
-      when(() => mockRepository.logout()).thenAnswer((_) async => const Result.success(null));
+    test(
+      'Logout clears session and updates state to Unauthenticated',
+      () async {
+        when(
+          () => mockRepository.isAuthenticated(),
+        ).thenAnswer((_) async => true);
+        when(
+          () => mockRepository.getCurrentUser(),
+        ).thenAnswer((_) async => Result.success(testUser));
+        when(
+          () => mockRepository.logout(),
+        ).thenAnswer((_) async => const Result.success(null));
 
-      final controller = AuthController(mockRepository);
-      await pumpEventQueue();
+        final controller = AuthController(mockRepository);
+        await pumpEventQueue();
 
-      await controller.logout();
-      expect(controller.state, isA<Unauthenticated>());
-    });
+        await controller.logout();
+        expect(controller.state, isA<Unauthenticated>());
+      },
+    );
   });
 }

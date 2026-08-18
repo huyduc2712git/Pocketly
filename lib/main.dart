@@ -9,9 +9,5 @@ void main() async {
   // Initialize Environment Config
   AppConfig.initialize(env: EnvConfig.dev);
 
-  runApp(
-    const ProviderScope(
-      child: FinlyApp(),
-    ),
-  );
+  runApp(const ProviderScope(child: FinlyApp()));
 }

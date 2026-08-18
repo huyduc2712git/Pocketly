@@ -80,11 +80,16 @@ class SubscriptionEntity {
   int get daysUntilRenewal {
     final now = DateTime.now();
     final today = DateTime(now.year, now.month, now.day);
-    final target = DateTime(nextBillingDate.year, nextBillingDate.month, nextBillingDate.day);
+    final target = DateTime(
+      nextBillingDate.year,
+      nextBillingDate.month,
+      nextBillingDate.day,
+    );
     return target.difference(today).inDays;
   }
 
-  bool get isDueSoon => isActive && daysUntilRenewal >= 0 && daysUntilRenewal <= remindDaysBefore;
+  bool get isDueSoon =>
+      isActive && daysUntilRenewal >= 0 && daysUntilRenewal <= remindDaysBefore;
 
   SubscriptionEntity copyWith({
     String? id,

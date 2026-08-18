@@ -6,7 +6,8 @@ import '../../../../core/utils/id_generator.dart';
 import '../../domain/entities/recurring_transaction_entity.dart';
 import '../../domain/repositories/recurring_transaction_repository.dart';
 
-class RecurringTransactionRepositoryImpl implements RecurringTransactionRepository {
+class RecurringTransactionRepositoryImpl
+    implements RecurringTransactionRepository {
   final AppDatabase db;
 
   RecurringTransactionRepositoryImpl({required this.db});
@@ -18,7 +19,8 @@ class RecurringTransactionRepositoryImpl implements RecurringTransactionReposito
   }
 
   @override
-  Future<Result<List<RecurringTransactionEntity>>> getRecurringTransactions() async {
+  Future<Result<List<RecurringTransactionEntity>>>
+  getRecurringTransactions() async {
     try {
       final query = _buildJoinedQuery();
       final rows = await query.get();
@@ -30,13 +32,16 @@ class RecurringTransactionRepositoryImpl implements RecurringTransactionReposito
 
   @override
   Future<Result<RecurringTransactionEntity>> createRecurringTransaction(
-      RecurringTransactionEntity entity) async {
+    RecurringTransactionEntity entity,
+  ) async {
     try {
       final now = DateTime.now();
       final id = entity.id.isNotEmpty ? entity.id : IdGenerator.generate();
 
       await db.transaction(() async {
-        await db.into(db.recurringTransactionsTable).insert(
+        await db
+            .into(db.recurringTransactionsTable)
+            .insert(
               RecurringTransactionsTableCompanion.insert(
                 id: id,
                 type: entity.type,
@@ -57,7 +62,9 @@ class RecurringTransactionRepositoryImpl implements RecurringTransactionReposito
               ),
             );
 
-        await db.into(db.syncQueueTable).insert(
+        await db
+            .into(db.syncQueueTable)
+            .insert(
               SyncQueueTableCompanion.insert(
                 id: IdGenerator.generate(),
                 entityType: 'recurring_transaction',
@@ -71,7 +78,9 @@ class RecurringTransactionRepositoryImpl implements RecurringTransactionReposito
             );
       });
 
-      return Result.success(entity.copyWith(id: id, createdAt: now, updatedAt: now));
+      return Result.success(
+        entity.copyWith(id: id, createdAt: now, updatedAt: now),
+      );
     } catch (e) {
       return Result.failure(ErrorHandler.handleException(e));
     }
@@ -79,12 +88,15 @@ class RecurringTransactionRepositoryImpl implements RecurringTransactionReposito
 
   @override
   Future<Result<RecurringTransactionEntity>> updateRecurringTransaction(
-      RecurringTransactionEntity entity) async {
+    RecurringTransactionEntity entity,
+  ) async {
     try {
       final now = DateTime.now();
 
       await db.transaction(() async {
-        await (db.update(db.recurringTransactionsTable)..where((tbl) => tbl.id.equals(entity.id))).write(
+        await (db.update(
+          db.recurringTransactionsTable,
+        )..where((tbl) => tbl.id.equals(entity.id))).write(
           RecurringTransactionsTableCompanion(
             type: Value(entity.type),
             amount: Value(entity.amount),
@@ -103,7 +115,9 @@ class RecurringTransactionRepositoryImpl implements RecurringTransactionReposito
           ),
         );
 
-        await db.into(db.syncQueueTable).insert(
+        await db
+            .into(db.syncQueueTable)
+            .insert(
               SyncQueueTableCompanion.insert(
                 id: IdGenerator.generate(),
                 entityType: 'recurring_transaction',
@@ -128,8 +142,12 @@ class RecurringTransactionRepositoryImpl implements RecurringTransactionReposito
     try {
       final now = DateTime.now();
       await db.transaction(() async {
-        await (db.delete(db.recurringTransactionsTable)..where((tbl) => tbl.id.equals(id))).go();
-        await db.into(db.syncQueueTable).insert(
+        await (db.delete(
+          db.recurringTransactionsTable,
+        )..where((tbl) => tbl.id.equals(id))).go();
+        await db
+            .into(db.syncQueueTable)
+            .insert(
               SyncQueueTableCompanion.insert(
                 id: IdGenerator.generate(),
                 entityType: 'recurring_transaction',
@@ -153,18 +171,33 @@ class RecurringTransactionRepositoryImpl implements RecurringTransactionReposito
     final destWallet = db.walletsTable.createAlias('destWallet');
 
     return db.select(db.recurringTransactionsTable).join([
-      leftOuterJoin(sourceWallet, sourceWallet.id.equalsExp(db.recurringTransactionsTable.walletId)),
-      leftOuterJoin(destWallet, destWallet.id.equalsExp(db.recurringTransactionsTable.toWalletId)),
-      leftOuterJoin(db.categoriesTable, db.categoriesTable.id.equalsExp(db.recurringTransactionsTable.categoryId)),
+      leftOuterJoin(
+        sourceWallet,
+        sourceWallet.id.equalsExp(db.recurringTransactionsTable.walletId),
+      ),
+      leftOuterJoin(
+        destWallet,
+        destWallet.id.equalsExp(db.recurringTransactionsTable.toWalletId),
+      ),
+      leftOuterJoin(
+        db.categoriesTable,
+        db.categoriesTable.id.equalsExp(
+          db.recurringTransactionsTable.categoryId,
+        ),
+      ),
     ])..orderBy([
-        OrderingTerm.asc(db.recurringTransactionsTable.nextExecutionDate),
-      ]);
+      OrderingTerm.asc(db.recurringTransactionsTable.nextExecutionDate),
+    ]);
   }
 
   RecurringTransactionEntity _mapJoinedRow(TypedResult row) {
     final rt = row.readTable(db.recurringTransactionsTable);
-    final sourceWallet = row.readTableOrNull(db.walletsTable.createAlias('sourceWallet'));
-    final destWallet = row.readTableOrNull(db.walletsTable.createAlias('destWallet'));
+    final sourceWallet = row.readTableOrNull(
+      db.walletsTable.createAlias('sourceWallet'),
+    );
+    final destWallet = row.readTableOrNull(
+      db.walletsTable.createAlias('destWallet'),
+    );
     final category = row.readTableOrNull(db.categoriesTable);
 
     return RecurringTransactionEntity(

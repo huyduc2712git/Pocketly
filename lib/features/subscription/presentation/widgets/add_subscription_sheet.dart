@@ -26,7 +26,8 @@ class AddSubscriptionSheet extends ConsumerStatefulWidget {
   }
 
   @override
-  ConsumerState<AddSubscriptionSheet> createState() => _AddSubscriptionSheetState();
+  ConsumerState<AddSubscriptionSheet> createState() =>
+      _AddSubscriptionSheetState();
 }
 
 class _AddSubscriptionSheetState extends ConsumerState<AddSubscriptionSheet> {
@@ -40,8 +41,16 @@ class _AddSubscriptionSheetState extends ConsumerState<AddSubscriptionSheet> {
   final List<Map<String, String>> _popularServices = [
     {'name': 'Netflix', 'amount': '260000', 'icon': 'movie_rounded'},
     {'name': 'Spotify Premium', 'amount': '59000', 'icon': 'entertainment'},
-    {'name': 'ChatGPT Plus', 'amount': '500000', 'icon': 'phone_android_rounded'},
-    {'name': 'iCloud 200GB', 'amount': '59000', 'icon': 'phone_android_rounded'},
+    {
+      'name': 'ChatGPT Plus',
+      'amount': '500000',
+      'icon': 'phone_android_rounded',
+    },
+    {
+      'name': 'iCloud 200GB',
+      'amount': '59000',
+      'icon': 'phone_android_rounded',
+    },
     {'name': 'YouTube Premium', 'amount': '79000', 'icon': 'movie_rounded'},
   ];
 
@@ -54,7 +63,10 @@ class _AddSubscriptionSheetState extends ConsumerState<AddSubscriptionSheet> {
 
   Future<void> _onSave() async {
     final name = _nameController.text.trim();
-    final amountText = _amountController.text.replaceAll(RegExp(r'[^0-9.]'), '');
+    final amountText = _amountController.text.replaceAll(
+      RegExp(r'[^0-9.]'),
+      '',
+    );
     final amount = double.tryParse(amountText);
 
     if (name.isEmpty) {
@@ -83,12 +95,16 @@ class _AddSubscriptionSheetState extends ConsumerState<AddSubscriptionSheet> {
     );
 
     setState(() => _isLoading = true);
-    final success = await ref.read(subscriptionsControllerProvider.notifier).createSubscription(newSub);
+    final success = await ref
+        .read(subscriptionsControllerProvider.notifier)
+        .createSubscription(newSub);
     setState(() => _isLoading = false);
 
     if (success && mounted) {
       Navigator.of(context).pop();
-      context.showSnackBar('Đã thêm thuê bao "$name" (${CurrencyFormatter.format(amount)}) thành công!');
+      context.showSnackBar(
+        'Đã thêm thuê bao "$name" (${CurrencyFormatter.format(amount)}) thành công!',
+      );
     }
   }
 
@@ -110,7 +126,11 @@ class _AddSubscriptionSheetState extends ConsumerState<AddSubscriptionSheet> {
                 padding: const EdgeInsets.only(right: AppSpacing.xs),
                 child: ActionChip(
                   label: Text(preset['name']!),
-                  avatar: const Icon(Icons.flash_on_rounded, size: 14, color: AppColors.primary),
+                  avatar: const Icon(
+                    Icons.flash_on_rounded,
+                    size: 14,
+                    color: AppColors.primary,
+                  ),
                   onPressed: () {
                     _nameController.text = preset['name']!;
                     _amountController.text = preset['amount']!;
@@ -127,7 +147,10 @@ class _AddSubscriptionSheetState extends ConsumerState<AddSubscriptionSheet> {
           label: 'Tên dịch vụ thuê bao',
           hint: 'Netflix, Spotify, iCloud...',
           autofocus: true,
-          prefixIcon: const Icon(Icons.subscriptions_outlined, color: AppColors.primary),
+          prefixIcon: const Icon(
+            Icons.subscriptions_outlined,
+            color: AppColors.primary,
+          ),
         ),
         const SizedBox(height: AppSpacing.sm),
 
@@ -136,7 +159,10 @@ class _AddSubscriptionSheetState extends ConsumerState<AddSubscriptionSheet> {
           label: 'Số tiền định kỳ (₫)',
           hint: '0',
           keyboardType: TextInputType.number,
-          prefixIcon: const Icon(Icons.payments_outlined, color: AppColors.income),
+          prefixIcon: const Icon(
+            Icons.payments_outlined,
+            color: AppColors.income,
+          ),
         ),
         const SizedBox(height: AppSpacing.md),
 
@@ -146,7 +172,9 @@ class _AddSubscriptionSheetState extends ConsumerState<AddSubscriptionSheet> {
           style: TextStyle(
             fontSize: 13,
             fontWeight: FontWeight.w600,
-            color: isDark ? AppColors.darkTextSecondary : AppColors.lightTextSecondary,
+            color: isDark
+                ? AppColors.darkTextSecondary
+                : AppColors.lightTextSecondary,
           ),
         ),
         const SizedBox(height: AppSpacing.xs),
@@ -193,13 +221,15 @@ class _AddSubscriptionSheetState extends ConsumerState<AddSubscriptionSheet> {
                           child: Column(
                             mainAxisSize: MainAxisSize.min,
                             children: wallets
-                                .map((w) => ListTile(
-                                      title: Text(w.name),
-                                      onTap: () {
-                                        Navigator.of(ctx).pop();
-                                        setState(() => _selectedWallet = w);
-                                      },
-                                    ))
+                                .map(
+                                  (w) => ListTile(
+                                    title: Text(w.name),
+                                    onTap: () {
+                                      Navigator.of(ctx).pop();
+                                      setState(() => _selectedWallet = w);
+                                    },
+                                  ),
+                                )
                                 .toList(),
                           ),
                         ),
@@ -218,7 +248,9 @@ class _AddSubscriptionSheetState extends ConsumerState<AddSubscriptionSheet> {
                         context: context,
                         initialDate: _nextBillingDate,
                         firstDate: DateTime.now(),
-                        lastDate: DateTime.now().add(const Duration(days: 365 * 5)),
+                        lastDate: DateTime.now().add(
+                          const Duration(days: 365 * 5),
+                        ),
                       );
                       if (picked != null) {
                         setState(() => _nextBillingDate = picked);
@@ -252,11 +284,16 @@ class _AddSubscriptionSheetState extends ConsumerState<AddSubscriptionSheet> {
       onTap: onTap,
       borderRadius: AppRadius.borderMd,
       child: Container(
-        padding: const EdgeInsets.symmetric(horizontal: AppSpacing.sm, vertical: 10),
+        padding: const EdgeInsets.symmetric(
+          horizontal: AppSpacing.sm,
+          vertical: 10,
+        ),
         decoration: BoxDecoration(
           color: isDark ? AppColors.darkCard : AppColors.lightCard,
           borderRadius: AppRadius.borderMd,
-          border: Border.all(color: isDark ? AppColors.darkBorder : AppColors.lightBorder),
+          border: Border.all(
+            color: isDark ? AppColors.darkBorder : AppColors.lightBorder,
+          ),
         ),
         child: Row(
           children: [
@@ -266,10 +303,19 @@ class _AddSubscriptionSheetState extends ConsumerState<AddSubscriptionSheet> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(label, style: const TextStyle(fontSize: 10, color: AppColors.darkTextMuted)),
+                  Text(
+                    label,
+                    style: const TextStyle(
+                      fontSize: 10,
+                      color: AppColors.darkTextMuted,
+                    ),
+                  ),
                   Text(
                     value,
-                    style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w600),
+                    style: const TextStyle(
+                      fontSize: 12,
+                      fontWeight: FontWeight.w600,
+                    ),
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
                   ),

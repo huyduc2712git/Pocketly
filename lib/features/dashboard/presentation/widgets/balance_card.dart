@@ -89,10 +89,7 @@ class BalanceCard extends StatelessWidget {
               ),
             const SizedBox(height: AppSpacing.xl),
             // Divider inside card
-            Container(
-              height: 1,
-              color: Colors.white.withValues(alpha: 0.12),
-            ),
+            Container(height: 1, color: Colors.white.withValues(alpha: 0.12)),
             const SizedBox(height: AppSpacing.md),
             // Income vs Expense Breakdown Row
             Row(

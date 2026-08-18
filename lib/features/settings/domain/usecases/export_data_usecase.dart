@@ -8,14 +8,20 @@ class ExportDataUseCase {
   String exportToCsv(List<TransactionEntity> transactions) {
     final buffer = StringBuffer();
     // CSV Header
-    buffer.writeln('ID,Ngay,Loai,So_Tien,Don_Vi,Danh_Muc,Vi_Nguon,Vi_Dich,Ghi_Chu');
+    buffer.writeln(
+      'ID,Ngay,Loai,So_Tien,Don_Vi,Danh_Muc,Vi_Nguon,Vi_Dich,Ghi_Chu',
+    );
 
     for (final tx in transactions) {
       final dateStr = DateFormatter.formatDate(tx.occurredAt);
-      final noteStr = tx.note != null ? '"${tx.note!.replaceAll('"', '""')}"' : '""';
+      final noteStr = tx.note != null
+          ? '"${tx.note!.replaceAll('"', '""')}"'
+          : '""';
       final catStr = tx.categoryName != null ? '"${tx.categoryName!}"' : '""';
       final walletStr = tx.walletName != null ? '"${tx.walletName!}"' : '""';
-      final toWalletStr = tx.toWalletName != null ? '"${tx.toWalletName!}"' : '""';
+      final toWalletStr = tx.toWalletName != null
+          ? '"${tx.toWalletName!}"'
+          : '""';
 
       buffer.writeln(
         '${tx.id},$dateStr,${tx.type},${tx.amount},${tx.currency},$catStr,$walletStr,$toWalletStr,$noteStr',

@@ -41,7 +41,10 @@ class _AddWalletSheetState extends ConsumerState<AddWalletSheet> {
 
   Future<void> _onSave() async {
     final name = _nameController.text.trim();
-    final balanceText = _balanceController.text.replaceAll(RegExp(r'[^0-9.]'), '');
+    final balanceText = _balanceController.text.replaceAll(
+      RegExp(r'[^0-9.]'),
+      '',
+    );
     final balance = double.tryParse(balanceText) ?? 0.0;
 
     if (name.isEmpty) {
@@ -50,7 +53,9 @@ class _AddWalletSheetState extends ConsumerState<AddWalletSheet> {
     }
 
     setState(() => _isLoading = true);
-    final success = await ref.read(walletsControllerProvider.notifier).createWallet(
+    final success = await ref
+        .read(walletsControllerProvider.notifier)
+        .createWallet(
           name: name,
           type: _selectedType,
           initialBalance: balance,
@@ -77,7 +82,10 @@ class _AddWalletSheetState extends ConsumerState<AddWalletSheet> {
           label: 'Tên ví / Tài khoản',
           hint: 'Ví chính, Techcombank, MoMo...',
           autofocus: true,
-          prefixIcon: const Icon(Icons.account_balance_wallet_outlined, color: AppColors.primary),
+          prefixIcon: const Icon(
+            Icons.account_balance_wallet_outlined,
+            color: AppColors.primary,
+          ),
         ),
         const SizedBox(height: AppSpacing.md),
 
@@ -86,7 +94,10 @@ class _AddWalletSheetState extends ConsumerState<AddWalletSheet> {
           label: 'Số dư ban đầu (₫)',
           hint: '0',
           keyboardType: TextInputType.number,
-          prefixIcon: const Icon(Icons.payments_outlined, color: AppColors.income),
+          prefixIcon: const Icon(
+            Icons.payments_outlined,
+            color: AppColors.income,
+          ),
         ),
         const SizedBox(height: AppSpacing.md),
 
@@ -95,7 +106,9 @@ class _AddWalletSheetState extends ConsumerState<AddWalletSheet> {
           style: TextStyle(
             fontSize: 13,
             fontWeight: FontWeight.w600,
-            color: isDark ? AppColors.darkTextSecondary : AppColors.lightTextSecondary,
+            color: isDark
+                ? AppColors.darkTextSecondary
+                : AppColors.lightTextSecondary,
           ),
         ),
         const SizedBox(height: AppSpacing.xs),
@@ -112,16 +125,24 @@ class _AddWalletSheetState extends ConsumerState<AddWalletSheet> {
                 if (selected) setState(() => _selectedType = type);
               },
               selectedColor: AppColors.primary,
-              backgroundColor: isDark ? AppColors.darkCard : AppColors.lightCard,
+              backgroundColor: isDark
+                  ? AppColors.darkCard
+                  : AppColors.lightCard,
               labelStyle: TextStyle(
-                color: isSelected ? Colors.white : (isDark ? AppColors.darkTextPrimary : AppColors.lightTextPrimary),
+                color: isSelected
+                    ? Colors.white
+                    : (isDark
+                          ? AppColors.darkTextPrimary
+                          : AppColors.lightTextPrimary),
                 fontWeight: isSelected ? FontWeight.w600 : FontWeight.w400,
                 fontSize: 13,
               ),
               shape: RoundedRectangleBorder(
                 borderRadius: AppRadius.borderMd,
                 side: BorderSide(
-                  color: isSelected ? AppColors.primary : (isDark ? AppColors.darkBorder : AppColors.lightBorder),
+                  color: isSelected
+                      ? AppColors.primary
+                      : (isDark ? AppColors.darkBorder : AppColors.lightBorder),
                 ),
               ),
             );

@@ -74,6 +74,6 @@ class BudgetController extends StateNotifier<AsyncValue<void>> {
 
 final budgetControllerProvider =
     StateNotifierProvider<BudgetController, AsyncValue<void>>((ref) {
-  final repository = ref.watch(budgetRepositoryProvider);
-  return BudgetController(repository);
-});
+      final repository = ref.watch(budgetRepositoryProvider);
+      return BudgetController(repository);
+    });

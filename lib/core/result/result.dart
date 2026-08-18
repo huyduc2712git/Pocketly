@@ -10,14 +10,14 @@ sealed class Result<T> {
   bool get isFailure => this is Error<T>;
 
   T? get dataOrNull => switch (this) {
-        Success(data: final d) => d,
-        Error() => null,
-      };
+    Success(data: final d) => d,
+    Error() => null,
+  };
 
   Failure? get failureOrNull => switch (this) {
-        Success() => null,
-        Error(failure: final f) => f,
-      };
+    Success() => null,
+    Error(failure: final f) => f,
+  };
 
   R when<R>({
     required R Function(T data) success,
@@ -29,10 +29,7 @@ sealed class Result<T> {
     };
   }
 
-  R fold<R>(
-    R Function(Failure failure) onError,
-    R Function(T data) onSuccess,
-  ) {
+  R fold<R>(R Function(Failure failure) onError, R Function(T data) onSuccess) {
     return switch (this) {
       Success(data: final d) => onSuccess(d),
       Error(failure: final f) => onError(f),

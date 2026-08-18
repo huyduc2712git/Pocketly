@@ -40,14 +40,25 @@ class AppButton extends StatelessWidget {
         foregroundColor = Colors.white;
         break;
       case AppButtonVariant.secondary:
-        backgroundColor = isDark ? AppColors.darkCardElevated : AppColors.lightCardElevated;
-        foregroundColor = isDark ? AppColors.darkTextPrimary : AppColors.lightTextPrimary;
-        side = BorderSide(color: isDark ? AppColors.darkBorder : AppColors.lightBorder);
+        backgroundColor = isDark
+            ? AppColors.darkCardElevated
+            : AppColors.lightCardElevated;
+        foregroundColor = isDark
+            ? AppColors.darkTextPrimary
+            : AppColors.lightTextPrimary;
+        side = BorderSide(
+          color: isDark ? AppColors.darkBorder : AppColors.lightBorder,
+        );
         break;
       case AppButtonVariant.outline:
         backgroundColor = Colors.transparent;
-        foregroundColor = isDark ? AppColors.darkTextPrimary : AppColors.lightTextPrimary;
-        side = BorderSide(color: isDark ? AppColors.darkBorder : AppColors.lightBorder, width: 1.5);
+        foregroundColor = isDark
+            ? AppColors.darkTextPrimary
+            : AppColors.lightTextPrimary;
+        side = BorderSide(
+          color: isDark ? AppColors.darkBorder : AppColors.lightBorder,
+          width: 1.5,
+        );
         break;
       case AppButtonVariant.danger:
         backgroundColor = AppColors.expense;
@@ -91,7 +102,9 @@ class AppButton extends StatelessWidget {
     }
 
     final buttonWidget = Material(
-      color: onPressed == null ? backgroundColor.withValues(alpha: 0.5) : backgroundColor,
+      color: onPressed == null
+          ? backgroundColor.withValues(alpha: 0.5)
+          : backgroundColor,
       shape: RoundedRectangleBorder(
         borderRadius: AppRadius.borderMd,
         side: side ?? BorderSide.none,
@@ -109,10 +122,7 @@ class AppButton extends StatelessWidget {
     );
 
     if (isFullWidth) {
-      return SizedBox(
-        width: double.infinity,
-        child: buttonWidget,
-      );
+      return SizedBox(width: double.infinity, child: buttonWidget);
     }
 
     return buttonWidget;

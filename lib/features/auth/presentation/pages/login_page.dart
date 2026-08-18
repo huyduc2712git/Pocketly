@@ -37,7 +37,9 @@ class _LoginPageState extends ConsumerState<LoginPage> {
     }
 
     setState(() => _isLoading = true);
-    final success = await ref.read(authControllerProvider.notifier).login(email, password);
+    final success = await ref
+        .read(authControllerProvider.notifier)
+        .login(email, password);
     setState(() => _isLoading = false);
 
     if (success && mounted) {
@@ -47,7 +49,9 @@ class _LoginPageState extends ConsumerState<LoginPage> {
 
   Future<void> _handleGuestLogin() async {
     setState(() => _isLoading = true);
-    final success = await ref.read(authControllerProvider.notifier).loginAsGuest();
+    final success = await ref
+        .read(authControllerProvider.notifier)
+        .loginAsGuest();
     setState(() => _isLoading = false);
 
     if (success && mounted) {

@@ -8,8 +8,10 @@ class BudgetItemsTable extends Table {
   String get tableName => 'budget_items';
 
   TextColumn get id => text()();
-  TextColumn get budgetId => text().references(BudgetsTable, #id, onDelete: KeyAction.cascade)();
-  TextColumn get categoryId => text().references(CategoriesTable, #id, onDelete: KeyAction.cascade)();
+  TextColumn get budgetId =>
+      text().references(BudgetsTable, #id, onDelete: KeyAction.cascade)();
+  TextColumn get categoryId =>
+      text().references(CategoriesTable, #id, onDelete: KeyAction.cascade)();
   RealColumn get amount => real()();
   DateTimeColumn get createdAt => dateTime().withDefault(currentDateAndTime)();
   DateTimeColumn get updatedAt => dateTime().withDefault(currentDateAndTime)();

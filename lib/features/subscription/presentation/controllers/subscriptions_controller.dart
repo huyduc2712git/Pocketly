@@ -9,7 +9,9 @@ final subscriptionRepositoryProvider = Provider<SubscriptionRepository>((ref) {
   return SubscriptionRepositoryImpl(db: db);
 });
 
-final subscriptionsStreamProvider = StreamProvider<List<SubscriptionEntity>>((ref) {
+final subscriptionsStreamProvider = StreamProvider<List<SubscriptionEntity>>((
+  ref,
+) {
   final repo = ref.watch(subscriptionRepositoryProvider);
   return repo.watchSubscriptions();
 });
@@ -27,7 +29,8 @@ final totalMonthlySubscriptionCostProvider = Provider<double>((ref) {
 class SubscriptionsController extends StateNotifier<AsyncValue<void>> {
   final SubscriptionRepository _repository;
 
-  SubscriptionsController(this._repository) : super(const AsyncValue.data(null));
+  SubscriptionsController(this._repository)
+    : super(const AsyncValue.data(null));
 
   Future<bool> createSubscription(SubscriptionEntity entity) async {
     state = const AsyncValue.loading();
@@ -68,6 +71,6 @@ class SubscriptionsController extends StateNotifier<AsyncValue<void>> {
 
 final subscriptionsControllerProvider =
     StateNotifierProvider<SubscriptionsController, AsyncValue<void>>((ref) {
-  final repo = ref.watch(subscriptionRepositoryProvider);
-  return SubscriptionsController(repo);
-});
+      final repo = ref.watch(subscriptionRepositoryProvider);
+      return SubscriptionsController(repo);
+    });

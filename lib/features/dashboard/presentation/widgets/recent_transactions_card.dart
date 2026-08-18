@@ -42,22 +42,31 @@ class RecentTransactionsCard extends StatelessWidget {
             child: Center(
               child: Text(
                 'Chưa có giao dịch gần đây',
-                style: TextStyle(color: AppColors.darkTextSecondary, fontSize: 13),
+                style: TextStyle(
+                  color: AppColors.darkTextSecondary,
+                  fontSize: 13,
+                ),
               ),
             ),
           )
         else
           AppCard(
-            padding: const EdgeInsets.symmetric(horizontal: AppSpacing.xs, vertical: AppSpacing.xs),
+            padding: const EdgeInsets.symmetric(
+              horizontal: AppSpacing.xs,
+              vertical: AppSpacing.xs,
+            ),
             child: Column(
               children: [
                 for (int i = 0; i < summary.recentTransactions.length; i++) ...[
                   if (i > 0) const Divider(height: 1, indent: 56),
                   TransactionTile(
-                    title: summary.recentTransactions[i].note?.isNotEmpty == true
+                    title:
+                        summary.recentTransactions[i].note?.isNotEmpty == true
                         ? summary.recentTransactions[i].note!
                         : (summary.recentTransactions[i].categoryName ??
-                            (summary.recentTransactions[i].isTransfer ? 'Chuyển tiền' : 'Giao dịch')),
+                              (summary.recentTransactions[i].isTransfer
+                                  ? 'Chuyển tiền'
+                                  : 'Giao dịch')),
                     subtitle: summary.recentTransactions[i].categoryName,
                     walletName: summary.recentTransactions[i].walletName,
                     toWalletName: summary.recentTransactions[i].toWalletName,
@@ -65,8 +74,12 @@ class RecentTransactionsCard extends StatelessWidget {
                     amount: summary.recentTransactions[i].amount,
                     currency: summary.recentTransactions[i].currency,
                     type: summary.recentTransactions[i].type,
-                    icon: IconHelper.getIcon(summary.recentTransactions[i].categoryIcon),
-                    iconColor: IconHelper.getColor(summary.recentTransactions[i].categoryColor),
+                    icon: IconHelper.getIcon(
+                      summary.recentTransactions[i].categoryIcon,
+                    ),
+                    iconColor: IconHelper.getColor(
+                      summary.recentTransactions[i].categoryColor,
+                    ),
                     syncStatus: summary.recentTransactions[i].syncStatus,
                     onTap: () => context.go(RouteNames.transactions),
                   ),

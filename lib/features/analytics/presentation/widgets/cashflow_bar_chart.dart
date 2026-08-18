@@ -46,7 +46,9 @@ class CashflowBarChart extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: points.map((p) {
               final incomeHeight = maxVal > 0 ? (p.income / maxVal) * 100 : 0.0;
-              final expenseHeight = maxVal > 0 ? (p.expense / maxVal) * 100 : 0.0;
+              final expenseHeight = maxVal > 0
+                  ? (p.expense / maxVal) * 100
+                  : 0.0;
 
               return Column(
                 mainAxisAlignment: MainAxisAlignment.end,
@@ -60,7 +62,9 @@ class CashflowBarChart extends StatelessWidget {
                         height: math.max(incomeHeight, 4.0),
                         decoration: const BoxDecoration(
                           color: AppColors.income,
-                          borderRadius: BorderRadius.vertical(top: Radius.circular(4)),
+                          borderRadius: BorderRadius.vertical(
+                            top: Radius.circular(4),
+                          ),
                         ),
                       ),
                       const SizedBox(width: 3),
@@ -70,7 +74,9 @@ class CashflowBarChart extends StatelessWidget {
                         height: math.max(expenseHeight, 4.0),
                         decoration: const BoxDecoration(
                           color: AppColors.expense,
-                          borderRadius: BorderRadius.vertical(top: Radius.circular(4)),
+                          borderRadius: BorderRadius.vertical(
+                            top: Radius.circular(4),
+                          ),
                         ),
                       ),
                     ],
@@ -81,7 +87,9 @@ class CashflowBarChart extends StatelessWidget {
                     style: TextStyle(
                       fontSize: 10,
                       fontWeight: FontWeight.w500,
-                      color: isDark ? AppColors.darkTextSecondary : AppColors.lightTextSecondary,
+                      color: isDark
+                          ? AppColors.darkTextSecondary
+                          : AppColors.lightTextSecondary,
                     ),
                   ),
                 ],

@@ -6,6 +6,9 @@ abstract class SyncRepository {
   Future<Result<List<SyncTaskEntity>>> getPendingTasks();
   Future<Result<void>> markTaskSyncing(String id);
   Future<Result<void>> markTaskSynced(String id);
-  Future<Result<void>> markTaskFailed({required String id, required String error});
+  Future<Result<void>> markTaskFailed({
+    required String id,
+    required String error,
+  });
   Future<Result<void>> clearCompletedTasks();
 }

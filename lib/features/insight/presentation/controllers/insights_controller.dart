@@ -14,7 +14,8 @@ final insightsProvider = Provider<List<InsightEntity>>((ref) {
   final engine = ref.watch(insightEngineServiceProvider);
   final thisMonthAnalytics = ref.watch(analyticsStreamProvider).valueOrNull;
   final budget = ref.watch(currentBudgetStreamProvider).valueOrNull;
-  final subscriptions = ref.watch(subscriptionsStreamProvider).valueOrNull ?? [];
+  final subscriptions =
+      ref.watch(subscriptionsStreamProvider).valueOrNull ?? [];
   final wallets = ref.watch(walletsStreamProvider).valueOrNull ?? [];
 
   return engine.evaluateAllRules(

@@ -21,7 +21,8 @@ enum SyncStatus {
 
 class SyncTaskEntity {
   final String id;
-  final String entityType; // 'wallet', 'transaction', 'budget', 'subscription', 'category'
+  final String
+  entityType; // 'wallet', 'transaction', 'budget', 'subscription', 'category'
   final String entityId;
   final String operation; // 'create', 'update', 'delete', 'create_or_update'
   final String payload;

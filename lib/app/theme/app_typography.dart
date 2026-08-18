@@ -7,8 +7,12 @@ class AppTypography {
 
   static TextTheme textTheme(Brightness brightness) {
     final isDark = brightness == Brightness.dark;
-    final primaryColor = isDark ? AppColors.darkTextPrimary : AppColors.lightTextPrimary;
-    final secondaryColor = isDark ? AppColors.darkTextSecondary : AppColors.lightTextSecondary;
+    final primaryColor = isDark
+        ? AppColors.darkTextPrimary
+        : AppColors.lightTextPrimary;
+    final secondaryColor = isDark
+        ? AppColors.darkTextSecondary
+        : AppColors.lightTextSecondary;
 
     final base = GoogleFonts.outfitTextTheme();
 

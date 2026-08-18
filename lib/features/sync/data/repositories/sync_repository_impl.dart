@@ -28,7 +28,9 @@ class SyncRepositoryImpl implements SyncRepository {
   @override
   Stream<List<SyncTaskEntity>> watchPendingTasks() {
     return (db.select(db.syncQueueTable)
-          ..where((tbl) => tbl.status.equals('pending') | tbl.status.equals('failed'))
+          ..where(
+            (tbl) => tbl.status.equals('pending') | tbl.status.equals('failed'),
+          )
           ..orderBy([(t) => OrderingTerm(expression: t.createdAt)]))
         .watch()
         .map((rows) => rows.map(_toEntity).toList());
@@ -37,10 +39,15 @@ class SyncRepositoryImpl implements SyncRepository {
   @override
   Future<Result<List<SyncTaskEntity>>> getPendingTasks() async {
     try {
-      final rows = await (db.select(db.syncQueueTable)
-            ..where((tbl) => tbl.status.equals('pending') | tbl.status.equals('failed'))
-            ..orderBy([(t) => OrderingTerm(expression: t.createdAt)]))
-          .get();
+      final rows =
+          await (db.select(db.syncQueueTable)
+                ..where(
+                  (tbl) =>
+                      tbl.status.equals('pending') |
+                      tbl.status.equals('failed'),
+                )
+                ..orderBy([(t) => OrderingTerm(expression: t.createdAt)]))
+              .get();
       return Result.success(rows.map(_toEntity).toList());
     } catch (e) {
       return Result.failure(ErrorHandler.handleException(e));
@@ -50,7 +57,9 @@ class SyncRepositoryImpl implements SyncRepository {
   @override
   Future<Result<void>> markTaskSyncing(String id) async {
     try {
-      await (db.update(db.syncQueueTable)..where((tbl) => tbl.id.equals(id))).write(
+      await (db.update(
+        db.syncQueueTable,
+      )..where((tbl) => tbl.id.equals(id))).write(
         SyncQueueTableCompanion(
           status: const Value('syncing'),
           updatedAt: Value(DateTime.now()),
@@ -65,7 +74,9 @@ class SyncRepositoryImpl implements SyncRepository {
   @override
   Future<Result<void>> markTaskSynced(String id) async {
     try {
-      await (db.update(db.syncQueueTable)..where((tbl) => tbl.id.equals(id))).write(
+      await (db.update(
+        db.syncQueueTable,
+      )..where((tbl) => tbl.id.equals(id))).write(
         SyncQueueTableCompanion(
           status: const Value('synced'),
           updatedAt: Value(DateTime.now()),
@@ -78,13 +89,20 @@ class SyncRepositoryImpl implements SyncRepository {
   }
 
   @override
-  Future<Result<void>> markTaskFailed({required String id, required String error}) async {
+  Future<Result<void>> markTaskFailed({
+    required String id,
+    required String error,
+  }) async {
     try {
-      final current = await (db.select(db.syncQueueTable)..where((tbl) => tbl.id.equals(id))).getSingleOrNull();
+      final current = await (db.select(
+        db.syncQueueTable,
+      )..where((tbl) => tbl.id.equals(id))).getSingleOrNull();
       final newRetryCount = (current?.retryCount ?? 0) + 1;
       final status = newRetryCount >= 5 ? 'failed' : 'pending';
 
-      await (db.update(db.syncQueueTable)..where((tbl) => tbl.id.equals(id))).write(
+      await (db.update(
+        db.syncQueueTable,
+      )..where((tbl) => tbl.id.equals(id))).write(
         SyncQueueTableCompanion(
           status: Value(status),
           retryCount: Value(newRetryCount),
@@ -101,7 +119,9 @@ class SyncRepositoryImpl implements SyncRepository {
   @override
   Future<Result<void>> clearCompletedTasks() async {
     try {
-      await (db.delete(db.syncQueueTable)..where((tbl) => tbl.status.equals('synced'))).go();
+      await (db.delete(
+        db.syncQueueTable,
+      )..where((tbl) => tbl.status.equals('synced'))).go();
       return const Result.success(null);
     } catch (e) {
       return Result.failure(ErrorHandler.handleException(e));

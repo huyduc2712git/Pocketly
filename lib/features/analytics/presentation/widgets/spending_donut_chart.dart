@@ -41,7 +41,10 @@ class SpendingDonutChart extends StatelessWidget {
             children: [
               CustomPaint(
                 size: const Size(180, 180),
-                painter: _DonutChartPainter(categories: categories, total: totalExpense),
+                painter: _DonutChartPainter(
+                  categories: categories,
+                  total: totalExpense,
+                ),
               ),
               Column(
                 mainAxisSize: MainAxisSize.min,
@@ -56,7 +59,10 @@ class SpendingDonutChart extends StatelessWidget {
                   ),
                   const SizedBox(height: 2),
                   Text(
-                    CurrencyFormatter.formatCompact(totalExpense, currency: currency),
+                    CurrencyFormatter.formatCompact(
+                      totalExpense,
+                      currency: currency,
+                    ),
                     style: const TextStyle(
                       fontSize: 16,
                       fontWeight: FontWeight.w800,

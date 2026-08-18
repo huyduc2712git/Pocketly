@@ -53,7 +53,10 @@ class AppTheme {
           backgroundColor: AppColors.primary,
           foregroundColor: Colors.white,
           elevation: 0,
-          padding: const EdgeInsets.symmetric(horizontal: AppSpacing.lg, vertical: AppSpacing.md),
+          padding: const EdgeInsets.symmetric(
+            horizontal: AppSpacing.lg,
+            vertical: AppSpacing.md,
+          ),
           shape: RoundedRectangleBorder(borderRadius: AppRadius.borderMd),
           textStyle: textTheme.labelLarge,
         ),
@@ -62,7 +65,10 @@ class AppTheme {
         style: OutlinedButton.styleFrom(
           foregroundColor: AppColors.darkTextPrimary,
           side: const BorderSide(color: AppColors.darkBorder, width: 1),
-          padding: const EdgeInsets.symmetric(horizontal: AppSpacing.lg, vertical: AppSpacing.md),
+          padding: const EdgeInsets.symmetric(
+            horizontal: AppSpacing.lg,
+            vertical: AppSpacing.md,
+          ),
           shape: RoundedRectangleBorder(borderRadius: AppRadius.borderMd),
           textStyle: textTheme.labelLarge,
         ),
@@ -70,9 +76,16 @@ class AppTheme {
       inputDecorationTheme: InputDecorationTheme(
         filled: true,
         fillColor: AppColors.darkSurface,
-        contentPadding: const EdgeInsets.symmetric(horizontal: AppSpacing.md, vertical: AppSpacing.md),
-        hintStyle: textTheme.bodyMedium?.copyWith(color: AppColors.darkTextMuted),
-        labelStyle: textTheme.bodyMedium?.copyWith(color: AppColors.darkTextSecondary),
+        contentPadding: const EdgeInsets.symmetric(
+          horizontal: AppSpacing.md,
+          vertical: AppSpacing.md,
+        ),
+        hintStyle: textTheme.bodyMedium?.copyWith(
+          color: AppColors.darkTextMuted,
+        ),
+        labelStyle: textTheme.bodyMedium?.copyWith(
+          color: AppColors.darkTextSecondary,
+        ),
         border: OutlineInputBorder(
           borderRadius: AppRadius.borderMd,
           borderSide: const BorderSide(color: AppColors.darkBorder),
@@ -101,7 +114,9 @@ class AppTheme {
         backgroundColor: AppColors.darkSurface,
         modalBackgroundColor: AppColors.darkSurface,
         shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.vertical(top: Radius.circular(AppRadius.lg)),
+          borderRadius: BorderRadius.vertical(
+            top: Radius.circular(AppRadius.lg),
+          ),
         ),
         dragHandleColor: AppColors.darkBorder,
       ),
@@ -158,7 +173,10 @@ class AppTheme {
           backgroundColor: AppColors.primary,
           foregroundColor: Colors.white,
           elevation: 0,
-          padding: const EdgeInsets.symmetric(horizontal: AppSpacing.lg, vertical: AppSpacing.md),
+          padding: const EdgeInsets.symmetric(
+            horizontal: AppSpacing.lg,
+            vertical: AppSpacing.md,
+          ),
           shape: RoundedRectangleBorder(borderRadius: AppRadius.borderMd),
           textStyle: textTheme.labelLarge,
         ),
@@ -166,9 +184,16 @@ class AppTheme {
       inputDecorationTheme: InputDecorationTheme(
         filled: true,
         fillColor: AppColors.lightSurface,
-        contentPadding: const EdgeInsets.symmetric(horizontal: AppSpacing.md, vertical: AppSpacing.md),
-        hintStyle: textTheme.bodyMedium?.copyWith(color: AppColors.lightTextMuted),
-        labelStyle: textTheme.bodyMedium?.copyWith(color: AppColors.lightTextSecondary),
+        contentPadding: const EdgeInsets.symmetric(
+          horizontal: AppSpacing.md,
+          vertical: AppSpacing.md,
+        ),
+        hintStyle: textTheme.bodyMedium?.copyWith(
+          color: AppColors.lightTextMuted,
+        ),
+        labelStyle: textTheme.bodyMedium?.copyWith(
+          color: AppColors.lightTextSecondary,
+        ),
         border: OutlineInputBorder(
           borderRadius: AppRadius.borderMd,
           borderSide: const BorderSide(color: AppColors.lightBorder),
@@ -190,7 +215,9 @@ class AppTheme {
         backgroundColor: AppColors.lightSurface,
         modalBackgroundColor: AppColors.lightSurface,
         shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.vertical(top: Radius.circular(AppRadius.lg)),
+          borderRadius: BorderRadius.vertical(
+            top: Radius.circular(AppRadius.lg),
+          ),
         ),
       ),
       dividerTheme: const DividerThemeData(

@@ -1,0 +1,79 @@
+{
+  "@@locale": "vi",
+  "appName": "Pocketly",
+  "appTagline": "Quản lý tài chính thông minh",
+
+  "navHome": "Tổng quan",
+  "navTransactions": "Sổ thu chi",
+  "navBudget": "Ngân sách",
+  "navAnalytics": "Báo cáo",
+  "navProfile": "Cá nhân",
+
+  "commonSave": "Lưu lại",
+  "commonCancel": "Hủy bỏ",
+  "commonDelete": "Xóa",
+  "commonEdit": "Chỉnh sửa",
+  "commonClose": "Đóng",
+  "commonCopy": "Sao chép",
+  "commonSuccess": "Thành công",
+  "commonError": "Đã xảy ra lỗi",
+  "commonLoading": "Đang tải dữ liệu...",
+  "commonEmpty": "Chưa có dữ liệu",
+  "commonRetry": "Thử lại",
+
+  "dashboardTotalBalance": "Tổng số dư khả dụng",
+  "dashboardIncome": "Thu nhập",
+  "dashboardExpense": "Chi tiêu",
+  "dashboardRemainingBudget": "Ngân sách còn lại",
+  "dashboardBudgetProgress": "Tiến độ sử dụng",
+  "dashboardSmartInsight": "Finly Smart Insight",
+  "dashboardCategoryBudgets": "Ngân sách danh mục",
+  "dashboardRecentTransactions": "Giao dịch gần đây",
+
+  "transactionAdd": "Thêm giao dịch",
+  "transactionAddExpense": "Khoản chi tiêu",
+  "transactionAddIncome": "Khoản thu nhập",
+  "transactionAddTransfer": "Chuyển tiền",
+  "transactionAmount": "Số tiền",
+  "transactionCategory": "Danh mục",
+  "transactionWallet": "Ví thanh toán",
+  "transactionSourceWallet": "Ví nguồn (Chuyển đi)",
+  "transactionDestWallet": "Ví đích (Nhận tiền)",
+  "transactionNote": "Ghi chú",
+  "transactionDate": "Ngày giao dịch",
+  "transactionDeleted": "Đã xóa giao dịch thành công",
+
+  "budgetTitle": "Ngân Sách Chi Tiêu",
+  "budgetMonthlyLimit": "Hạn mức chi tiêu tháng",
+  "budgetSetMonthly": "Thiết lập ngân sách",
+  "budgetForecastWarning": "Dự kiến cuối tháng bạn sẽ vượt ngân sách {amount}",
+  "@budgetForecastWarning": {
+    "placeholders": {
+      "amount": { "type": "String" }
+    }
+  },
+
+  "analyticsTitle": "Phân Tích & Báo Cáo",
+  "analyticsSpendingBreakdown": "Phân bổ chi tiêu",
+  "analyticsCashflowTrend": "Xu hướng dòng tiền",
+  "analyticsSavingsRate": "Tỷ lệ tiết kiệm",
+  "analyticsNetSavings": "Tiết kiệm ròng",
+
+  "subscriptionTitle": "Gói Thuê Bao & Định Kỳ",
+  "subscriptionMonthlyBurden": "Chi phí thuê bao hàng tháng",
+  "subscriptionDaysRemaining": "Còn {days} ngày",
+  "@subscriptionDaysRemaining": {
+    "placeholders": {
+      "days": { "type": "int" }
+    }
+  },
+
+  "profileTitle": "Cá Nhân & Cài Đặt",
+  "profileSyncStatus": "Đồng bộ dữ liệu",
+  "profileSyncNow": "Đồng bộ ngay",
+  "profileExportCsv": "Xuất dữ liệu CSV",
+  "profileExportJson": "Xuất dữ liệu JSON",
+  "profileDarkMode": "Giao diện tối (Dark Mode)",
+  "profileCurrency": "Đơn vị tiền tệ chính",
+  "profileLogout": "Đăng xuất tài khoản"
+}

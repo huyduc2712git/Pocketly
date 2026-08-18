@@ -32,7 +32,8 @@ class SubscriptionsPage extends ConsumerWidget {
         ],
       ),
       body: subsAsync.when(
-        loading: () => const AppLoading(message: 'Đang tải danh sách gói thuê bao...'),
+        loading: () =>
+            const AppLoading(message: 'Đang tải danh sách gói thuê bao...'),
         error: (err, _) => Center(child: Text('Lỗi: $err')),
         data: (subscriptions) {
           return ListView(
@@ -59,7 +60,10 @@ class SubscriptionsPage extends ConsumerWidget {
                     const SizedBox(height: 8),
                     Text(
                       '${subscriptions.where((s) => s.isActive).length} gói dịch vụ đang kích hoạt',
-                      style: const TextStyle(color: Color(0xFFC7D2FE), fontSize: 12),
+                      style: const TextStyle(
+                        color: Color(0xFFC7D2FE),
+                        fontSize: 12,
+                      ),
                     ),
                   ],
                 ),
@@ -89,7 +93,8 @@ class SubscriptionsPage extends ConsumerWidget {
               if (subscriptions.isEmpty)
                 AppEmptyState(
                   title: 'Chưa có gói thuê bao nào',
-                  message: 'Thêm Netflix, Spotify, iCloud... để không bao giờ quên ngày gia hạn trừ tiền.',
+                  message:
+                      'Thêm Netflix, Spotify, iCloud... để không bao giờ quên ngày gia hạn trừ tiền.',
                   actionText: 'Thêm gói thuê bao ngay',
                   onActionPressed: () => AddSubscriptionSheet.show(context),
                 )
@@ -157,14 +162,21 @@ class _SubscriptionTile extends ConsumerWidget {
                     if (isDueSoon) ...[
                       const SizedBox(width: 6),
                       Container(
-                        padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 6,
+                          vertical: 2,
+                        ),
                         decoration: BoxDecoration(
                           color: AppColors.warning.withValues(alpha: 0.15),
                           borderRadius: BorderRadius.circular(4),
                         ),
                         child: Text(
                           'Còn ${subscription.daysUntilRenewal} ngày',
-                          style: const TextStyle(fontSize: 10, color: AppColors.warning, fontWeight: FontWeight.w700),
+                          style: const TextStyle(
+                            fontSize: 10,
+                            color: AppColors.warning,
+                            fontWeight: FontWeight.w700,
+                          ),
                         ),
                       ),
                     ],
@@ -194,7 +206,9 @@ class _SubscriptionTile extends ConsumerWidget {
                 value: subscription.isActive,
                 activeThumbColor: AppColors.primary,
                 onChanged: (_) {
-                  ref.read(subscriptionsControllerProvider.notifier).toggleActive(subscription);
+                  ref
+                      .read(subscriptionsControllerProvider.notifier)
+                      .toggleActive(subscription);
                 },
               ),
             ],

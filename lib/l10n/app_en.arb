@@ -1,0 +1,79 @@
+{
+  "@@locale": "en",
+  "appName": "Pocketly",
+  "appTagline": "Smart Financial Management",
+
+  "navHome": "Dashboard",
+  "navTransactions": "Transactions",
+  "navBudget": "Budget",
+  "navAnalytics": "Analytics",
+  "navProfile": "Profile",
+
+  "commonSave": "Save",
+  "commonCancel": "Cancel",
+  "commonDelete": "Delete",
+  "commonEdit": "Edit",
+  "commonClose": "Close",
+  "commonCopy": "Copy",
+  "commonSuccess": "Success",
+  "commonError": "An error occurred",
+  "commonLoading": "Loading...",
+  "commonEmpty": "No data available",
+  "commonRetry": "Retry",
+
+  "dashboardTotalBalance": "Total Available Balance",
+  "dashboardIncome": "Income",
+  "dashboardExpense": "Expense",
+  "dashboardRemainingBudget": "Remaining Budget",
+  "dashboardBudgetProgress": "Budget Progress",
+  "dashboardSmartInsight": "Finly Smart Insight",
+  "dashboardCategoryBudgets": "Category Budgets",
+  "dashboardRecentTransactions": "Recent Transactions",
+
+  "transactionAdd": "Add Transaction",
+  "transactionAddExpense": "Expense",
+  "transactionAddIncome": "Income",
+  "transactionAddTransfer": "Transfer",
+  "transactionAmount": "Amount",
+  "transactionCategory": "Category",
+  "transactionWallet": "Wallet",
+  "transactionSourceWallet": "Source Wallet (From)",
+  "transactionDestWallet": "Destination Wallet (To)",
+  "transactionNote": "Note",
+  "transactionDate": "Date",
+  "transactionDeleted": "Transaction deleted successfully",
+
+  "budgetTitle": "Spending Budget",
+  "budgetMonthlyLimit": "Monthly Limit",
+  "budgetSetMonthly": "Set Budget",
+  "budgetForecastWarning": "Projected month-end budget overflow by {amount}",
+  "@budgetForecastWarning": {
+    "placeholders": {
+      "amount": { "type": "String" }
+    }
+  },
+
+  "analyticsTitle": "Analytics & Reports",
+  "analyticsSpendingBreakdown": "Spending Breakdown",
+  "analyticsCashflowTrend": "Cashflow Trend",
+  "analyticsSavingsRate": "Savings Rate",
+  "analyticsNetSavings": "Net Savings",
+
+  "subscriptionTitle": "Subscriptions & Recurring",
+  "subscriptionMonthlyBurden": "Monthly Subscription Cost",
+  "subscriptionDaysRemaining": "{days} days left",
+  "@subscriptionDaysRemaining": {
+    "placeholders": {
+      "days": { "type": "int" }
+    }
+  },
+
+  "profileTitle": "Profile & Settings",
+  "profileSyncStatus": "Data Sync",
+  "profileSyncNow": "Sync Now",
+  "profileExportCsv": "Export to CSV",
+  "profileExportJson": "Export to JSON",
+  "profileDarkMode": "Dark Mode",
+  "profileCurrency": "Primary Currency",
+  "profileLogout": "Log Out"
+}

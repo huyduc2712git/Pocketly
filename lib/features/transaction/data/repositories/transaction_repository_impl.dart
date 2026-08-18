@@ -14,13 +14,19 @@ class TransactionRepositoryImpl implements TransactionRepository {
   TransactionRepositoryImpl({required this.db});
 
   @override
-  Stream<List<TransactionEntity>> watchTransactions({TransactionFilter? filter}) {
+  Stream<List<TransactionEntity>> watchTransactions({
+    TransactionFilter? filter,
+  }) {
     final query = _buildJoinedQuery(filter);
-    return query.watch().map((rows) => rows.map(_mapJoinedRowToEntity).toList());
+    return query.watch().map(
+      (rows) => rows.map(_mapJoinedRowToEntity).toList(),
+    );
   }
 
   @override
-  Future<Result<List<TransactionEntity>>> getTransactions({TransactionFilter? filter}) async {
+  Future<Result<List<TransactionEntity>>> getTransactions({
+    TransactionFilter? filter,
+  }) async {
     try {
       final query = _buildJoinedQuery(filter);
       final rows = await query.get();
@@ -33,10 +39,13 @@ class TransactionRepositoryImpl implements TransactionRepository {
   @override
   Future<Result<TransactionEntity>> getTransactionById(String id) async {
     try {
-      final query = _buildJoinedQuery(null)..where(db.transactionsTable.id.equals(id));
+      final query = _buildJoinedQuery(null)
+        ..where(db.transactionsTable.id.equals(id));
       final rows = await query.get();
       if (rows.isEmpty) {
-        return const Result.failure(DatabaseFailure(message: 'Không tìm thấy giao dịch'));
+        return const Result.failure(
+          DatabaseFailure(message: 'Không tìm thấy giao dịch'),
+        );
       }
       return Result.success(_mapJoinedRowToEntity(rows.first));
     } catch (e) {
@@ -45,10 +54,14 @@ class TransactionRepositoryImpl implements TransactionRepository {
   }
 
   @override
-  Future<Result<TransactionEntity>> addTransaction(TransactionEntity transaction) async {
+  Future<Result<TransactionEntity>> addTransaction(
+    TransactionEntity transaction,
+  ) async {
     try {
       final now = DateTime.now();
-      final id = transaction.id.isNotEmpty ? transaction.id : IdGenerator.generate();
+      final id = transaction.id.isNotEmpty
+          ? transaction.id
+          : IdGenerator.generate();
 
       await db.transaction(() async {
         // 1. Update wallet balance(s)
@@ -60,7 +73,9 @@ class TransactionRepositoryImpl implements TransactionRepository {
         );
 
         // 2. Insert transaction
-        await db.into(db.transactionsTable).insert(
+        await db
+            .into(db.transactionsTable)
+            .insert(
               TransactionsTableCompanion.insert(
                 id: id,
                 type: transaction.type,
@@ -79,13 +94,16 @@ class TransactionRepositoryImpl implements TransactionRepository {
             );
 
         // 3. Queue for sync
-        await db.into(db.syncQueueTable).insert(
+        await db
+            .into(db.syncQueueTable)
+            .insert(
               SyncQueueTableCompanion.insert(
                 id: IdGenerator.generate(),
                 entityType: 'transaction',
                 entityId: id,
                 operation: 'create',
-                payload: '{"id": "$id", "amount": ${transaction.amount}, "type": "${transaction.type}"}',
+                payload:
+                    '{"id": "$id", "amount": ${transaction.amount}, "type": "${transaction.type}"}',
                 status: const Value('pending'),
                 createdAt: Value(now),
                 updatedAt: Value(now),
@@ -93,7 +111,9 @@ class TransactionRepositoryImpl implements TransactionRepository {
             );
       });
 
-      return Result.success(transaction.copyWith(id: id, createdAt: now, updatedAt: now));
+      return Result.success(
+        transaction.copyWith(id: id, createdAt: now, updatedAt: now),
+      );
     } catch (e) {
       return Result.failure(ErrorHandler.handleException(e));
     }
@@ -125,7 +145,9 @@ class TransactionRepositoryImpl implements TransactionRepository {
         );
 
         // 3. Update transaction row
-        await (db.update(db.transactionsTable)..where((tbl) => tbl.id.equals(newTransaction.id))).write(
+        await (db.update(
+          db.transactionsTable,
+        )..where((tbl) => tbl.id.equals(newTransaction.id))).write(
           TransactionsTableCompanion(
             type: Value(newTransaction.type),
             amount: Value(newTransaction.amount),
@@ -142,13 +164,16 @@ class TransactionRepositoryImpl implements TransactionRepository {
         );
 
         // 4. Queue for sync
-        await db.into(db.syncQueueTable).insert(
+        await db
+            .into(db.syncQueueTable)
+            .insert(
               SyncQueueTableCompanion.insert(
                 id: IdGenerator.generate(),
                 entityType: 'transaction',
                 entityId: newTransaction.id,
                 operation: 'update',
-                payload: '{"id": "${newTransaction.id}", "amount": ${newTransaction.amount}}',
+                payload:
+                    '{"id": "${newTransaction.id}", "amount": ${newTransaction.amount}}',
                 status: const Value('pending'),
                 createdAt: Value(now),
                 updatedAt: Value(now),
@@ -177,10 +202,14 @@ class TransactionRepositoryImpl implements TransactionRepository {
         );
 
         // 2. Delete transaction row
-        await (db.delete(db.transactionsTable)..where((tbl) => tbl.id.equals(transaction.id))).go();
+        await (db.delete(
+          db.transactionsTable,
+        )..where((tbl) => tbl.id.equals(transaction.id))).go();
 
         // 3. Queue for sync
-        await db.into(db.syncQueueTable).insert(
+        await db
+            .into(db.syncQueueTable)
+            .insert(
               SyncQueueTableCompanion.insert(
                 id: IdGenerator.generate(),
                 entityType: 'transaction',
@@ -210,24 +239,52 @@ class TransactionRepositoryImpl implements TransactionRepository {
   }) async {
     final now = DateTime.now();
     if (type == 'expense') {
-      final wallet = await (db.select(db.walletsTable)..where((tbl) => tbl.id.equals(walletId))).getSingle();
-      await (db.update(db.walletsTable)..where((tbl) => tbl.id.equals(walletId))).write(
-        WalletsTableCompanion(balance: Value(wallet.balance - amount), updatedAt: Value(now)),
+      final wallet = await (db.select(
+        db.walletsTable,
+      )..where((tbl) => tbl.id.equals(walletId))).getSingle();
+      await (db.update(
+        db.walletsTable,
+      )..where((tbl) => tbl.id.equals(walletId))).write(
+        WalletsTableCompanion(
+          balance: Value(wallet.balance - amount),
+          updatedAt: Value(now),
+        ),
       );
     } else if (type == 'income') {
-      final wallet = await (db.select(db.walletsTable)..where((tbl) => tbl.id.equals(walletId))).getSingle();
-      await (db.update(db.walletsTable)..where((tbl) => tbl.id.equals(walletId))).write(
-        WalletsTableCompanion(balance: Value(wallet.balance + amount), updatedAt: Value(now)),
+      final wallet = await (db.select(
+        db.walletsTable,
+      )..where((tbl) => tbl.id.equals(walletId))).getSingle();
+      await (db.update(
+        db.walletsTable,
+      )..where((tbl) => tbl.id.equals(walletId))).write(
+        WalletsTableCompanion(
+          balance: Value(wallet.balance + amount),
+          updatedAt: Value(now),
+        ),
       );
     } else if (type == 'transfer') {
-      final source = await (db.select(db.walletsTable)..where((tbl) => tbl.id.equals(walletId))).getSingle();
-      await (db.update(db.walletsTable)..where((tbl) => tbl.id.equals(walletId))).write(
-        WalletsTableCompanion(balance: Value(source.balance - amount), updatedAt: Value(now)),
+      final source = await (db.select(
+        db.walletsTable,
+      )..where((tbl) => tbl.id.equals(walletId))).getSingle();
+      await (db.update(
+        db.walletsTable,
+      )..where((tbl) => tbl.id.equals(walletId))).write(
+        WalletsTableCompanion(
+          balance: Value(source.balance - amount),
+          updatedAt: Value(now),
+        ),
       );
       if (toWalletId != null && toWalletId.isNotEmpty) {
-        final dest = await (db.select(db.walletsTable)..where((tbl) => tbl.id.equals(toWalletId))).getSingle();
-        await (db.update(db.walletsTable)..where((tbl) => tbl.id.equals(toWalletId))).write(
-          WalletsTableCompanion(balance: Value(dest.balance + amount), updatedAt: Value(now)),
+        final dest = await (db.select(
+          db.walletsTable,
+        )..where((tbl) => tbl.id.equals(toWalletId))).getSingle();
+        await (db.update(
+          db.walletsTable,
+        )..where((tbl) => tbl.id.equals(toWalletId))).write(
+          WalletsTableCompanion(
+            balance: Value(dest.balance + amount),
+            updatedAt: Value(now),
+          ),
         );
       }
     }
@@ -241,24 +298,52 @@ class TransactionRepositoryImpl implements TransactionRepository {
   }) async {
     final now = DateTime.now();
     if (type == 'expense') {
-      final wallet = await (db.select(db.walletsTable)..where((tbl) => tbl.id.equals(walletId))).getSingle();
-      await (db.update(db.walletsTable)..where((tbl) => tbl.id.equals(walletId))).write(
-        WalletsTableCompanion(balance: Value(wallet.balance + amount), updatedAt: Value(now)),
+      final wallet = await (db.select(
+        db.walletsTable,
+      )..where((tbl) => tbl.id.equals(walletId))).getSingle();
+      await (db.update(
+        db.walletsTable,
+      )..where((tbl) => tbl.id.equals(walletId))).write(
+        WalletsTableCompanion(
+          balance: Value(wallet.balance + amount),
+          updatedAt: Value(now),
+        ),
       );
     } else if (type == 'income') {
-      final wallet = await (db.select(db.walletsTable)..where((tbl) => tbl.id.equals(walletId))).getSingle();
-      await (db.update(db.walletsTable)..where((tbl) => tbl.id.equals(walletId))).write(
-        WalletsTableCompanion(balance: Value(wallet.balance - amount), updatedAt: Value(now)),
+      final wallet = await (db.select(
+        db.walletsTable,
+      )..where((tbl) => tbl.id.equals(walletId))).getSingle();
+      await (db.update(
+        db.walletsTable,
+      )..where((tbl) => tbl.id.equals(walletId))).write(
+        WalletsTableCompanion(
+          balance: Value(wallet.balance - amount),
+          updatedAt: Value(now),
+        ),
       );
     } else if (type == 'transfer') {
-      final source = await (db.select(db.walletsTable)..where((tbl) => tbl.id.equals(walletId))).getSingle();
-      await (db.update(db.walletsTable)..where((tbl) => tbl.id.equals(walletId))).write(
-        WalletsTableCompanion(balance: Value(source.balance + amount), updatedAt: Value(now)),
+      final source = await (db.select(
+        db.walletsTable,
+      )..where((tbl) => tbl.id.equals(walletId))).getSingle();
+      await (db.update(
+        db.walletsTable,
+      )..where((tbl) => tbl.id.equals(walletId))).write(
+        WalletsTableCompanion(
+          balance: Value(source.balance + amount),
+          updatedAt: Value(now),
+        ),
       );
       if (toWalletId != null && toWalletId.isNotEmpty) {
-        final dest = await (db.select(db.walletsTable)..where((tbl) => tbl.id.equals(toWalletId))).getSingle();
-        await (db.update(db.walletsTable)..where((tbl) => tbl.id.equals(toWalletId))).write(
-          WalletsTableCompanion(balance: Value(dest.balance - amount), updatedAt: Value(now)),
+        final dest = await (db.select(
+          db.walletsTable,
+        )..where((tbl) => tbl.id.equals(toWalletId))).getSingle();
+        await (db.update(
+          db.walletsTable,
+        )..where((tbl) => tbl.id.equals(toWalletId))).write(
+          WalletsTableCompanion(
+            balance: Value(dest.balance - amount),
+            updatedAt: Value(now),
+          ),
         );
       }
     }
@@ -271,9 +356,18 @@ class TransactionRepositoryImpl implements TransactionRepository {
     final destWallet = db.walletsTable.createAlias('destWallet');
 
     final query = db.select(db.transactionsTable).join([
-      leftOuterJoin(sourceWallet, sourceWallet.id.equalsExp(db.transactionsTable.walletId)),
-      leftOuterJoin(destWallet, destWallet.id.equalsExp(db.transactionsTable.toWalletId)),
-      leftOuterJoin(db.categoriesTable, db.categoriesTable.id.equalsExp(db.transactionsTable.categoryId)),
+      leftOuterJoin(
+        sourceWallet,
+        sourceWallet.id.equalsExp(db.transactionsTable.walletId),
+      ),
+      leftOuterJoin(
+        destWallet,
+        destWallet.id.equalsExp(db.transactionsTable.toWalletId),
+      ),
+      leftOuterJoin(
+        db.categoriesTable,
+        db.categoriesTable.id.equalsExp(db.transactionsTable.categoryId),
+      ),
     ]);
 
     if (filter != null) {
@@ -290,10 +384,18 @@ class TransactionRepositoryImpl implements TransactionRepository {
         query.where(db.transactionsTable.type.equals(filter.type!));
       }
       if (filter.startDate != null) {
-        query.where(db.transactionsTable.occurredAt.isBiggerOrEqualValue(filter.startDate!));
+        query.where(
+          db.transactionsTable.occurredAt.isBiggerOrEqualValue(
+            filter.startDate!,
+          ),
+        );
       }
       if (filter.endDate != null) {
-        query.where(db.transactionsTable.occurredAt.isSmallerOrEqualValue(filter.endDate!));
+        query.where(
+          db.transactionsTable.occurredAt.isSmallerOrEqualValue(
+            filter.endDate!,
+          ),
+        );
       }
       if (filter.searchQuery != null && filter.searchQuery!.isNotEmpty) {
         final term = '%${filter.searchQuery}%';
@@ -314,8 +416,12 @@ class TransactionRepositoryImpl implements TransactionRepository {
 
   TransactionEntity _mapJoinedRowToEntity(TypedResult row) {
     final tx = row.readTable(db.transactionsTable);
-    final sourceWallet = row.readTableOrNull(db.walletsTable.createAlias('sourceWallet'));
-    final destWallet = row.readTableOrNull(db.walletsTable.createAlias('destWallet'));
+    final sourceWallet = row.readTableOrNull(
+      db.walletsTable.createAlias('sourceWallet'),
+    );
+    final destWallet = row.readTableOrNull(
+      db.walletsTable.createAlias('destWallet'),
+    );
     final category = row.readTableOrNull(db.categoriesTable);
 
     return TransactionEntity(

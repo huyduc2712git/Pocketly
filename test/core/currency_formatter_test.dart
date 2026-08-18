@@ -5,13 +5,19 @@ void main() {
   group('CurrencyFormatter tests', () {
     test('Format VND with standard formatting', () {
       final formatted = CurrencyFormatter.format(350000);
-      expect(formatted.contains('350.000') || formatted.contains('350,000'), isTrue);
+      expect(
+        formatted.contains('350.000') || formatted.contains('350,000'),
+        isTrue,
+      );
       expect(formatted.contains('₫'), isTrue);
     });
 
     test('Format VND without symbol', () {
       final formatted = CurrencyFormatter.format(350000, showSymbol: false);
-      expect(formatted.contains('350.000') || formatted.contains('350,000'), isTrue);
+      expect(
+        formatted.contains('350.000') || formatted.contains('350,000'),
+        isTrue,
+      );
       expect(formatted.contains('₫'), isFalse);
     });
 

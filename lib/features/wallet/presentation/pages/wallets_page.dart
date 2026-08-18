@@ -60,7 +60,10 @@ class WalletsPage extends ConsumerWidget {
                     const SizedBox(height: 8),
                     Text(
                       '${wallets.where((w) => !w.isExcludedFromTotal).length} tài khoản đang tính vào tổng số dư',
-                      style: const TextStyle(color: Color(0xFFC7D2FE), fontSize: 12),
+                      style: const TextStyle(
+                        color: Color(0xFFC7D2FE),
+                        fontSize: 12,
+                      ),
                     ),
                   ],
                 ),
@@ -153,14 +156,20 @@ class _WalletListTile extends ConsumerWidget {
                     if (wallet.isExcludedFromTotal) ...[
                       const SizedBox(width: 6),
                       Container(
-                        padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 6,
+                          vertical: 2,
+                        ),
                         decoration: BoxDecoration(
                           color: AppColors.darkBorder,
                           borderRadius: BorderRadius.circular(4),
                         ),
                         child: const Text(
                           'Tách biệt',
-                          style: TextStyle(fontSize: 10, color: AppColors.darkTextSecondary),
+                          style: TextStyle(
+                            fontSize: 10,
+                            color: AppColors.darkTextSecondary,
+                          ),
                         ),
                       ),
                     ],
@@ -184,7 +193,11 @@ class _WalletListTile extends ConsumerWidget {
             fontWeight: FontWeight.w700,
           ),
           PopupMenuButton<String>(
-            icon: const Icon(Icons.more_vert_rounded, size: 18, color: AppColors.darkTextMuted),
+            icon: const Icon(
+              Icons.more_vert_rounded,
+              size: 18,
+              color: AppColors.darkTextMuted,
+            ),
             onSelected: (val) {
               if (val == 'delete') {
                 _confirmDelete(context, ref);
@@ -195,7 +208,11 @@ class _WalletListTile extends ConsumerWidget {
                 value: 'delete',
                 child: Row(
                   children: [
-                    Icon(Icons.delete_outline_rounded, color: AppColors.error, size: 18),
+                    Icon(
+                      Icons.delete_outline_rounded,
+                      color: AppColors.error,
+                      size: 18,
+                    ),
                     SizedBox(width: 8),
                     Text('Xóa ví', style: TextStyle(color: AppColors.error)),
                   ],
@@ -213,7 +230,9 @@ class _WalletListTile extends ConsumerWidget {
       context: context,
       builder: (ctx) => AlertDialog(
         title: const Text('Xác nhận xóa ví?'),
-        content: Text('Bạn có chắc muốn xóa ví "${wallet.name}" không? Các giao dịch cũ vẫn được lưu trữ an toàn.'),
+        content: Text(
+          'Bạn có chắc muốn xóa ví "${wallet.name}" không? Các giao dịch cũ vẫn được lưu trữ an toàn.',
+        ),
         actions: [
           TextButton(
             onPressed: () => Navigator.of(ctx).pop(),
@@ -222,7 +241,9 @@ class _WalletListTile extends ConsumerWidget {
           TextButton(
             onPressed: () {
               Navigator.of(ctx).pop();
-              ref.read(walletsControllerProvider.notifier).deleteWallet(wallet.id);
+              ref
+                  .read(walletsControllerProvider.notifier)
+                  .deleteWallet(wallet.id);
               context.showSnackBar('Đã xóa ví "${wallet.name}"');
             },
             child: const Text('Xóa', style: TextStyle(color: AppColors.error)),

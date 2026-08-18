@@ -42,7 +42,10 @@ class TransactionsPage extends ConsumerWidget {
         children: [
           // Filter Chips Row
           Padding(
-            padding: const EdgeInsets.symmetric(horizontal: AppSpacing.md, vertical: AppSpacing.xs),
+            padding: const EdgeInsets.symmetric(
+              horizontal: AppSpacing.md,
+              vertical: AppSpacing.xs,
+            ),
             child: SingleChildScrollView(
               scrollDirection: Axis.horizontal,
               child: Row(
@@ -50,44 +53,55 @@ class TransactionsPage extends ConsumerWidget {
                   _buildFilterChip(
                     label: 'Tất cả loại',
                     isSelected: currentFilter.type == null,
-                    onTap: () => ref.read(transactionFilterProvider.notifier).state =
-                        currentFilter.copyWith(clearType: true),
+                    onTap: () =>
+                        ref.read(transactionFilterProvider.notifier).state =
+                            currentFilter.copyWith(clearType: true),
                   ),
                   const SizedBox(width: AppSpacing.xs),
                   _buildFilterChip(
                     label: 'Khoản chi',
                     isSelected: currentFilter.type == 'expense',
-                    onTap: () => ref.read(transactionFilterProvider.notifier).state =
-                        currentFilter.copyWith(type: 'expense'),
+                    onTap: () =>
+                        ref.read(transactionFilterProvider.notifier).state =
+                            currentFilter.copyWith(type: 'expense'),
                   ),
                   const SizedBox(width: AppSpacing.xs),
                   _buildFilterChip(
                     label: 'Khoản thu',
                     isSelected: currentFilter.type == 'income',
-                    onTap: () => ref.read(transactionFilterProvider.notifier).state =
-                        currentFilter.copyWith(type: 'income'),
+                    onTap: () =>
+                        ref.read(transactionFilterProvider.notifier).state =
+                            currentFilter.copyWith(type: 'income'),
                   ),
                   const SizedBox(width: AppSpacing.xs),
                   _buildFilterChip(
                     label: 'Chuyển tiền',
                     isSelected: currentFilter.type == 'transfer',
-                    onTap: () => ref.read(transactionFilterProvider.notifier).state =
-                        currentFilter.copyWith(type: 'transfer'),
+                    onTap: () =>
+                        ref.read(transactionFilterProvider.notifier).state =
+                            currentFilter.copyWith(type: 'transfer'),
                   ),
-                  if (walletsAsync.hasValue && walletsAsync.value!.isNotEmpty) ...[
+                  if (walletsAsync.hasValue &&
+                      walletsAsync.value!.isNotEmpty) ...[
                     const SizedBox(width: AppSpacing.xs),
-                    ...walletsAsync.value!.map((w) => Padding(
-                          padding: const EdgeInsets.only(right: AppSpacing.xs),
-                          child: _buildFilterChip(
-                            label: w.name,
-                            isSelected: currentFilter.walletId == w.id,
-                            onTap: () {
-                              final isCurrent = currentFilter.walletId == w.id;
-                              ref.read(transactionFilterProvider.notifier).state =
-                                  currentFilter.copyWith(walletId: isCurrent ? null : w.id, clearWallet: isCurrent);
-                            },
-                          ),
-                        )),
+                    ...walletsAsync.value!.map(
+                      (w) => Padding(
+                        padding: const EdgeInsets.only(right: AppSpacing.xs),
+                        child: _buildFilterChip(
+                          label: w.name,
+                          isSelected: currentFilter.walletId == w.id,
+                          onTap: () {
+                            final isCurrent = currentFilter.walletId == w.id;
+                            ref
+                                .read(transactionFilterProvider.notifier)
+                                .state = currentFilter.copyWith(
+                              walletId: isCurrent ? null : w.id,
+                              clearWallet: isCurrent,
+                            );
+                          },
+                        ),
+                      ),
+                    ),
                   ],
                 ],
               ),
@@ -98,15 +112,20 @@ class TransactionsPage extends ConsumerWidget {
           // Transactions List grouped by Day
           Expanded(
             child: transactionsAsync.when(
-              loading: () => const AppLoading(message: 'Đang tải sổ giao dịch...'),
+              loading: () =>
+                  const AppLoading(message: 'Đang tải sổ giao dịch...'),
               error: (err, _) => Center(child: Text('Lỗi: $err')),
               data: (transactions) {
                 if (transactions.isEmpty) {
                   return AppEmptyState(
                     title: 'Chưa có giao dịch nào',
-                    message: 'Nhấn nút "+" bên dưới để tạo khoản thu chi đầu tiên của bạn.',
+                    message:
+                        'Nhấn nút "+" bên dưới để tạo khoản thu chi đầu tiên của bạn.',
                     actionText: 'Thêm giao dịch ngay',
-                    onActionPressed: () => QuickAddTransactionSheet.show(context, initialType: QuickActionType.expense),
+                    onActionPressed: () => QuickAddTransactionSheet.show(
+                      context,
+                      initialType: QuickActionType.expense,
+                    ),
                   );
                 }
 
@@ -138,40 +157,70 @@ class TransactionsPage extends ConsumerWidget {
                           ),
                           const SizedBox(height: 4),
                           AppCard(
-                            padding: const EdgeInsets.symmetric(horizontal: AppSpacing.xs, vertical: AppSpacing.xs),
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: AppSpacing.xs,
+                              vertical: AppSpacing.xs,
+                            ),
                             child: Column(
                               children: [
-                                for (int i = 0; i < dayTransactions.length; i++) ...[
-                                  if (i > 0) const Divider(height: 1, indent: 56),
+                                for (
+                                  int i = 0;
+                                  i < dayTransactions.length;
+                                  i++
+                                ) ...[
+                                  if (i > 0)
+                                    const Divider(height: 1, indent: 56),
                                   Dismissible(
                                     key: ValueKey(dayTransactions[i].id),
                                     direction: DismissDirection.endToStart,
                                     background: Container(
                                       alignment: Alignment.centerRight,
-                                      padding: const EdgeInsets.symmetric(horizontal: 20),
+                                      padding: const EdgeInsets.symmetric(
+                                        horizontal: 20,
+                                      ),
                                       decoration: BoxDecoration(
                                         color: AppColors.error,
                                         borderRadius: BorderRadius.circular(8),
                                       ),
-                                      child: const Icon(Icons.delete_outline_rounded, color: Colors.white),
+                                      child: const Icon(
+                                        Icons.delete_outline_rounded,
+                                        color: Colors.white,
+                                      ),
                                     ),
-                                    confirmDismiss: (dir) => _confirmDelete(context, ref, dayTransactions[i]),
+                                    confirmDismiss: (dir) => _confirmDelete(
+                                      context,
+                                      ref,
+                                      dayTransactions[i],
+                                    ),
                                     child: TransactionTile(
-                                      title: dayTransactions[i].note?.isNotEmpty == true
+                                      title:
+                                          dayTransactions[i].note?.isNotEmpty ==
+                                              true
                                           ? dayTransactions[i].note!
                                           : (dayTransactions[i].categoryName ??
-                                              (dayTransactions[i].isTransfer ? 'Chuyển tiền' : 'Giao dịch')),
+                                                (dayTransactions[i].isTransfer
+                                                    ? 'Chuyển tiền'
+                                                    : 'Giao dịch')),
                                       subtitle: dayTransactions[i].categoryName,
                                       walletName: dayTransactions[i].walletName,
-                                      toWalletName: dayTransactions[i].toWalletName,
+                                      toWalletName:
+                                          dayTransactions[i].toWalletName,
                                       occurredAt: dayTransactions[i].occurredAt,
                                       amount: dayTransactions[i].amount,
                                       currency: dayTransactions[i].currency,
                                       type: dayTransactions[i].type,
-                                      icon: IconHelper.getIcon(dayTransactions[i].categoryIcon),
-                                      iconColor: IconHelper.getColor(dayTransactions[i].categoryColor),
+                                      icon: IconHelper.getIcon(
+                                        dayTransactions[i].categoryIcon,
+                                      ),
+                                      iconColor: IconHelper.getColor(
+                                        dayTransactions[i].categoryColor,
+                                      ),
                                       syncStatus: dayTransactions[i].syncStatus,
-                                      onTap: () => _showTransactionActions(context, ref, dayTransactions[i]),
+                                      onTap: () => _showTransactionActions(
+                                        context,
+                                        ref,
+                                        dayTransactions[i],
+                                      ),
                                     ),
                                   ),
                                 ],
@@ -191,10 +240,16 @@ class TransactionsPage extends ConsumerWidget {
     );
   }
 
-  Map<DateTime, List<TransactionEntity>> _groupTransactionsByDate(List<TransactionEntity> transactions) {
+  Map<DateTime, List<TransactionEntity>> _groupTransactionsByDate(
+    List<TransactionEntity> transactions,
+  ) {
     final Map<DateTime, List<TransactionEntity>> groups = {};
     for (final tx in transactions) {
-      final date = DateTime(tx.occurredAt.year, tx.occurredAt.month, tx.occurredAt.day);
+      final date = DateTime(
+        tx.occurredAt.year,
+        tx.occurredAt.month,
+        tx.occurredAt.day,
+      );
       if (!groups.containsKey(date)) {
         groups[date] = [];
       }
@@ -232,8 +287,13 @@ class TransactionsPage extends ConsumerWidget {
     );
   }
 
-  Widget _buildDayHeader(DateTime date, {double? totalSpent, double? totalEarned}) {
-    final title = '${date.toRelativeDate}, ${DateFormatter.formatFullDate(date)}';
+  Widget _buildDayHeader(
+    DateTime date, {
+    double? totalSpent,
+    double? totalEarned,
+  }) {
+    final title =
+        '${date.toRelativeDate}, ${DateFormatter.formatFullDate(date)}';
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 6),
       child: Row(
@@ -276,14 +336,21 @@ class TransactionsPage extends ConsumerWidget {
     );
   }
 
-  String totalIncomeString(double? total) => total != null && total > 0 ? total.toString() : '';
+  String totalIncomeString(double? total) =>
+      total != null && total > 0 ? total.toString() : '';
 
-  Future<bool> _confirmDelete(BuildContext context, WidgetRef ref, TransactionEntity transaction) async {
+  Future<bool> _confirmDelete(
+    BuildContext context,
+    WidgetRef ref,
+    TransactionEntity transaction,
+  ) async {
     final result = await showDialog<bool>(
       context: context,
       builder: (ctx) => AlertDialog(
         title: const Text('Xóa giao dịch này?'),
-        content: Text('Số tiền ${CurrencyFormatter.format(transaction.amount)} sẽ được tự động hoàn lại vào số dư ví tương ứng.'),
+        content: Text(
+          'Số tiền ${CurrencyFormatter.format(transaction.amount)} sẽ được tự động hoàn lại vào số dư ví tương ứng.',
+        ),
         actions: [
           TextButton(
             onPressed: () => Navigator.of(ctx).pop(false),
@@ -298,7 +365,9 @@ class TransactionsPage extends ConsumerWidget {
     );
 
     if (result == true) {
-      final success = await ref.read(transactionsControllerProvider.notifier).deleteTransaction(transaction);
+      final success = await ref
+          .read(transactionsControllerProvider.notifier)
+          .deleteTransaction(transaction);
       if (success && context.mounted) {
         context.showSnackBar('Đã xóa giao dịch và cập nhật lại số dư ví.');
       }
@@ -307,7 +376,11 @@ class TransactionsPage extends ConsumerWidget {
     return false;
   }
 
-  void _showTransactionActions(BuildContext context, WidgetRef ref, TransactionEntity transaction) {
+  void _showTransactionActions(
+    BuildContext context,
+    WidgetRef ref,
+    TransactionEntity transaction,
+  ) {
     showModalBottomSheet(
       context: context,
       shape: const RoundedRectangleBorder(
@@ -326,8 +399,17 @@ class TransactionsPage extends ConsumerWidget {
             ),
             const Divider(height: 1),
             ListTile(
-              leading: const Icon(Icons.delete_outline_rounded, color: AppColors.error),
-              title: const Text('Xóa giao dịch', style: TextStyle(color: AppColors.error, fontWeight: FontWeight.w600)),
+              leading: const Icon(
+                Icons.delete_outline_rounded,
+                color: AppColors.error,
+              ),
+              title: const Text(
+                'Xóa giao dịch',
+                style: TextStyle(
+                  color: AppColors.error,
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
               onTap: () {
                 Navigator.of(ctx).pop();
                 _confirmDelete(context, ref, transaction);

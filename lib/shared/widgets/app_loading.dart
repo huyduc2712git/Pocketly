@@ -6,11 +6,7 @@ class AppLoading extends StatelessWidget {
   final String? message;
   final double size;
 
-  const AppLoading({
-    super.key,
-    this.message,
-    this.size = 32.0,
-  });
+  const AppLoading({super.key, this.message, this.size = 32.0});
 
   @override
   Widget build(BuildContext context) {
@@ -34,7 +30,9 @@ class AppLoading extends StatelessWidget {
               message!,
               style: TextStyle(
                 fontSize: 14,
-                color: isDark ? AppColors.darkTextSecondary : AppColors.lightTextSecondary,
+                color: isDark
+                    ? AppColors.darkTextSecondary
+                    : AppColors.lightTextSecondary,
               ),
             ),
           ],

@@ -48,12 +48,16 @@ class AuthRepositoryImpl implements AuthRepository {
   }) async {
     try {
       if (email.isEmpty || password.isEmpty) {
-        return const Result.failure(ValidationFailure(message: 'Vui lòng nhập đầy đủ thông tin'));
+        return const Result.failure(
+          ValidationFailure(message: 'Vui lòng nhập đầy đủ thông tin'),
+        );
       }
 
       await storageService.saveAuthTokens(
-        accessToken: 'mock_jwt_access_token_${DateTime.now().millisecondsSinceEpoch}',
-        refreshToken: 'mock_jwt_refresh_token_${DateTime.now().millisecondsSinceEpoch}',
+        accessToken:
+            'mock_jwt_access_token_${DateTime.now().millisecondsSinceEpoch}',
+        refreshToken:
+            'mock_jwt_refresh_token_${DateTime.now().millisecondsSinceEpoch}',
       );
 
       final user = UserEntity(
@@ -104,7 +108,9 @@ class AuthRepositoryImpl implements AuthRepository {
   }) async {
     try {
       if (email.isEmpty || password.isEmpty || name.isEmpty) {
-        return const Result.failure(ValidationFailure(message: 'Vui lòng nhập đầy đủ thông tin'));
+        return const Result.failure(
+          ValidationFailure(message: 'Vui lòng nhập đầy đủ thông tin'),
+        );
       }
 
       await storageService.saveAuthTokens(

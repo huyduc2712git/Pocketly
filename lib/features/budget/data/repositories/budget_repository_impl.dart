@@ -22,17 +22,19 @@ class BudgetRepositoryImpl implements BudgetRepository {
           ..where((tbl) => tbl.month.equals(month) & tbl.year.equals(year)))
         .watchSingleOrNull()
         .asyncMap((budgetRow) async {
-      if (budgetRow == null) return null;
-      return _buildFullBudgetEntity(budgetRow);
-    });
+          if (budgetRow == null) return null;
+          return _buildFullBudgetEntity(budgetRow);
+        });
   }
 
   @override
   Future<Result<BudgetEntity?>> getBudgetForMonth(int month, int year) async {
     try {
-      final budgetRow = await (db.select(db.budgetsTable)
-            ..where((tbl) => tbl.month.equals(month) & tbl.year.equals(year)))
-          .getSingleOrNull();
+      final budgetRow =
+          await (db.select(db.budgetsTable)..where(
+                (tbl) => tbl.month.equals(month) & tbl.year.equals(year),
+              ))
+              .getSingleOrNull();
       if (budgetRow == null) {
         return const Result.success(null);
       }
@@ -55,23 +57,31 @@ class BudgetRepositoryImpl implements BudgetRepository {
       String budgetId = '';
 
       await db.transaction(() async {
-        final existing = await (db.select(db.budgetsTable)
-              ..where((tbl) => tbl.month.equals(month) & tbl.year.equals(year)))
-            .getSingleOrNull();
+        final existing =
+            await (db.select(db.budgetsTable)..where(
+                  (tbl) => tbl.month.equals(month) & tbl.year.equals(year),
+                ))
+                .getSingleOrNull();
 
         if (existing != null) {
           budgetId = existing.id;
-          await (db.update(db.budgetsTable)..where((tbl) => tbl.id.equals(budgetId))).write(
+          await (db.update(
+            db.budgetsTable,
+          )..where((tbl) => tbl.id.equals(budgetId))).write(
             BudgetsTableCompanion(
               totalAmount: Value(totalLimit),
               updatedAt: Value(now),
             ),
           );
           // Delete old budget items
-          await (db.delete(db.budgetItemsTable)..where((tbl) => tbl.budgetId.equals(budgetId))).go();
+          await (db.delete(
+            db.budgetItemsTable,
+          )..where((tbl) => tbl.budgetId.equals(budgetId))).go();
         } else {
           budgetId = IdGenerator.generate();
-          await db.into(db.budgetsTable).insert(
+          await db
+              .into(db.budgetsTable)
+              .insert(
                 BudgetsTableCompanion.insert(
                   id: budgetId,
                   name: 'Ngân sách $month/$year',
@@ -87,7 +97,9 @@ class BudgetRepositoryImpl implements BudgetRepository {
 
         // Insert new items
         for (final item in items) {
-          await db.into(db.budgetItemsTable).insert(
+          await db
+              .into(db.budgetItemsTable)
+              .insert(
                 BudgetItemsTableCompanion.insert(
                   id: IdGenerator.generate(),
                   budgetId: budgetId,
@@ -100,13 +112,16 @@ class BudgetRepositoryImpl implements BudgetRepository {
         }
 
         // Queue for sync
-        await db.into(db.syncQueueTable).insert(
+        await db
+            .into(db.syncQueueTable)
+            .insert(
               SyncQueueTableCompanion.insert(
                 id: IdGenerator.generate(),
                 entityType: 'budget',
                 entityId: budgetId,
                 operation: 'create_or_update',
-                payload: '{"id": "$budgetId", "totalAmount": $totalLimit, "month": $month, "year": $year}',
+                payload:
+                    '{"id": "$budgetId", "totalAmount": $totalLimit, "month": $month, "year": $year}',
                 status: const Value('pending'),
                 createdAt: Value(now),
                 updatedAt: Value(now),
@@ -125,8 +140,12 @@ class BudgetRepositoryImpl implements BudgetRepository {
   Future<Result<void>> deleteBudget(String id) async {
     try {
       await db.transaction(() async {
-        await (db.delete(db.budgetItemsTable)..where((tbl) => tbl.budgetId.equals(id))).go();
-        await (db.delete(db.budgetsTable)..where((tbl) => tbl.id.equals(id))).go();
+        await (db.delete(
+          db.budgetItemsTable,
+        )..where((tbl) => tbl.budgetId.equals(id))).go();
+        await (db.delete(
+          db.budgetsTable,
+        )..where((tbl) => tbl.id.equals(id))).go();
       });
       return const Result.success(null);
     } catch (e) {
@@ -136,21 +155,37 @@ class BudgetRepositoryImpl implements BudgetRepository {
 
   Future<BudgetEntity> _buildFullBudgetEntity(BudgetRow budgetRow) async {
     final startOfMonth = DateTime(budgetRow.year, budgetRow.month, 1);
-    final endOfMonth = DateTime(budgetRow.year, budgetRow.month + 1, 0, 23, 59, 59, 999);
+    final endOfMonth = DateTime(
+      budgetRow.year,
+      budgetRow.month + 1,
+      0,
+      23,
+      59,
+      59,
+      999,
+    );
 
     // Calculate total spent in month across all expenses (excluding transfers!)
-    final expenseTransactions = await (db.select(db.transactionsTable)
-          ..where((tbl) =>
-              tbl.type.equals('expense') &
-              tbl.occurredAt.isBiggerOrEqualValue(startOfMonth) &
-              tbl.occurredAt.isSmallerOrEqualValue(endOfMonth)))
-        .get();
+    final expenseTransactions =
+        await (db.select(db.transactionsTable)..where(
+              (tbl) =>
+                  tbl.type.equals('expense') &
+                  tbl.occurredAt.isBiggerOrEqualValue(startOfMonth) &
+                  tbl.occurredAt.isSmallerOrEqualValue(endOfMonth),
+            ))
+            .get();
 
-    final totalSpent = expenseTransactions.fold<double>(0.0, (sum, tx) => sum + tx.amount);
+    final totalSpent = expenseTransactions.fold<double>(
+      0.0,
+      (sum, tx) => sum + tx.amount,
+    );
 
     // Query budget items joined with categories
     final itemsQuery = db.select(db.budgetItemsTable).join([
-      innerJoin(db.categoriesTable, db.categoriesTable.id.equalsExp(db.budgetItemsTable.categoryId)),
+      innerJoin(
+        db.categoriesTable,
+        db.categoriesTable.id.equalsExp(db.budgetItemsTable.categoryId),
+      ),
     ])..where(db.budgetItemsTable.budgetId.equals(budgetRow.id));
 
     final itemRows = await itemsQuery.get();

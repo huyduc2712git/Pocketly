@@ -16,10 +16,18 @@ import 'route_names.dart';
 
 final rootNavigatorKey = GlobalKey<NavigatorState>(debugLabel: 'root');
 final _shellNavigatorHome = GlobalKey<NavigatorState>(debugLabel: 'shellHome');
-final _shellNavigatorTransactions = GlobalKey<NavigatorState>(debugLabel: 'shellTransactions');
-final _shellNavigatorBudget = GlobalKey<NavigatorState>(debugLabel: 'shellBudget');
-final _shellNavigatorAnalytics = GlobalKey<NavigatorState>(debugLabel: 'shellAnalytics');
-final _shellNavigatorProfile = GlobalKey<NavigatorState>(debugLabel: 'shellProfile');
+final _shellNavigatorTransactions = GlobalKey<NavigatorState>(
+  debugLabel: 'shellTransactions',
+);
+final _shellNavigatorBudget = GlobalKey<NavigatorState>(
+  debugLabel: 'shellBudget',
+);
+final _shellNavigatorAnalytics = GlobalKey<NavigatorState>(
+  debugLabel: 'shellAnalytics',
+);
+final _shellNavigatorProfile = GlobalKey<NavigatorState>(
+  debugLabel: 'shellProfile',
+);
 
 final routerProvider = Provider<GoRouter>((ref) {
   final authState = ref.watch(authControllerProvider);
@@ -33,7 +41,10 @@ final routerProvider = Provider<GoRouter>((ref) {
       final isLoggingIn = state.matchedLocation == RouteNames.login;
       final isOnboarding = state.matchedLocation == RouteNames.onboarding;
 
-      if (!isAuth && !isLoggingIn && !isOnboarding && authState is Unauthenticated) {
+      if (!isAuth &&
+          !isLoggingIn &&
+          !isOnboarding &&
+          authState is Unauthenticated) {
         return RouteNames.login;
       }
       if (isAuth && (isLoggingIn || isOnboarding)) {

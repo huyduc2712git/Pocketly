@@ -4,10 +4,7 @@ import '../../logger/app_logger.dart';
 class LoggingInterceptor extends Interceptor {
   @override
   void onRequest(RequestOptions options, RequestInterceptorHandler handler) {
-    AppLogger.debug(
-      '🌐 HTTP ${options.method} --> ${options.uri}',
-      tag: 'DIO',
-    );
+    AppLogger.debug('🌐 HTTP ${options.method} --> ${options.uri}', tag: 'DIO');
     return handler.next(options);
   }
 

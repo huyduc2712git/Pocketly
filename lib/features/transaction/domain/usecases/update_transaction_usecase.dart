@@ -25,14 +25,17 @@ class UpdateTransactionUseCase {
     }
 
     if (newTransaction.type == 'transfer') {
-      if (newTransaction.toWalletId == null || newTransaction.toWalletId!.isEmpty) {
+      if (newTransaction.toWalletId == null ||
+          newTransaction.toWalletId!.isEmpty) {
         return const Result.failure(
           ValidationFailure(message: 'Vui lòng chọn ví nhận tiền.'),
         );
       }
       if (newTransaction.walletId == newTransaction.toWalletId) {
         return const Result.failure(
-          ValidationFailure(message: 'Ví chuyển và ví nhận không được trùng nhau.'),
+          ValidationFailure(
+            message: 'Ví chuyển và ví nhận không được trùng nhau.',
+          ),
         );
       }
     }

@@ -27,7 +27,9 @@ void main() {
       expect(wasTapped, isTrue);
     });
 
-    testWidgets('Shows CircularProgressIndicator when isLoading is true', (tester) async {
+    testWidgets('Shows CircularProgressIndicator when isLoading is true', (
+      tester,
+    ) async {
       await tester.pumpWidget(
         MaterialApp(
           home: Scaffold(

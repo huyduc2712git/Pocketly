@@ -19,21 +19,24 @@ void main() {
       expect(folded, equals('success: finly_test_data'));
     });
 
-    test('Result.failure should store failure and evaluate isFailure to true', () {
-      const failure = NetworkFailure(message: 'Network connection failed');
-      const result = Result<String>.failure(failure);
+    test(
+      'Result.failure should store failure and evaluate isFailure to true',
+      () {
+        const failure = NetworkFailure(message: 'Network connection failed');
+        const result = Result<String>.failure(failure);
 
-      expect(result.isSuccess, isFalse);
-      expect(result.isFailure, isTrue);
-      expect(result.dataOrNull, isNull);
-      expect(result.failureOrNull, equals(failure));
+        expect(result.isSuccess, isFalse);
+        expect(result.isFailure, isTrue);
+        expect(result.dataOrNull, isNull);
+        expect(result.failureOrNull, equals(failure));
 
-      final folded = result.fold(
-        (failure) => 'error: ${failure.message}',
-        (data) => 'success: $data',
-      );
-      expect(folded, equals('error: Network connection failed'));
-    });
+        final folded = result.fold(
+          (failure) => 'error: ${failure.message}',
+          (data) => 'success: $data',
+        );
+        expect(folded, equals('error: Network connection failed'));
+      },
+    );
 
     test('Result.map should transform success value and propagate failure', () {
       const successResult = Result.success(100);

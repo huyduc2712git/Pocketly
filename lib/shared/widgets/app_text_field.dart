@@ -57,7 +57,9 @@ class AppTextField extends StatelessWidget {
             style: TextStyle(
               fontSize: 13,
               fontWeight: FontWeight.w600,
-              color: isDark ? AppColors.darkTextSecondary : AppColors.lightTextSecondary,
+              color: isDark
+                  ? AppColors.darkTextSecondary
+                  : AppColors.lightTextSecondary,
             ),
           ),
           const SizedBox(height: AppSpacing.xs),
@@ -75,7 +77,9 @@ class AppTextField extends StatelessWidget {
           maxLines: maxLines,
           inputFormatters: inputFormatters,
           style: TextStyle(
-            color: isDark ? AppColors.darkTextPrimary : AppColors.lightTextPrimary,
+            color: isDark
+                ? AppColors.darkTextPrimary
+                : AppColors.lightTextPrimary,
             fontSize: 15,
             fontWeight: FontWeight.w500,
           ),
@@ -92,15 +96,22 @@ class AppTextField extends StatelessWidget {
             ),
             border: OutlineInputBorder(
               borderRadius: AppRadius.borderMd,
-              borderSide: BorderSide(color: isDark ? AppColors.darkBorder : AppColors.lightBorder),
+              borderSide: BorderSide(
+                color: isDark ? AppColors.darkBorder : AppColors.lightBorder,
+              ),
             ),
             enabledBorder: OutlineInputBorder(
               borderRadius: AppRadius.borderMd,
-              borderSide: BorderSide(color: isDark ? AppColors.darkBorder : AppColors.lightBorder),
+              borderSide: BorderSide(
+                color: isDark ? AppColors.darkBorder : AppColors.lightBorder,
+              ),
             ),
             focusedBorder: OutlineInputBorder(
               borderRadius: AppRadius.borderMd,
-              borderSide: const BorderSide(color: AppColors.primary, width: 1.5),
+              borderSide: const BorderSide(
+                color: AppColors.primary,
+                width: 1.5,
+              ),
             ),
             errorBorder: OutlineInputBorder(
               borderRadius: AppRadius.borderMd,

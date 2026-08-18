@@ -21,7 +21,8 @@ enum InsightSeverity {
 
 class InsightEntity {
   final String id;
-  final String type; // 'category_spike', 'budget_risk', 'upcoming_subscription', 'savings_achievement', 'low_balance'
+  final String
+  type; // 'category_spike', 'budget_risk', 'upcoming_subscription', 'savings_achievement', 'low_balance'
   final String title;
   final String message;
   final InsightSeverity severity;

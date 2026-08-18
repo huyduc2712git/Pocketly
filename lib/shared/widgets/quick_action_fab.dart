@@ -8,10 +8,7 @@ enum QuickActionType { expense, income, transfer }
 class QuickActionFab extends StatefulWidget {
   final ValueChanged<QuickActionType> onActionSelected;
 
-  const QuickActionFab({
-    super.key,
-    required this.onActionSelected,
-  });
+  const QuickActionFab({super.key, required this.onActionSelected});
 
   @override
   State<QuickActionFab> createState() => _QuickActionFabState();
@@ -35,9 +32,10 @@ class _QuickActionFabState extends State<QuickActionFab>
       parent: _controller,
       curve: Curves.easeOutBack,
     );
-    _rotateAnimation = Tween<double>(begin: 0.0, end: 0.125).animate(
-      CurvedAnimation(parent: _controller, curve: Curves.easeInOut),
-    );
+    _rotateAnimation = Tween<double>(
+      begin: 0.0,
+      end: 0.125,
+    ).animate(CurvedAnimation(parent: _controller, curve: Curves.easeInOut));
   }
 
   @override
@@ -146,7 +144,10 @@ class _QuickActionFabState extends State<QuickActionFab>
         mainAxisAlignment: MainAxisAlignment.end,
         children: [
           Container(
-            padding: const EdgeInsets.symmetric(horizontal: AppSpacing.sm, vertical: 6),
+            padding: const EdgeInsets.symmetric(
+              horizontal: AppSpacing.sm,
+              vertical: 6,
+            ),
             decoration: BoxDecoration(
               color: AppColors.darkSurface,
               borderRadius: AppRadius.borderSm,

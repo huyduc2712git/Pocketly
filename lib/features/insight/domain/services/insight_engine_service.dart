@@ -91,7 +91,8 @@ class InsightEngineService {
         InsightEntity(
           id: IdGenerator.generate(),
           type: 'savings_achievement',
-          title: 'Xuất sắc! Tỷ lệ tiết kiệm ${thisMonthAnalytics.savingsRate.toStringAsFixed(1)}%',
+          title:
+              'Xuất sắc! Tỷ lệ tiết kiệm ${thisMonthAnalytics.savingsRate.toStringAsFixed(1)}%',
           message:
               'Bạn đang duy trì kỷ luật tài chính rất tốt! Đã tiết kiệm được ${CurrencyFormatter.format(thisMonthAnalytics.netSavings)} trong tháng này.',
           severity: InsightSeverity.positive,
@@ -102,7 +103,9 @@ class InsightEngineService {
 
     // --- Rule 5: Low Wallet Balance (<100k) ---
     for (final wallet in wallets) {
-      if (!wallet.isArchived && !wallet.isExcludedFromTotal && wallet.balance < 100000.0) {
+      if (!wallet.isArchived &&
+          !wallet.isExcludedFromTotal &&
+          wallet.balance < 100000.0) {
         insights.add(
           InsightEntity(
             id: IdGenerator.generate(),

@@ -46,7 +46,10 @@ class BudgetPage extends ConsumerWidget {
         children: [
           // Month Selector Header
           Container(
-            padding: const EdgeInsets.symmetric(horizontal: AppSpacing.md, vertical: AppSpacing.xs),
+            padding: const EdgeInsets.symmetric(
+              horizontal: AppSpacing.md,
+              vertical: AppSpacing.xs,
+            ),
             decoration: BoxDecoration(
               color: isDark ? AppColors.darkCard : AppColors.lightCard,
               border: Border(
@@ -61,17 +64,22 @@ class BudgetPage extends ConsumerWidget {
                 IconButton(
                   icon: const Icon(Icons.chevron_left_rounded),
                   onPressed: () {
-                    ref.read(selectedBudgetMonthProvider.notifier).state = monthState.prev();
+                    ref.read(selectedBudgetMonthProvider.notifier).state =
+                        monthState.prev();
                   },
                 ),
                 Text(
                   'Tháng ${monthState.month}, ${monthState.year}',
-                  style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w700),
+                  style: const TextStyle(
+                    fontSize: 16,
+                    fontWeight: FontWeight.w700,
+                  ),
                 ),
                 IconButton(
                   icon: const Icon(Icons.chevron_right_rounded),
                   onPressed: () {
-                    ref.read(selectedBudgetMonthProvider.notifier).state = monthState.next();
+                    ref.read(selectedBudgetMonthProvider.notifier).state =
+                        monthState.next();
                   },
                 ),
               ],
@@ -81,13 +89,15 @@ class BudgetPage extends ConsumerWidget {
           // Budget Content
           Expanded(
             child: budgetAsync.when(
-              loading: () => const AppLoading(message: 'Đang tải thông tin ngân sách...'),
+              loading: () =>
+                  const AppLoading(message: 'Đang tải thông tin ngân sách...'),
               error: (err, _) => Center(child: Text('Lỗi: $err')),
               data: (budget) {
                 if (budget == null || budget.totalLimit <= 0) {
                   return AppEmptyState(
                     title: 'Chưa thiết lập ngân sách',
-                    message: 'Đặt hạn mức chi tiêu cho Tháng ${monthState.month}/${monthState.year} để kiểm soát tài chính tốt hơn.',
+                    message:
+                        'Đặt hạn mức chi tiêu cho Tháng ${monthState.month}/${monthState.year} để kiểm soát tài chính tốt hơn.',
                     actionText: 'Thiết lập ngân sách ngay',
                     onActionPressed: () => SetBudgetSheet.show(
                       context,
@@ -133,13 +143,20 @@ class BudgetPage extends ConsumerWidget {
                                 ],
                               ),
                               Container(
-                                padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                                padding: const EdgeInsets.symmetric(
+                                  horizontal: 10,
+                                  vertical: 4,
+                                ),
                                 decoration: BoxDecoration(
                                   color: budget.isExceeded
                                       ? AppColors.error.withValues(alpha: 0.15)
                                       : budget.isWarning
-                                          ? AppColors.warning.withValues(alpha: 0.15)
-                                          : AppColors.income.withValues(alpha: 0.15),
+                                      ? AppColors.warning.withValues(
+                                          alpha: 0.15,
+                                        )
+                                      : AppColors.income.withValues(
+                                          alpha: 0.15,
+                                        ),
                                   borderRadius: AppRadius.borderSm,
                                 ),
                                 child: Text(
@@ -150,8 +167,8 @@ class BudgetPage extends ConsumerWidget {
                                     color: budget.isExceeded
                                         ? AppColors.error
                                         : budget.isWarning
-                                            ? AppColors.warning
-                                            : AppColors.income,
+                                        ? AppColors.warning
+                                        : AppColors.income,
                                   ),
                                 ),
                               ),
@@ -163,15 +180,20 @@ class BudgetPage extends ConsumerWidget {
                           ClipRRect(
                             borderRadius: BorderRadius.circular(6),
                             child: LinearProgressIndicator(
-                              value: (budget.progressPercentage / 100).clamp(0.0, 1.0),
+                              value: (budget.progressPercentage / 100).clamp(
+                                0.0,
+                                1.0,
+                              ),
                               minHeight: 10,
-                              backgroundColor: isDark ? AppColors.darkBorder : AppColors.lightBorder,
+                              backgroundColor: isDark
+                                  ? AppColors.darkBorder
+                                  : AppColors.lightBorder,
                               valueColor: AlwaysStoppedAnimation<Color>(
                                 budget.isExceeded
                                     ? AppColors.error
                                     : budget.isWarning
-                                        ? AppColors.warning
-                                        : AppColors.primary,
+                                    ? AppColors.warning
+                                    : AppColors.primary,
                               ),
                             ),
                           ),
@@ -180,8 +202,18 @@ class BudgetPage extends ConsumerWidget {
                           Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
-                              _buildMetricItem('Đã chi', budget.spentAmount, AppColors.expense),
-                              _buildMetricItem('Còn lại', budget.remainingBudget, budget.remainingBudget >= 0 ? AppColors.income : AppColors.error),
+                              _buildMetricItem(
+                                'Đã chi',
+                                budget.spentAmount,
+                                AppColors.expense,
+                              ),
+                              _buildMetricItem(
+                                'Còn lại',
+                                budget.remainingBudget,
+                                budget.remainingBudget >= 0
+                                    ? AppColors.income
+                                    : AppColors.error,
+                              ),
                             ],
                           ),
                         ],
@@ -210,7 +242,9 @@ class BudgetPage extends ConsumerWidget {
                                   forecast.isOverBudgetRisk
                                       ? Icons.warning_amber_rounded
                                       : Icons.auto_graph_rounded,
-                                  color: forecast.isOverBudgetRisk ? AppColors.error : AppColors.primaryLight,
+                                  color: forecast.isOverBudgetRisk
+                                      ? AppColors.error
+                                      : AppColors.primaryLight,
                                   size: 20,
                                 ),
                                 const SizedBox(width: 8),
@@ -221,7 +255,9 @@ class BudgetPage extends ConsumerWidget {
                                   style: TextStyle(
                                     fontSize: 14,
                                     fontWeight: FontWeight.w700,
-                                    color: forecast.isOverBudgetRisk ? AppColors.error : AppColors.primaryLight,
+                                    color: forecast.isOverBudgetRisk
+                                        ? AppColors.error
+                                        : AppColors.primaryLight,
                                   ),
                                 ),
                               ],
@@ -234,7 +270,9 @@ class BudgetPage extends ConsumerWidget {
                               style: TextStyle(
                                 fontSize: 12,
                                 height: 1.4,
-                                color: isDark ? AppColors.darkTextPrimary : AppColors.lightTextPrimary,
+                                color: isDark
+                                    ? AppColors.darkTextPrimary
+                                    : AppColors.lightTextPrimary,
                               ),
                             ),
                           ],
@@ -276,7 +314,10 @@ class BudgetPage extends ConsumerWidget {
                         child: Center(
                           child: Text(
                             'Chưa thiết lập hạn mức riêng cho danh mục nào.',
-                            style: TextStyle(color: AppColors.darkTextSecondary, fontSize: 13),
+                            style: TextStyle(
+                              color: AppColors.darkTextSecondary,
+                              fontSize: 13,
+                            ),
                           ),
                         ),
                       )
@@ -289,7 +330,9 @@ class BudgetPage extends ConsumerWidget {
                             spent: item.spentAmount,
                             budgetAmount: item.limitAmount,
                             icon: IconHelper.getIcon(item.categoryIcon),
-                            categoryColor: IconHelper.getColor(item.categoryColor),
+                            categoryColor: IconHelper.getColor(
+                              item.categoryColor,
+                            ),
                           ),
                         );
                       }),
@@ -309,7 +352,10 @@ class BudgetPage extends ConsumerWidget {
       children: [
         Text(
           title,
-          style: const TextStyle(fontSize: 12, color: AppColors.darkTextSecondary),
+          style: const TextStyle(
+            fontSize: 12,
+            color: AppColors.darkTextSecondary,
+          ),
         ),
         const SizedBox(height: 2),
         AmountText(

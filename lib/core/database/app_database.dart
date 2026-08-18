@@ -37,9 +37,7 @@ class AppDatabase extends _$AppDatabase {
   static QueryExecutor _openConnection() {
     return driftDatabase(
       name: DbConstants.databaseName,
-      native: const DriftNativeOptions(
-        shareAcrossIsolates: true,
-      ),
+      native: const DriftNativeOptions(shareAcrossIsolates: true),
     );
   }
 

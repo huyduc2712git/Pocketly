@@ -13,15 +13,20 @@ class DioClient {
     Dio? dio,
     required SecureStorageService storageService,
     String baseUrl = ApiEndpoints.baseUrl,
-  }) : _dio = dio ??
-            Dio(
-              BaseOptions(
-                baseUrl: baseUrl,
-                connectTimeout: const Duration(milliseconds: AppConstants.connectTimeoutMs),
-                receiveTimeout: const Duration(milliseconds: AppConstants.receiveTimeoutMs),
-                responseType: ResponseType.json,
-              ),
-            ) {
+  }) : _dio =
+           dio ??
+           Dio(
+             BaseOptions(
+               baseUrl: baseUrl,
+               connectTimeout: const Duration(
+                 milliseconds: AppConstants.connectTimeoutMs,
+               ),
+               receiveTimeout: const Duration(
+                 milliseconds: AppConstants.receiveTimeoutMs,
+               ),
+               responseType: ResponseType.json,
+             ),
+           ) {
     _dio.interceptors.addAll([
       AuthInterceptor(storageService: storageService),
       LoggingInterceptor(),

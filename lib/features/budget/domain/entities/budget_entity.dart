@@ -22,7 +22,8 @@ class BudgetItemEntity {
   double get progressPercentage =>
       limitAmount > 0 ? (spentAmount / limitAmount) * 100 : 0.0;
 
-  bool get isWarning => progressPercentage >= 80.0 && progressPercentage < 100.0;
+  bool get isWarning =>
+      progressPercentage >= 80.0 && progressPercentage < 100.0;
   bool get isExceeded => progressPercentage >= 100.0;
   double get remainingAmount => limitAmount - spentAmount;
 
@@ -53,7 +54,8 @@ class BudgetForecast {
   final double dailyAverage;
   final double projectedMonthEndExpense;
   final bool isOverBudgetRisk;
-  final double projectedVariance; // positive if over budget, negative if within budget
+  final double
+  projectedVariance; // positive if over budget, negative if within budget
   final int daysPassed;
   final int daysInMonth;
 
@@ -97,7 +99,8 @@ class BudgetEntity {
   double get remainingBudget => totalLimit - spentAmount;
   double get progressPercentage =>
       totalLimit > 0 ? (spentAmount / totalLimit) * 100 : 0.0;
-  bool get isWarning => progressPercentage >= 80.0 && progressPercentage < 100.0;
+  bool get isWarning =>
+      progressPercentage >= 80.0 && progressPercentage < 100.0;
   bool get isExceeded => progressPercentage >= 100.0;
 
   BudgetEntity copyWith({

@@ -7,7 +7,11 @@ class BudgetsTable extends Table {
   String get tableName => 'budgets';
 
   TextColumn get id => text()();
-  TextColumn get userId => text().nullable().references(UsersTable, #id, onDelete: KeyAction.cascade)();
+  TextColumn get userId => text().nullable().references(
+    UsersTable,
+    #id,
+    onDelete: KeyAction.cascade,
+  )();
   TextColumn get name => text().withLength(min: 1, max: 100)();
   IntColumn get month => integer()(); // 1 - 12
   IntColumn get year => integer()();

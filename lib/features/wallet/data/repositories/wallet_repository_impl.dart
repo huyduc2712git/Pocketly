@@ -42,10 +42,11 @@ class WalletRepositoryImpl implements WalletRepository {
   @override
   Future<Result<List<WalletEntity>>> getWallets() async {
     try {
-      final rows = await (db.select(db.walletsTable)
-            ..where((tbl) => tbl.isArchived.equals(false))
-            ..orderBy([(t) => OrderingTerm(expression: t.createdAt)]))
-          .get();
+      final rows =
+          await (db.select(db.walletsTable)
+                ..where((tbl) => tbl.isArchived.equals(false))
+                ..orderBy([(t) => OrderingTerm(expression: t.createdAt)]))
+              .get();
       return Result.success(rows.map(_toEntity).toList());
     } catch (e) {
       return Result.failure(ErrorHandler.handleException(e));
@@ -55,10 +56,13 @@ class WalletRepositoryImpl implements WalletRepository {
   @override
   Future<Result<WalletEntity>> getWalletById(String id) async {
     try {
-      final row = await (db.select(db.walletsTable)..where((tbl) => tbl.id.equals(id)))
-          .getSingleOrNull();
+      final row = await (db.select(
+        db.walletsTable,
+      )..where((tbl) => tbl.id.equals(id))).getSingleOrNull();
       if (row == null) {
-        return const Result.failure(DatabaseFailure(message: 'Không tìm thấy ví tiền'));
+        return const Result.failure(
+          DatabaseFailure(message: 'Không tìm thấy ví tiền'),
+        );
       }
       return Result.success(_toEntity(row));
     } catch (e) {
@@ -89,13 +93,16 @@ class WalletRepositoryImpl implements WalletRepository {
 
       await db.transaction(() async {
         await db.into(db.walletsTable).insert(companion);
-        await db.into(db.syncQueueTable).insert(
+        await db
+            .into(db.syncQueueTable)
+            .insert(
               SyncQueueTableCompanion.insert(
                 id: IdGenerator.generate(),
                 entityType: 'wallet',
                 entityId: id,
                 operation: 'create',
-                payload: '{"id": "$id", "name": "${wallet.name}", "balance": ${wallet.balance}}',
+                payload:
+                    '{"id": "$id", "name": "${wallet.name}", "balance": ${wallet.balance}}',
                 status: const Value('pending'),
                 createdAt: Value(now),
                 updatedAt: Value(now),
@@ -103,7 +110,9 @@ class WalletRepositoryImpl implements WalletRepository {
             );
       });
 
-      return Result.success(wallet.copyWith(id: id, createdAt: now, updatedAt: now));
+      return Result.success(
+        wallet.copyWith(id: id, createdAt: now, updatedAt: now),
+      );
     } catch (e) {
       return Result.failure(ErrorHandler.handleException(e));
     }
@@ -114,7 +123,9 @@ class WalletRepositoryImpl implements WalletRepository {
     try {
       final now = DateTime.now();
       await db.transaction(() async {
-        await (db.update(db.walletsTable)..where((tbl) => tbl.id.equals(wallet.id))).write(
+        await (db.update(
+          db.walletsTable,
+        )..where((tbl) => tbl.id.equals(wallet.id))).write(
           WalletsTableCompanion(
             name: Value(wallet.name),
             type: Value(wallet.type.name),
@@ -127,7 +138,9 @@ class WalletRepositoryImpl implements WalletRepository {
           ),
         );
 
-        await db.into(db.syncQueueTable).insert(
+        await db
+            .into(db.syncQueueTable)
+            .insert(
               SyncQueueTableCompanion.insert(
                 id: IdGenerator.generate(),
                 entityType: 'wallet',
@@ -152,14 +165,18 @@ class WalletRepositoryImpl implements WalletRepository {
     try {
       final now = DateTime.now();
       await db.transaction(() async {
-        await (db.update(db.walletsTable)..where((tbl) => tbl.id.equals(id))).write(
+        await (db.update(
+          db.walletsTable,
+        )..where((tbl) => tbl.id.equals(id))).write(
           WalletsTableCompanion(
             isArchived: const Value(true),
             updatedAt: Value(now),
           ),
         );
 
-        await db.into(db.syncQueueTable).insert(
+        await db
+            .into(db.syncQueueTable)
+            .insert(
               SyncQueueTableCompanion.insert(
                 id: IdGenerator.generate(),
                 entityType: 'wallet',
@@ -182,9 +199,13 @@ class WalletRepositoryImpl implements WalletRepository {
   @override
   Future<Result<double>> getTotalNetWorth() async {
     try {
-      final wallets = await (db.select(db.walletsTable)
-            ..where((tbl) => tbl.isArchived.equals(false) & tbl.isExcludedFromTotal.equals(false)))
-          .get();
+      final wallets =
+          await (db.select(db.walletsTable)..where(
+                (tbl) =>
+                    tbl.isArchived.equals(false) &
+                    tbl.isExcludedFromTotal.equals(false),
+              ))
+              .get();
       final total = wallets.fold<double>(0.0, (sum, w) => sum + w.balance);
       return Result.success(total);
     } catch (e) {

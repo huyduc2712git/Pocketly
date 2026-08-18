@@ -43,7 +43,8 @@ class CategoryPickerSheet extends ConsumerStatefulWidget {
   }
 
   @override
-  ConsumerState<CategoryPickerSheet> createState() => _CategoryPickerSheetState();
+  ConsumerState<CategoryPickerSheet> createState() =>
+      _CategoryPickerSheetState();
 }
 
 class _CategoryPickerSheetState extends ConsumerState<CategoryPickerSheet> {
@@ -93,7 +94,11 @@ class _CategoryPickerSheetState extends ConsumerState<CategoryPickerSheet> {
                       : (isDark ? AppColors.darkCard : AppColors.lightCard),
                   borderRadius: AppRadius.borderMd,
                   border: Border.all(
-                    color: isSelected ? color : (isDark ? AppColors.darkBorder : AppColors.lightBorder),
+                    color: isSelected
+                        ? color
+                        : (isDark
+                              ? AppColors.darkBorder
+                              : AppColors.lightBorder),
                     width: isSelected ? 2 : 1,
                   ),
                 ),
@@ -115,8 +120,12 @@ class _CategoryPickerSheetState extends ConsumerState<CategoryPickerSheet> {
                       textAlign: TextAlign.center,
                       style: TextStyle(
                         fontSize: 11,
-                        fontWeight: isSelected ? FontWeight.w700 : FontWeight.w500,
-                        color: isDark ? AppColors.darkTextPrimary : AppColors.lightTextPrimary,
+                        fontWeight: isSelected
+                            ? FontWeight.w700
+                            : FontWeight.w500,
+                        color: isDark
+                            ? AppColors.darkTextPrimary
+                            : AppColors.lightTextPrimary,
                       ),
                       maxLines: 2,
                       overflow: TextOverflow.ellipsis,

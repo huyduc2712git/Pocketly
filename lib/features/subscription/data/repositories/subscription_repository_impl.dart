@@ -29,13 +29,19 @@ class SubscriptionRepositoryImpl implements SubscriptionRepository {
   }
 
   @override
-  Future<Result<SubscriptionEntity>> createSubscription(SubscriptionEntity subscription) async {
+  Future<Result<SubscriptionEntity>> createSubscription(
+    SubscriptionEntity subscription,
+  ) async {
     try {
       final now = DateTime.now();
-      final id = subscription.id.isNotEmpty ? subscription.id : IdGenerator.generate();
+      final id = subscription.id.isNotEmpty
+          ? subscription.id
+          : IdGenerator.generate();
 
       await db.transaction(() async {
-        await db.into(db.subscriptionsTable).insert(
+        await db
+            .into(db.subscriptionsTable)
+            .insert(
               SubscriptionsTableCompanion.insert(
                 id: id,
                 name: subscription.name,
@@ -53,13 +59,16 @@ class SubscriptionRepositoryImpl implements SubscriptionRepository {
               ),
             );
 
-        await db.into(db.syncQueueTable).insert(
+        await db
+            .into(db.syncQueueTable)
+            .insert(
               SyncQueueTableCompanion.insert(
                 id: IdGenerator.generate(),
                 entityType: 'subscription',
                 entityId: id,
                 operation: 'create',
-                payload: '{"id": "$id", "name": "${subscription.name}", "amount": ${subscription.amount}}',
+                payload:
+                    '{"id": "$id", "name": "${subscription.name}", "amount": ${subscription.amount}}',
                 status: const Value('pending'),
                 createdAt: Value(now),
                 updatedAt: Value(now),
@@ -67,19 +76,25 @@ class SubscriptionRepositoryImpl implements SubscriptionRepository {
             );
       });
 
-      return Result.success(subscription.copyWith(id: id, createdAt: now, updatedAt: now));
+      return Result.success(
+        subscription.copyWith(id: id, createdAt: now, updatedAt: now),
+      );
     } catch (e) {
       return Result.failure(ErrorHandler.handleException(e));
     }
   }
 
   @override
-  Future<Result<SubscriptionEntity>> updateSubscription(SubscriptionEntity subscription) async {
+  Future<Result<SubscriptionEntity>> updateSubscription(
+    SubscriptionEntity subscription,
+  ) async {
     try {
       final now = DateTime.now();
 
       await db.transaction(() async {
-        await (db.update(db.subscriptionsTable)..where((tbl) => tbl.id.equals(subscription.id))).write(
+        await (db.update(
+          db.subscriptionsTable,
+        )..where((tbl) => tbl.id.equals(subscription.id))).write(
           SubscriptionsTableCompanion(
             name: Value(subscription.name),
             amount: Value(subscription.amount),
@@ -95,7 +110,9 @@ class SubscriptionRepositoryImpl implements SubscriptionRepository {
           ),
         );
 
-        await db.into(db.syncQueueTable).insert(
+        await db
+            .into(db.syncQueueTable)
+            .insert(
               SyncQueueTableCompanion.insert(
                 id: IdGenerator.generate(),
                 entityType: 'subscription',
@@ -120,8 +137,12 @@ class SubscriptionRepositoryImpl implements SubscriptionRepository {
     try {
       final now = DateTime.now();
       await db.transaction(() async {
-        await (db.delete(db.subscriptionsTable)..where((tbl) => tbl.id.equals(id))).go();
-        await db.into(db.syncQueueTable).insert(
+        await (db.delete(
+          db.subscriptionsTable,
+        )..where((tbl) => tbl.id.equals(id))).go();
+        await db
+            .into(db.syncQueueTable)
+            .insert(
               SyncQueueTableCompanion.insert(
                 id: IdGenerator.generate(),
                 entityType: 'subscription',
@@ -142,11 +163,15 @@ class SubscriptionRepositoryImpl implements SubscriptionRepository {
 
   JoinedSelectStatement _buildJoinedQuery() {
     return db.select(db.subscriptionsTable).join([
-      innerJoin(db.walletsTable, db.walletsTable.id.equalsExp(db.subscriptionsTable.walletId)),
-      leftOuterJoin(db.categoriesTable, db.categoriesTable.id.equalsExp(db.subscriptionsTable.categoryId)),
-    ])..orderBy([
-        OrderingTerm.asc(db.subscriptionsTable.nextBillingDate),
-      ]);
+      innerJoin(
+        db.walletsTable,
+        db.walletsTable.id.equalsExp(db.subscriptionsTable.walletId),
+      ),
+      leftOuterJoin(
+        db.categoriesTable,
+        db.categoriesTable.id.equalsExp(db.subscriptionsTable.categoryId),
+      ),
+    ])..orderBy([OrderingTerm.asc(db.subscriptionsTable.nextBillingDate)]);
   }
 
   SubscriptionEntity _mapJoinedRow(TypedResult row) {

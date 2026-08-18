@@ -24,14 +24,15 @@ class AnalyticsPage extends ConsumerWidget {
     final isDark = context.isDarkMode;
 
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Phân Tích Tài Chính'),
-      ),
+      appBar: AppBar(title: const Text('Phân Tích Tài Chính')),
       body: Column(
         children: [
           // Period Selector Header
           Container(
-            padding: const EdgeInsets.symmetric(horizontal: AppSpacing.md, vertical: AppSpacing.xs),
+            padding: const EdgeInsets.symmetric(
+              horizontal: AppSpacing.md,
+              vertical: AppSpacing.xs,
+            ),
             decoration: BoxDecoration(
               color: isDark ? AppColors.darkCard : AppColors.lightCard,
               border: Border(
@@ -49,16 +50,28 @@ class AnalyticsPage extends ConsumerWidget {
                     padding: const EdgeInsets.only(right: AppSpacing.xs),
                     child: GestureDetector(
                       onTap: () {
-                        ref.read(selectedAnalyticsPeriodProvider.notifier).state = period;
+                        ref
+                                .read(selectedAnalyticsPeriodProvider.notifier)
+                                .state =
+                            period;
                       },
                       child: AnimatedContainer(
                         duration: const Duration(milliseconds: 200),
-                        padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 7),
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 14,
+                          vertical: 7,
+                        ),
                         decoration: BoxDecoration(
-                          color: isSelected ? AppColors.primary : Colors.transparent,
+                          color: isSelected
+                              ? AppColors.primary
+                              : Colors.transparent,
                           borderRadius: BorderRadius.circular(20),
                           border: Border.all(
-                            color: isSelected ? AppColors.primary : (isDark ? AppColors.darkBorder : AppColors.lightBorder),
+                            color: isSelected
+                                ? AppColors.primary
+                                : (isDark
+                                      ? AppColors.darkBorder
+                                      : AppColors.lightBorder),
                           ),
                         ),
                         child: Text(
@@ -66,9 +79,13 @@ class AnalyticsPage extends ConsumerWidget {
                           style: TextStyle(
                             color: isSelected
                                 ? Colors.white
-                                : (isDark ? AppColors.darkTextSecondary : AppColors.lightTextSecondary),
+                                : (isDark
+                                      ? AppColors.darkTextSecondary
+                                      : AppColors.lightTextSecondary),
                             fontSize: 12,
-                            fontWeight: isSelected ? FontWeight.w700 : FontWeight.w500,
+                            fontWeight: isSelected
+                                ? FontWeight.w700
+                                : FontWeight.w500,
                           ),
                         ),
                       ),
@@ -82,13 +99,16 @@ class AnalyticsPage extends ConsumerWidget {
           // Analytics Content
           Expanded(
             child: analyticsAsync.when(
-              loading: () => const AppLoading(message: 'Đang phân tích số liệu tài chính...'),
+              loading: () => const AppLoading(
+                message: 'Đang phân tích số liệu tài chính...',
+              ),
               error: (err, _) => Center(child: Text('Lỗi: $err')),
               data: (summary) {
                 if (summary.totalExpense <= 0 && summary.totalIncome <= 0) {
                   return AppEmptyState(
                     title: 'Chưa có dữ liệu phân tích',
-                    message: 'Hãy ghi nhận các khoản thu chi trong "${selectedPeriod.displayName}" để Finly phân tích cho bạn.',
+                    message:
+                        'Hãy ghi nhận các khoản thu chi trong "${selectedPeriod.displayName}" để Finly phân tích cho bạn.',
                   );
                 }
 
@@ -132,35 +152,53 @@ class AnalyticsPage extends ConsumerWidget {
                                 children: [
                                   const Text(
                                     'Tiết kiệm ròng (Net Savings)',
-                                    style: TextStyle(fontSize: 12, color: AppColors.darkTextSecondary),
+                                    style: TextStyle(
+                                      fontSize: 12,
+                                      color: AppColors.darkTextSecondary,
+                                    ),
                                   ),
                                   const SizedBox(height: 2),
                                   AmountText(
                                     amount: summary.netSavings,
                                     fontSize: 18,
                                     fontWeight: FontWeight.w800,
-                                    color: summary.netSavings >= 0 ? AppColors.income : AppColors.error,
+                                    color: summary.netSavings >= 0
+                                        ? AppColors.income
+                                        : AppColors.error,
                                   ),
                                 ],
                               ),
                               Container(
-                                padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+                                padding: const EdgeInsets.symmetric(
+                                  horizontal: 10,
+                                  vertical: 6,
+                                ),
                                 decoration: BoxDecoration(
                                   color: summary.savingsRate >= 20
                                       ? AppColors.income.withValues(alpha: 0.15)
-                                      : AppColors.warning.withValues(alpha: 0.15),
+                                      : AppColors.warning.withValues(
+                                          alpha: 0.15,
+                                        ),
                                   borderRadius: AppRadius.borderSm,
                                 ),
                                 child: Column(
                                   crossAxisAlignment: CrossAxisAlignment.end,
                                   children: [
-                                    const Text('Tỷ lệ tiết kiệm', style: TextStyle(fontSize: 10, color: AppColors.darkTextMuted)),
+                                    const Text(
+                                      'Tỷ lệ tiết kiệm',
+                                      style: TextStyle(
+                                        fontSize: 10,
+                                        color: AppColors.darkTextMuted,
+                                      ),
+                                    ),
                                     Text(
                                       '${summary.savingsRate.toStringAsFixed(1)}%',
                                       style: TextStyle(
                                         fontSize: 14,
                                         fontWeight: FontWeight.w800,
-                                        color: summary.savingsRate >= 20 ? AppColors.income : AppColors.warning,
+                                        color: summary.savingsRate >= 20
+                                            ? AppColors.income
+                                            : AppColors.warning,
                                       ),
                                     ),
                                   ],
@@ -194,11 +232,15 @@ class AnalyticsPage extends ConsumerWidget {
                             ),
                             const SizedBox(height: AppSpacing.lg),
                             ...summary.topCategories.map((cat) {
-                              final color = IconHelper.getColor(cat.categoryColor);
+                              final color = IconHelper.getColor(
+                                cat.categoryColor,
+                              );
                               final icon = IconHelper.getIcon(cat.categoryIcon);
 
                               return Padding(
-                                padding: const EdgeInsets.only(bottom: AppSpacing.sm),
+                                padding: const EdgeInsets.only(
+                                  bottom: AppSpacing.sm,
+                                ),
                                 child: Row(
                                   children: [
                                     Container(
@@ -212,21 +254,30 @@ class AnalyticsPage extends ConsumerWidget {
                                     const SizedBox(width: AppSpacing.sm),
                                     Expanded(
                                       child: Column(
-                                        crossAxisAlignment: CrossAxisAlignment.start,
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
                                         children: [
                                           Text(
                                             cat.categoryName,
-                                            style: const TextStyle(fontSize: 13, fontWeight: FontWeight.w600),
+                                            style: const TextStyle(
+                                              fontSize: 13,
+                                              fontWeight: FontWeight.w600,
+                                            ),
                                           ),
                                           Text(
                                             '${cat.transactionCount} giao dịch',
-                                            style: const TextStyle(fontSize: 11, color: AppColors.darkTextSecondary),
+                                            style: const TextStyle(
+                                              fontSize: 11,
+                                              color:
+                                                  AppColors.darkTextSecondary,
+                                            ),
                                           ),
                                         ],
                                       ),
                                     ),
                                     Column(
-                                      crossAxisAlignment: CrossAxisAlignment.end,
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.end,
                                       children: [
                                         AmountText(
                                           amount: cat.amount,
@@ -292,7 +343,11 @@ class AnalyticsPage extends ConsumerWidget {
             const SizedBox(width: 4),
             Text(
               label,
-              style: const TextStyle(fontSize: 12, color: AppColors.darkTextSecondary, fontWeight: FontWeight.w500),
+              style: const TextStyle(
+                fontSize: 12,
+                color: AppColors.darkTextSecondary,
+                fontWeight: FontWeight.w500,
+              ),
             ),
           ],
         ),

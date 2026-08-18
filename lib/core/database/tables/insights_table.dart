@@ -9,7 +9,9 @@ class InsightsTable extends Table {
   TextColumn get type => text()();
   TextColumn get title => text()();
   TextColumn get message => text()();
-  TextColumn get severity => text().withDefault(const Constant('info'))(); // 'info', 'warning', 'critical', 'positive'
+  TextColumn get severity => text().withDefault(
+    const Constant('info'),
+  )(); // 'info', 'warning', 'critical', 'positive'
   TextColumn get metadata => text().nullable()(); // JSON string
   BoolColumn get isDismissed => boolean().withDefault(const Constant(false))();
   DateTimeColumn get createdAt => dateTime().withDefault(currentDateAndTime)();

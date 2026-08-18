@@ -24,11 +24,18 @@ extension ContextExtensions on BuildContext {
         SnackBar(
           content: Text(
             message,
-            style: const TextStyle(color: Colors.white, fontWeight: FontWeight.w500),
+            style: const TextStyle(
+              color: Colors.white,
+              fontWeight: FontWeight.w500,
+            ),
           ),
-          backgroundColor: isError ? Colors.redAccent.shade700 : const Color(0xFF1E293B),
+          backgroundColor: isError
+              ? Colors.redAccent.shade700
+              : const Color(0xFF1E293B),
           behavior: SnackBarBehavior.floating,
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(12),
+          ),
           duration: duration,
         ),
       );

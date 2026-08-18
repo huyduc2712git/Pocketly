@@ -14,9 +14,11 @@ class AnalyticsRepositoryImpl implements AnalyticsRepository {
   Stream<AnalyticsSummary> watchAnalytics(AnalyticsPeriod period) {
     final range = period.dateRange;
     final query = db.select(db.transactionsTable)
-      ..where((tbl) =>
-          tbl.occurredAt.isBiggerOrEqualValue(range.start) &
-          tbl.occurredAt.isSmallerOrEqualValue(range.end));
+      ..where(
+        (tbl) =>
+            tbl.occurredAt.isBiggerOrEqualValue(range.start) &
+            tbl.occurredAt.isSmallerOrEqualValue(range.end),
+      );
 
     return query.watch().asyncMap((_) async {
       final summary = await _calculateSummary(period);
@@ -38,12 +40,16 @@ class AnalyticsRepositoryImpl implements AnalyticsRepository {
     final range = period.dateRange;
 
     // Join transactions with categories
-    final query = db.select(db.transactionsTable).join([
-      leftOuterJoin(db.categoriesTable, db.categoriesTable.id.equalsExp(db.transactionsTable.categoryId)),
-    ])..where(
-        db.transactionsTable.occurredAt.isBiggerOrEqualValue(range.start) &
-        db.transactionsTable.occurredAt.isSmallerOrEqualValue(range.end),
-      );
+    final query =
+        db.select(db.transactionsTable).join([
+          leftOuterJoin(
+            db.categoriesTable,
+            db.categoriesTable.id.equalsExp(db.transactionsTable.categoryId),
+          ),
+        ])..where(
+          db.transactionsTable.occurredAt.isBiggerOrEqualValue(range.start) &
+              db.transactionsTable.occurredAt.isSmallerOrEqualValue(range.end),
+        );
 
     final rows = await query.get();
 
@@ -78,11 +84,15 @@ class AnalyticsRepositoryImpl implements AnalyticsRepository {
     }
 
     final netSavings = totalIncome - totalExpense;
-    final savingsRate = totalIncome > 0 ? ((totalIncome - totalExpense) / totalIncome) * 100 : 0.0;
+    final savingsRate = totalIncome > 0
+        ? ((totalIncome - totalExpense) / totalIncome) * 100
+        : 0.0;
 
     // Calculate Category Spending list
     final List<CategorySpending> topCategories = categoryMap.values.map((item) {
-      final percentage = totalExpense > 0 ? (item.amount / totalExpense) * 100 : 0.0;
+      final percentage = totalExpense > 0
+          ? (item.amount / totalExpense) * 100
+          : 0.0;
       return CategorySpending(
         categoryId: item.id,
         categoryName: item.name,
@@ -110,7 +120,10 @@ class AnalyticsRepositoryImpl implements AnalyticsRepository {
     );
   }
 
-  List<CashflowPoint> _buildCashflowTrend(List<TypedResult> rows, AnalyticsPeriod period) {
+  List<CashflowPoint> _buildCashflowTrend(
+    List<TypedResult> rows,
+    AnalyticsPeriod period,
+  ) {
     if (period == AnalyticsPeriod.thisYear) {
       // 12 months
       final Map<int, List<double>> months = {};
@@ -127,11 +140,13 @@ class AnalyticsRepositoryImpl implements AnalyticsRepository {
         }
       }
       return months.entries
-          .map((e) => CashflowPoint(
-                label: 'T${e.key}',
-                income: e.value[0],
-                expense: e.value[1],
-              ))
+          .map(
+            (e) => CashflowPoint(
+              label: 'T${e.key}',
+              income: e.value[0],
+              expense: e.value[1],
+            ),
+          )
           .toList();
     } else {
       // Weekly breakdown for thisMonth or lastMonth
@@ -147,10 +162,10 @@ class AnalyticsRepositoryImpl implements AnalyticsRepository {
         final week = (day <= 7)
             ? 1
             : (day <= 14)
-                ? 2
-                : (day <= 21)
-                    ? 3
-                    : 4;
+            ? 2
+            : (day <= 21)
+            ? 3
+            : 4;
         if (tx.type == 'income') {
           weeks[week]![0] += tx.amount;
         } else if (tx.type == 'expense') {
@@ -158,11 +173,13 @@ class AnalyticsRepositoryImpl implements AnalyticsRepository {
         }
       }
       return weeks.entries
-          .map((e) => CashflowPoint(
-                label: 'Tuần ${e.key}',
-                income: e.value[0],
-                expense: e.value[1],
-              ))
+          .map(
+            (e) => CashflowPoint(
+              label: 'Tuần ${e.key}',
+              income: e.value[0],
+              expense: e.value[1],
+            ),
+          )
           .toList();
     }
   }

@@ -31,11 +31,8 @@ class AppBottomSheet extends StatelessWidget {
       isDismissible: isDismissible,
       enableDrag: enableDrag,
       backgroundColor: Colors.transparent,
-      builder: (context) => AppBottomSheet(
-        title: title,
-        trailing: trailing,
-        child: child,
-      ),
+      builder: (context) =>
+          AppBottomSheet(title: title, trailing: trailing, child: child),
     );
   }
 
@@ -68,7 +65,10 @@ class AppBottomSheet extends StatelessWidget {
             // Drag Handle
             Center(
               child: Container(
-                margin: const EdgeInsets.only(top: AppSpacing.sm, bottom: AppSpacing.xs),
+                margin: const EdgeInsets.only(
+                  top: AppSpacing.sm,
+                  bottom: AppSpacing.xs,
+                ),
                 width: 40,
                 height: 4,
                 decoration: BoxDecoration(
@@ -80,7 +80,10 @@ class AppBottomSheet extends StatelessWidget {
             // Header if title provided
             if (title != null) ...[
               Padding(
-                padding: const EdgeInsets.symmetric(horizontal: AppSpacing.md, vertical: AppSpacing.xs),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: AppSpacing.md,
+                  vertical: AppSpacing.xs,
+                ),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
@@ -89,7 +92,9 @@ class AppBottomSheet extends StatelessWidget {
                       style: TextStyle(
                         fontSize: 18,
                         fontWeight: FontWeight.w700,
-                        color: isDark ? AppColors.darkTextPrimary : AppColors.lightTextPrimary,
+                        color: isDark
+                            ? AppColors.darkTextPrimary
+                            : AppColors.lightTextPrimary,
                       ),
                     ),
                     ?trailing,
@@ -99,10 +104,7 @@ class AppBottomSheet extends StatelessWidget {
               const Divider(height: 1),
             ],
             // Content
-            Padding(
-              padding: padding,
-              child: child,
-            ),
+            Padding(padding: padding, child: child),
           ],
         ),
       ),

@@ -11,6 +11,6 @@ final categoryRepositoryProvider = Provider<CategoryRepository>((ref) {
 
 final categoriesStreamProvider =
     StreamProvider.family<List<CategoryEntity>, String?>((ref, type) {
-  final repository = ref.watch(categoryRepositoryProvider);
-  return repository.watchCategories(type: type);
-});
+      final repository = ref.watch(categoryRepositoryProvider);
+      return repository.watchCategories(type: type);
+    });

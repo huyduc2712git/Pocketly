@@ -44,9 +44,24 @@ void main() {
 
     test('Generates valid CSV formatted string with headers', () {
       final csv = exportUseCase.exportToCsv(txList);
-      expect(csv, contains('ID,Ngay,Loai,So_Tien,Don_Vi,Danh_Muc,Vi_Nguon,Vi_Dich,Ghi_Chu'));
-      expect(csv, contains('tx_1,18/08/2026,expense,250000.0,VND,"Ăn uống","Ví tiền mặt","","Ăn trưa với đồng nghiệp"'));
-      expect(csv, contains('tx_2,18/08/2026,income,15000000.0,VND,"Lương","Techcombank","",""'));
+      expect(
+        csv,
+        contains(
+          'ID,Ngay,Loai,So_Tien,Don_Vi,Danh_Muc,Vi_Nguon,Vi_Dich,Ghi_Chu',
+        ),
+      );
+      expect(
+        csv,
+        contains(
+          'tx_1,18/08/2026,expense,250000.0,VND,"Ăn uống","Ví tiền mặt","","Ăn trưa với đồng nghiệp"',
+        ),
+      );
+      expect(
+        csv,
+        contains(
+          'tx_2,18/08/2026,income,15000000.0,VND,"Lương","Techcombank","",""',
+        ),
+      );
     });
 
     test('Generates valid JSON formatted string', () {

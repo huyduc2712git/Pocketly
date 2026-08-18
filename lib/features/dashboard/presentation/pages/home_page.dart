@@ -104,13 +104,13 @@ class HomePage extends ConsumerWidget {
               title: topInsight != null
                   ? topInsight.title
                   : (summary.topSpendingCategoryName != null
-                      ? 'Khoản chi lớn nhất: ${summary.topSpendingCategoryName}'
-                      : 'Tổng quan chi tiêu thông minh'),
+                        ? 'Khoản chi lớn nhất: ${summary.topSpendingCategoryName}'
+                        : 'Tổng quan chi tiêu thông minh'),
               message: topInsight != null
                   ? topInsight.message
                   : (summary.topSpendingCategoryName != null
-                      ? 'Bạn đã chi tiêu cho ${summary.topSpendingCategoryName} trong tháng này.'
-                      : 'Ghi nhận thu chi đều đặn mỗi ngày để nhận phân tích tài chính thông minh.'),
+                        ? 'Bạn đã chi tiêu cho ${summary.topSpendingCategoryName} trong tháng này.'
+                        : 'Ghi nhận thu chi đều đặn mỗi ngày để nhận phân tích tài chính thông minh.'),
               onTap: () => context.go(RouteNames.analytics),
             ),
             const SizedBox(height: AppSpacing.md),

@@ -111,6 +111,6 @@ class WalletsController extends StateNotifier<AsyncValue<void>> {
 
 final walletsControllerProvider =
     StateNotifierProvider<WalletsController, AsyncValue<void>>((ref) {
-  final repository = ref.watch(walletRepositoryProvider);
-  return WalletsController(repository);
-});
+      final repository = ref.watch(walletRepositoryProvider);
+      return WalletsController(repository);
+    });

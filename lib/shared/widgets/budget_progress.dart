@@ -29,8 +29,12 @@ class BudgetProgress extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
-    final ratio = budgetAmount > 0 ? (spent / budgetAmount).clamp(0.0, 1.0) : 0.0;
-    final percent = budgetAmount > 0 ? ((spent / budgetAmount) * 100).toInt() : 0;
+    final ratio = budgetAmount > 0
+        ? (spent / budgetAmount).clamp(0.0, 1.0)
+        : 0.0;
+    final percent = budgetAmount > 0
+        ? ((spent / budgetAmount) * 100).toInt()
+        : 0;
     final remaining = (budgetAmount - spent).clamp(0.0, double.infinity);
 
     Color progressColor = AppColors.primary;
@@ -41,7 +45,8 @@ class BudgetProgress extends StatelessWidget {
     }
 
     final isExceeded = spent > budgetAmount;
-    final isForecastExceeded = forecastAmount != null && forecastAmount! > budgetAmount;
+    final isForecastExceeded =
+        forecastAmount != null && forecastAmount! > budgetAmount;
 
     return Material(
       color: Colors.transparent,
@@ -59,7 +64,9 @@ class BudgetProgress extends StatelessWidget {
                     Container(
                       padding: const EdgeInsets.all(6),
                       decoration: BoxDecoration(
-                        color: (categoryColor ?? AppColors.primary).withValues(alpha: 0.15),
+                        color: (categoryColor ?? AppColors.primary).withValues(
+                          alpha: 0.15,
+                        ),
                         borderRadius: AppRadius.borderSm,
                       ),
                       child: Icon(
@@ -76,7 +83,9 @@ class BudgetProgress extends StatelessWidget {
                       style: TextStyle(
                         fontSize: 14,
                         fontWeight: FontWeight.w600,
-                        color: isDark ? AppColors.darkTextPrimary : AppColors.lightTextPrimary,
+                        color: isDark
+                            ? AppColors.darkTextPrimary
+                            : AppColors.lightTextPrimary,
                       ),
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
@@ -92,7 +101,9 @@ class BudgetProgress extends StatelessWidget {
                     ' / ',
                     style: TextStyle(
                       fontSize: 12,
-                      color: isDark ? AppColors.darkTextMuted : AppColors.lightTextMuted,
+                      color: isDark
+                          ? AppColors.darkTextMuted
+                          : AppColors.lightTextMuted,
                     ),
                   ),
                   AmountText(
@@ -100,7 +111,9 @@ class BudgetProgress extends StatelessWidget {
                     currency: currency,
                     fontSize: 12,
                     fontWeight: FontWeight.w500,
-                    color: isDark ? AppColors.darkTextMuted : AppColors.lightTextMuted,
+                    color: isDark
+                        ? AppColors.darkTextMuted
+                        : AppColors.lightTextMuted,
                   ),
                 ],
               ),
@@ -112,7 +125,9 @@ class BudgetProgress extends StatelessWidget {
                     height: 8,
                     width: double.infinity,
                     decoration: BoxDecoration(
-                      color: isDark ? AppColors.darkSurface : AppColors.lightCardElevated,
+                      color: isDark
+                          ? AppColors.darkSurface
+                          : AppColors.lightCardElevated,
                       borderRadius: AppRadius.borderFull,
                     ),
                   ),
@@ -166,7 +181,9 @@ class BudgetProgress extends StatelessWidget {
                       'Còn lại ${remaining.toInt()} $currency',
                       style: TextStyle(
                         fontSize: 11,
-                        color: isDark ? AppColors.darkTextMuted : AppColors.lightTextMuted,
+                        color: isDark
+                            ? AppColors.darkTextMuted
+                            : AppColors.lightTextMuted,
                       ),
                     ),
                 ],

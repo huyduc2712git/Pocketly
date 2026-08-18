@@ -6,26 +6,27 @@ import '../../domain/entities/recurring_transaction_entity.dart';
 import '../../domain/repositories/recurring_transaction_repository.dart';
 import '../../domain/usecases/process_due_recurring_transactions_usecase.dart';
 
-final recurringTransactionRepositoryProvider = Provider<RecurringTransactionRepository>((ref) {
-  final db = ref.watch(appDatabaseProvider);
-  return RecurringTransactionRepositoryImpl(db: db);
-});
+final recurringTransactionRepositoryProvider =
+    Provider<RecurringTransactionRepository>((ref) {
+      final db = ref.watch(appDatabaseProvider);
+      return RecurringTransactionRepositoryImpl(db: db);
+    });
 
 final processDueRecurringTransactionsUseCaseProvider =
     Provider<ProcessDueRecurringTransactionsUseCase>((ref) {
-  final recurringRepo = ref.watch(recurringTransactionRepositoryProvider);
-  final addTxUseCase = ref.watch(addTransactionUseCaseProvider);
-  return ProcessDueRecurringTransactionsUseCase(
-    recurringRepository: recurringRepo,
-    addTransactionUseCase: addTxUseCase,
-  );
-});
+      final recurringRepo = ref.watch(recurringTransactionRepositoryProvider);
+      final addTxUseCase = ref.watch(addTransactionUseCaseProvider);
+      return ProcessDueRecurringTransactionsUseCase(
+        recurringRepository: recurringRepo,
+        addTransactionUseCase: addTxUseCase,
+      );
+    });
 
 final recurringTransactionsStreamProvider =
     StreamProvider<List<RecurringTransactionEntity>>((ref) {
-  final repo = ref.watch(recurringTransactionRepositoryProvider);
-  return repo.watchRecurringTransactions();
-});
+      final repo = ref.watch(recurringTransactionRepositoryProvider);
+      return repo.watchRecurringTransactions();
+    });
 
 class RecurringTransactionsController extends StateNotifier<AsyncValue<void>> {
   final RecurringTransactionRepository repository;
@@ -36,7 +37,9 @@ class RecurringTransactionsController extends StateNotifier<AsyncValue<void>> {
     required this.processUseCase,
   }) : super(const AsyncValue.data(null));
 
-  Future<bool> createRecurringTransaction(RecurringTransactionEntity entity) async {
+  Future<bool> createRecurringTransaction(
+    RecurringTransactionEntity entity,
+  ) async {
     state = const AsyncValue.loading();
     final result = await repository.createRecurringTransaction(entity);
     return result.when(
@@ -79,11 +82,15 @@ class RecurringTransactionsController extends StateNotifier<AsyncValue<void>> {
 }
 
 final recurringTransactionsControllerProvider =
-    StateNotifierProvider<RecurringTransactionsController, AsyncValue<void>>((ref) {
-  final repo = ref.watch(recurringTransactionRepositoryProvider);
-  final processUseCase = ref.watch(processDueRecurringTransactionsUseCaseProvider);
-  return RecurringTransactionsController(
-    repository: repo,
-    processUseCase: processUseCase,
-  );
-});
+    StateNotifierProvider<RecurringTransactionsController, AsyncValue<void>>((
+      ref,
+    ) {
+      final repo = ref.watch(recurringTransactionRepositoryProvider);
+      final processUseCase = ref.watch(
+        processDueRecurringTransactionsUseCaseProvider,
+      );
+      return RecurringTransactionsController(
+        repository: repo,
+        processUseCase: processUseCase,
+      );
+    });

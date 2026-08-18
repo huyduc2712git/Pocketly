@@ -22,9 +22,7 @@ class ProfilePage extends ConsumerWidget {
     final pendingSyncCount = ref.watch(pendingSyncCountProvider);
 
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Cá Nhân & Cài Đặt'),
-      ),
+      appBar: AppBar(title: const Text('Cá Nhân & Cài Đặt')),
       body: ListView(
         padding: const EdgeInsets.all(AppSpacing.md),
         children: [
@@ -42,7 +40,9 @@ class ProfilePage extends ConsumerWidget {
                   ),
                   child: Center(
                     child: Text(
-                      user?.name.isNotEmpty == true ? user!.name[0].toUpperCase() : 'U',
+                      user?.name.isNotEmpty == true
+                          ? user!.name[0].toUpperCase()
+                          : 'U',
                       style: const TextStyle(
                         fontSize: 24,
                         fontWeight: FontWeight.w800,
@@ -74,7 +74,10 @@ class ProfilePage extends ConsumerWidget {
                       ),
                       const SizedBox(height: 6),
                       Container(
-                        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 8,
+                          vertical: 2,
+                        ),
                         decoration: BoxDecoration(
                           color: AppColors.primary.withValues(alpha: 0.15),
                           borderRadius: BorderRadius.circular(4),
@@ -110,8 +113,12 @@ class ProfilePage extends ConsumerWidget {
                     shape: BoxShape.circle,
                   ),
                   child: Icon(
-                    pendingSyncCount > 0 ? Icons.cloud_upload_rounded : Icons.cloud_done_rounded,
-                    color: pendingSyncCount > 0 ? AppColors.warning : AppColors.income,
+                    pendingSyncCount > 0
+                        ? Icons.cloud_upload_rounded
+                        : Icons.cloud_done_rounded,
+                    color: pendingSyncCount > 0
+                        ? AppColors.warning
+                        : AppColors.income,
                     size: 20,
                   ),
                 ),
@@ -121,14 +128,22 @@ class ProfilePage extends ConsumerWidget {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        pendingSyncCount > 0 ? 'Chờ đồng bộ ($pendingSyncCount tác vụ)' : 'Đã đồng bộ an toàn',
-                        style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w700),
+                        pendingSyncCount > 0
+                            ? 'Chờ đồng bộ ($pendingSyncCount tác vụ)'
+                            : 'Đã đồng bộ an toàn',
+                        style: const TextStyle(
+                          fontSize: 14,
+                          fontWeight: FontWeight.w700,
+                        ),
                       ),
                       Text(
                         pendingSyncCount > 0
                             ? 'Dữ liệu được lưu trữ offline cục bộ'
                             : 'Tất cả dữ liệu đã được bảo vệ',
-                        style: const TextStyle(fontSize: 11, color: AppColors.darkTextSecondary),
+                        style: const TextStyle(
+                          fontSize: 11,
+                          color: AppColors.darkTextSecondary,
+                        ),
                       ),
                     ],
                   ),
@@ -136,9 +151,13 @@ class ProfilePage extends ConsumerWidget {
                 TextButton(
                   onPressed: () async {
                     context.showSnackBar('Đang đồng bộ dữ liệu...');
-                    final count = await ref.read(syncControllerProvider.notifier).syncNow();
+                    final count = await ref
+                        .read(syncControllerProvider.notifier)
+                        .syncNow();
                     if (context.mounted) {
-                      context.showSnackBar('Đã đồng bộ thành công $count tác vụ!');
+                      context.showSnackBar(
+                        'Đã đồng bộ thành công $count tác vụ!',
+                      );
                     }
                   },
                   child: const Text('Đồng bộ'),
@@ -163,29 +182,58 @@ class ProfilePage extends ConsumerWidget {
             child: Column(
               children: [
                 ListTile(
-                  leading: const Icon(Icons.subscriptions_outlined, color: AppColors.primaryLight),
-                  title: const Text('Gói thuê bao & Định kỳ', style: TextStyle(fontSize: 14, fontWeight: FontWeight.w600)),
-                  subtitle: const Text('Quản lý Netflix, Spotify, iCloud...', style: TextStyle(fontSize: 11)),
+                  leading: const Icon(
+                    Icons.subscriptions_outlined,
+                    color: AppColors.primaryLight,
+                  ),
+                  title: const Text(
+                    'Gói thuê bao & Định kỳ',
+                    style: TextStyle(fontSize: 14, fontWeight: FontWeight.w600),
+                  ),
+                  subtitle: const Text(
+                    'Quản lý Netflix, Spotify, iCloud...',
+                    style: TextStyle(fontSize: 11),
+                  ),
                   trailing: const Icon(Icons.chevron_right_rounded, size: 20),
                   onTap: () {
                     Navigator.of(context).push(
-                      MaterialPageRoute(builder: (_) => const SubscriptionsPage()),
+                      MaterialPageRoute(
+                        builder: (_) => const SubscriptionsPage(),
+                      ),
                     );
                   },
                 ),
                 const Divider(height: 1, indent: 56),
                 ListTile(
-                  leading: const Icon(Icons.download_rounded, color: AppColors.income),
-                  title: const Text('Xuất dữ liệu CSV', style: TextStyle(fontSize: 14, fontWeight: FontWeight.w600)),
-                  subtitle: const Text('Mở trên Excel, Google Sheets', style: TextStyle(fontSize: 11)),
+                  leading: const Icon(
+                    Icons.download_rounded,
+                    color: AppColors.income,
+                  ),
+                  title: const Text(
+                    'Xuất dữ liệu CSV',
+                    style: TextStyle(fontSize: 14, fontWeight: FontWeight.w600),
+                  ),
+                  subtitle: const Text(
+                    'Mở trên Excel, Google Sheets',
+                    style: TextStyle(fontSize: 11),
+                  ),
                   trailing: const Icon(Icons.chevron_right_rounded, size: 20),
                   onTap: () => _exportData(context, ref, isCsv: true),
                 ),
                 const Divider(height: 1, indent: 56),
                 ListTile(
-                  leading: const Icon(Icons.code_rounded, color: AppColors.transfer),
-                  title: const Text('Xuất dữ liệu JSON', style: TextStyle(fontSize: 14, fontWeight: FontWeight.w600)),
-                  subtitle: const Text('Sao lưu dự phòng hoàn chỉnh', style: TextStyle(fontSize: 11)),
+                  leading: const Icon(
+                    Icons.code_rounded,
+                    color: AppColors.transfer,
+                  ),
+                  title: const Text(
+                    'Xuất dữ liệu JSON',
+                    style: TextStyle(fontSize: 14, fontWeight: FontWeight.w600),
+                  ),
+                  subtitle: const Text(
+                    'Sao lưu dự phòng hoàn chỉnh',
+                    style: TextStyle(fontSize: 11),
+                  ),
                   trailing: const Icon(Icons.chevron_right_rounded, size: 20),
                   onTap: () => _exportData(context, ref, isCsv: false),
                 ),
@@ -209,27 +257,61 @@ class ProfilePage extends ConsumerWidget {
             child: Column(
               children: [
                 ListTile(
-                  leading: const Icon(Icons.dark_mode_outlined, color: AppColors.primaryLight),
-                  title: const Text('Giao diện tối (Dark Mode)', style: TextStyle(fontSize: 14, fontWeight: FontWeight.w600)),
+                  leading: const Icon(
+                    Icons.dark_mode_outlined,
+                    color: AppColors.primaryLight,
+                  ),
+                  title: const Text(
+                    'Giao diện tối (Dark Mode)',
+                    style: TextStyle(fontSize: 14, fontWeight: FontWeight.w600),
+                  ),
                   trailing: Switch(
                     value: true,
                     activeThumbColor: AppColors.primary,
                     onChanged: (val) {
-                      context.showSnackBar('Finly đã được tối ưu hóa chuẩn Obsidian Dark Mode.');
+                      context.showSnackBar(
+                        'Finly đã được tối ưu hóa chuẩn Obsidian Dark Mode.',
+                      );
                     },
                   ),
                 ),
                 const Divider(height: 1, indent: 56),
                 const ListTile(
-                  leading: Icon(Icons.monetization_on_outlined, color: AppColors.income),
-                  title: Text('Đơn vị tiền tệ chính', style: TextStyle(fontSize: 14, fontWeight: FontWeight.w600)),
-                  trailing: Text('VND (₫)', style: TextStyle(fontSize: 13, fontWeight: FontWeight.w700, color: AppColors.primaryLight)),
+                  leading: Icon(
+                    Icons.monetization_on_outlined,
+                    color: AppColors.income,
+                  ),
+                  title: Text(
+                    'Đơn vị tiền tệ chính',
+                    style: TextStyle(fontSize: 14, fontWeight: FontWeight.w600),
+                  ),
+                  trailing: Text(
+                    'VND (₫)',
+                    style: TextStyle(
+                      fontSize: 13,
+                      fontWeight: FontWeight.w700,
+                      color: AppColors.primaryLight,
+                    ),
+                  ),
                 ),
                 const Divider(height: 1, indent: 56),
                 const ListTile(
-                  leading: Icon(Icons.notifications_outlined, color: AppColors.warning),
-                  title: Text('Nhắc nhở ghi chép hàng ngày', style: TextStyle(fontSize: 14, fontWeight: FontWeight.w600)),
-                  trailing: Text('20:00', style: TextStyle(fontSize: 13, fontWeight: FontWeight.w700, color: AppColors.primaryLight)),
+                  leading: Icon(
+                    Icons.notifications_outlined,
+                    color: AppColors.warning,
+                  ),
+                  title: Text(
+                    'Nhắc nhở ghi chép hàng ngày',
+                    style: TextStyle(fontSize: 14, fontWeight: FontWeight.w600),
+                  ),
+                  trailing: Text(
+                    '20:00',
+                    style: TextStyle(
+                      fontSize: 13,
+                      fontWeight: FontWeight.w700,
+                      color: AppColors.primaryLight,
+                    ),
+                  ),
                 ),
               ],
             ),
@@ -259,7 +341,9 @@ class ProfilePage extends ConsumerWidget {
   void _exportData(BuildContext context, WidgetRef ref, {required bool isCsv}) {
     final txList = ref.read(transactionsStreamProvider).valueOrNull ?? [];
     const exporter = ExportDataUseCase();
-    final content = isCsv ? exporter.exportToCsv(txList) : exporter.exportToJson(txList);
+    final content = isCsv
+        ? exporter.exportToCsv(txList)
+        : exporter.exportToJson(txList);
 
     showDialog(
       context: context,

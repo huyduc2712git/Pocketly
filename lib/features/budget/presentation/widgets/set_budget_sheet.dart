@@ -59,8 +59,9 @@ class _SetBudgetSheetState extends ConsumerState<SetBudgetSheet> {
           ? widget.existingBudget!.totalLimit.toStringAsFixed(0)
           : '';
       for (final item in widget.existingBudget!.items) {
-        _categoryControllers[item.categoryId] =
-            TextEditingController(text: item.limitAmount.toStringAsFixed(0));
+        _categoryControllers[item.categoryId] = TextEditingController(
+          text: item.limitAmount.toStringAsFixed(0),
+        );
       }
     }
   }
@@ -75,11 +76,17 @@ class _SetBudgetSheetState extends ConsumerState<SetBudgetSheet> {
   }
 
   Future<void> _onSave() async {
-    final totalText = _totalLimitController.text.replaceAll(RegExp(r'[^0-9.]'), '');
+    final totalText = _totalLimitController.text.replaceAll(
+      RegExp(r'[^0-9.]'),
+      '',
+    );
     final totalLimit = double.tryParse(totalText);
 
     if (totalLimit == null || totalLimit <= 0) {
-      context.showSnackBar('Vui lòng nhập tổng hạn mức ngân sách tháng (> 0)', isError: true);
+      context.showSnackBar(
+        'Vui lòng nhập tổng hạn mức ngân sách tháng (> 0)',
+        isError: true,
+      );
       return;
     }
 
@@ -100,7 +107,9 @@ class _SetBudgetSheetState extends ConsumerState<SetBudgetSheet> {
     });
 
     setState(() => _isLoading = true);
-    final success = await ref.read(budgetControllerProvider.notifier).setBudget(
+    final success = await ref
+        .read(budgetControllerProvider.notifier)
+        .setBudget(
           month: widget.month,
           year: widget.year,
           totalLimit: totalLimit,
@@ -131,7 +140,10 @@ class _SetBudgetSheetState extends ConsumerState<SetBudgetSheet> {
           hint: 'Ví dụ: 10000000',
           keyboardType: TextInputType.number,
           autofocus: true,
-          prefixIcon: const Icon(Icons.account_balance_wallet_outlined, color: AppColors.primary),
+          prefixIcon: const Icon(
+            Icons.account_balance_wallet_outlined,
+            color: AppColors.primary,
+          ),
         ),
         const SizedBox(height: AppSpacing.md),
 
@@ -140,7 +152,9 @@ class _SetBudgetSheetState extends ConsumerState<SetBudgetSheet> {
           style: TextStyle(
             fontSize: 13,
             fontWeight: FontWeight.w600,
-            color: isDark ? AppColors.darkTextSecondary : AppColors.lightTextSecondary,
+            color: isDark
+                ? AppColors.darkTextSecondary
+                : AppColors.lightTextSecondary,
           ),
         ),
         const SizedBox(height: AppSpacing.xs),
@@ -151,7 +165,10 @@ class _SetBudgetSheetState extends ConsumerState<SetBudgetSheet> {
           data: (categories) {
             return Column(
               children: categories.map((cat) {
-                _categoryControllers.putIfAbsent(cat.id, () => TextEditingController());
+                _categoryControllers.putIfAbsent(
+                  cat.id,
+                  () => TextEditingController(),
+                );
                 final controller = _categoryControllers[cat.id]!;
                 final iconData = IconHelper.getIcon(cat.icon);
                 final color = IconHelper.getColor(cat.color);
@@ -172,7 +189,10 @@ class _SetBudgetSheetState extends ConsumerState<SetBudgetSheet> {
                       Expanded(
                         child: Text(
                           cat.name,
-                          style: const TextStyle(fontSize: 13, fontWeight: FontWeight.w500),
+                          style: const TextStyle(
+                            fontSize: 13,
+                            fontWeight: FontWeight.w500,
+                          ),
                         ),
                       ),
                       SizedBox(
@@ -182,14 +202,22 @@ class _SetBudgetSheetState extends ConsumerState<SetBudgetSheet> {
                           controller: controller,
                           keyboardType: TextInputType.number,
                           textAlign: TextAlign.right,
-                          style: const TextStyle(fontSize: 13, fontWeight: FontWeight.w600),
+                          style: const TextStyle(
+                            fontSize: 13,
+                            fontWeight: FontWeight.w600,
+                          ),
                           decoration: InputDecoration(
                             hintText: 'Hạn mức (₫)',
-                            contentPadding: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
+                            contentPadding: const EdgeInsets.symmetric(
+                              horizontal: 8,
+                              vertical: 8,
+                            ),
                             border: OutlineInputBorder(
                               borderRadius: AppRadius.borderSm,
                               borderSide: BorderSide(
-                                color: isDark ? AppColors.darkBorder : AppColors.lightBorder,
+                                color: isDark
+                                    ? AppColors.darkBorder
+                                    : AppColors.lightBorder,
                               ),
                             ),
                           ),

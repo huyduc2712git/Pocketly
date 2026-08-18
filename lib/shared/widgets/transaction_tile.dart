@@ -74,13 +74,7 @@ class TransactionTile extends StatelessWidget {
                   color: iconColor.withValues(alpha: 0.12),
                   borderRadius: AppRadius.borderMd,
                 ),
-                child: Center(
-                  child: Icon(
-                    icon,
-                    size: 22,
-                    color: iconColor,
-                  ),
-                ),
+                child: Center(child: Icon(icon, size: 22, color: iconColor)),
               ),
               const SizedBox(width: AppSpacing.md),
               // Transaction Details
@@ -96,7 +90,9 @@ class TransactionTile extends StatelessWidget {
                             style: TextStyle(
                               fontSize: 15,
                               fontWeight: FontWeight.w600,
-                              color: isDark ? AppColors.darkTextPrimary : AppColors.lightTextPrimary,
+                              color: isDark
+                                  ? AppColors.darkTextPrimary
+                                  : AppColors.lightTextPrimary,
                             ),
                             maxLines: 1,
                             overflow: TextOverflow.ellipsis,
@@ -129,7 +125,9 @@ class TransactionTile extends StatelessWidget {
                               style: TextStyle(
                                 fontSize: 12,
                                 fontWeight: FontWeight.w500,
-                                color: isDark ? AppColors.darkTextSecondary : AppColors.lightTextSecondary,
+                                color: isDark
+                                    ? AppColors.darkTextSecondary
+                                    : AppColors.lightTextSecondary,
                               ),
                               maxLines: 1,
                               overflow: TextOverflow.ellipsis,
@@ -139,7 +137,9 @@ class TransactionTile extends StatelessWidget {
                             ' • ',
                             style: TextStyle(
                               fontSize: 12,
-                              color: isDark ? AppColors.darkTextMuted : AppColors.lightTextMuted,
+                              color: isDark
+                                  ? AppColors.darkTextMuted
+                                  : AppColors.lightTextMuted,
                             ),
                           ),
                         ],
@@ -147,7 +147,9 @@ class TransactionTile extends StatelessWidget {
                           DateFormatter.formatRelative(occurredAt),
                           style: TextStyle(
                             fontSize: 12,
-                            color: isDark ? AppColors.darkTextMuted : AppColors.lightTextMuted,
+                            color: isDark
+                                ? AppColors.darkTextMuted
+                                : AppColors.lightTextMuted,
                           ),
                         ),
                       ],
@@ -176,7 +178,9 @@ class TransactionTile extends StatelessWidget {
                         subtitle!,
                         style: TextStyle(
                           fontSize: 11,
-                          color: isDark ? AppColors.darkTextMuted : AppColors.lightTextMuted,
+                          color: isDark
+                              ? AppColors.darkTextMuted
+                              : AppColors.lightTextMuted,
                         ),
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,

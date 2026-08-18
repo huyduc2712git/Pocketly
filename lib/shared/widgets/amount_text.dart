@@ -45,7 +45,9 @@ class AmountText extends StatelessWidget {
           textColor = AppColors.transfer;
           break;
         case AmountType.normal:
-          textColor = isDark ? AppColors.darkTextPrimary : AppColors.lightTextPrimary;
+          textColor = isDark
+              ? AppColors.darkTextPrimary
+              : AppColors.lightTextPrimary;
           break;
       }
     }

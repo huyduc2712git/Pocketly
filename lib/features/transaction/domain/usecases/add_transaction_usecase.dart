@@ -29,7 +29,9 @@ class AddTransactionUseCase {
       }
       if (transaction.walletId == transaction.toWalletId) {
         return const Result.failure(
-          ValidationFailure(message: 'Ví chuyển và ví nhận không được trùng nhau.'),
+          ValidationFailure(
+            message: 'Ví chuyển và ví nhận không được trùng nhau.',
+          ),
         );
       }
     }
