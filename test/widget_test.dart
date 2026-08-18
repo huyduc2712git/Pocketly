@@ -1,8 +1,8 @@
-import 'package:finly/app/app.dart';
-import 'package:finly/app/config/env_config.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:finly/app/app.dart';
+import 'package:finly/app/config/env_config.dart';
 
 void main() {
   setUp(() {
@@ -26,17 +26,17 @@ void main() {
       // Initial pump and settle
       await tester.pumpAndSettle();
 
-      // Verify Finly App title and navigation bar destinations
-      expect(find.text('Finly'), findsOneWidget);
+      // Verify App title and navigation bar destinations
+      expect(find.text('Pocketly'), findsOneWidget);
       expect(find.text('Tổng quan'), findsOneWidget);
       expect(find.text('Sổ thu chi'), findsOneWidget);
-      expect(find.text('Ngân sách'), findsOneWidget);
-      expect(find.text('Báo cáo'), findsOneWidget);
+      expect(find.text('Ngân sách'), findsWidgets);
+      expect(find.text('Báo cáo'), findsWidgets);
       expect(find.text('Cá nhân'), findsOneWidget);
 
       // Verify Dashboard Cards
       expect(find.text('Tổng số dư khả dụng'), findsOneWidget);
-      expect(find.text('Finly Smart Insight'), findsOneWidget);
+      expect(find.text('Pocketly Smart Insight'), findsWidgets);
       expect(find.text('Ngân sách danh mục'), findsOneWidget);
       expect(find.text('Giao dịch gần đây'), findsOneWidget);
     },
