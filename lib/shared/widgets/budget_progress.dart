@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
-import '../../app/theme/app_colors.dart';
-import '../../app/theme/app_radius.dart';
-import '../../app/theme/app_spacing.dart';
-import 'amount_text.dart';
+import 'package:finly/app/theme/app_colors.dart';
+import 'package:finly/app/theme/app_spacing.dart';
+import 'package:finly/shared/widgets/amount_text.dart';
 
 class BudgetProgress extends StatelessWidget {
   final String categoryName;
@@ -45,148 +44,166 @@ class BudgetProgress extends StatelessWidget {
     }
 
     final isExceeded = spent > budgetAmount;
-    final isForecastExceeded =
-        forecastAmount != null && forecastAmount! > budgetAmount;
+    final resolvedColor = categoryColor ?? AppColors.primary;
 
     return Material(
       color: Colors.transparent,
       child: InkWell(
         onTap: onTap,
-        borderRadius: AppRadius.borderMd,
+        borderRadius: BorderRadius.circular(16),
         child: Padding(
-          padding: const EdgeInsets.symmetric(vertical: AppSpacing.xs),
+          padding: const EdgeInsets.symmetric(vertical: AppSpacing.sm - 2),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Row(
                 children: [
+                  // Squircle Category Icon with glow
                   if (icon != null) ...[
                     Container(
-                      padding: const EdgeInsets.all(6),
+                      width: 36,
+                      height: 36,
                       decoration: BoxDecoration(
-                        color: (categoryColor ?? AppColors.primary).withValues(
-                          alpha: 0.15,
+                        gradient: LinearGradient(
+                          colors: [
+                            resolvedColor.withValues(alpha: 0.25),
+                            resolvedColor.withValues(alpha: 0.08),
+                          ],
                         ),
-                        borderRadius: AppRadius.borderSm,
+                        borderRadius: BorderRadius.circular(12),
+                        border: Border.all(
+                          color: resolvedColor.withValues(alpha: 0.3),
+                          width: 1,
+                        ),
                       ),
-                      child: Icon(
-                        icon,
-                        size: 16,
-                        color: categoryColor ?? AppColors.primary,
+                      child: Center(
+                        child: Icon(
+                          icon,
+                          size: 18,
+                          color: resolvedColor,
+                        ),
                       ),
                     ),
-                    const SizedBox(width: AppSpacing.xs),
+                    const SizedBox(width: AppSpacing.sm),
                   ],
+                  // Category Title & Subtext
                   Expanded(
-                    child: Text(
-                      categoryName,
-                      style: TextStyle(
-                        fontSize: 14,
-                        fontWeight: FontWeight.w600,
-                        color: isDark
-                            ? AppColors.darkTextPrimary
-                            : AppColors.lightTextPrimary,
-                      ),
-                      maxLines: 1,
-                      overflow: TextOverflow.ellipsis,
-                    ),
-                  ),
-                  AmountText(
-                    amount: spent,
-                    currency: currency,
-                    fontSize: 13,
-                    fontWeight: FontWeight.w600,
-                  ),
-                  Text(
-                    ' / ',
-                    style: TextStyle(
-                      fontSize: 12,
-                      color: isDark
-                          ? AppColors.darkTextMuted
-                          : AppColors.lightTextMuted,
-                    ),
-                  ),
-                  AmountText(
-                    amount: budgetAmount,
-                    currency: currency,
-                    fontSize: 12,
-                    fontWeight: FontWeight.w500,
-                    color: isDark
-                        ? AppColors.darkTextMuted
-                        : AppColors.lightTextMuted,
-                  ),
-                ],
-              ),
-              const SizedBox(height: AppSpacing.xs),
-              // Progress Bar
-              Stack(
-                children: [
-                  Container(
-                    height: 8,
-                    width: double.infinity,
-                    decoration: BoxDecoration(
-                      color: isDark
-                          ? AppColors.darkSurface
-                          : AppColors.lightCardElevated,
-                      borderRadius: AppRadius.borderFull,
-                    ),
-                  ),
-                  LayoutBuilder(
-                    builder: (context, constraints) {
-                      return AnimatedContainer(
-                        duration: const Duration(milliseconds: 300),
-                        height: 8,
-                        width: constraints.maxWidth * ratio,
-                        decoration: BoxDecoration(
-                          color: progressColor,
-                          borderRadius: AppRadius.borderFull,
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          categoryName,
+                          style: TextStyle(
+                            fontSize: 14,
+                            fontWeight: FontWeight.w700,
+                            letterSpacing: -0.2,
+                            color: isDark
+                                ? AppColors.darkTextPrimary
+                                : AppColors.lightTextPrimary,
+                          ),
                         ),
-                      );
-                    },
+                        const SizedBox(height: 2),
+                        Text(
+                          isExceeded
+                              ? 'Vượt hạn mức'
+                              : 'Còn lại ${(remaining / 1000).toStringAsFixed(0)}k $currency',
+                          style: TextStyle(
+                            fontSize: 11,
+                            fontWeight: FontWeight.w500,
+                            color: isExceeded
+                                ? AppColors.error
+                                : (isDark
+                                    ? AppColors.darkTextSecondary
+                                    : AppColors.lightTextSecondary),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  // Spent vs Budget Amounts
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.end,
+                    children: [
+                      Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          AmountText(
+                            amount: spent,
+                            currency: currency,
+                            fontSize: 13,
+                            fontWeight: FontWeight.w800,
+                            color: isExceeded
+                                ? AppColors.error
+                                : (isDark
+                                    ? AppColors.darkTextPrimary
+                                    : AppColors.lightTextPrimary),
+                          ),
+                          Text(
+                            ' / ${(budgetAmount / 1000000).toStringAsFixed(1)}M',
+                            style: TextStyle(
+                              fontSize: 12,
+                              fontWeight: FontWeight.w500,
+                              color: isDark
+                                  ? AppColors.darkTextMuted
+                                  : AppColors.lightTextMuted,
+                            ),
+                          ),
+                        ],
+                      ),
+                      const SizedBox(height: 2),
+                      Container(
+                        padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 1),
+                        decoration: BoxDecoration(
+                          color: progressColor.withValues(alpha: 0.15),
+                          borderRadius: BorderRadius.circular(6),
+                        ),
+                        child: Text(
+                          '$percent%',
+                          style: TextStyle(
+                            fontSize: 10,
+                            fontWeight: FontWeight.w700,
+                            color: progressColor,
+                          ),
+                        ),
+                      ),
+                    ],
                   ),
                 ],
               ),
-              const SizedBox(height: 4),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Text(
-                    '$percent% đã chi',
-                    style: TextStyle(
-                      fontSize: 11,
-                      fontWeight: FontWeight.w500,
-                      color: progressColor,
-                    ),
-                  ),
-                  if (isExceeded)
-                    const Text(
-                      'Vượt ngân sách!',
-                      style: TextStyle(
-                        fontSize: 11,
-                        fontWeight: FontWeight.w600,
-                        color: AppColors.error,
-                      ),
-                    )
-                  else if (isForecastExceeded)
-                    const Text(
-                      'Dự báo có thể vượt',
-                      style: TextStyle(
-                        fontSize: 11,
-                        fontWeight: FontWeight.w500,
-                        color: AppColors.warning,
-                      ),
-                    )
-                  else
-                    Text(
-                      'Còn lại ${remaining.toInt()} $currency',
-                      style: TextStyle(
-                        fontSize: 11,
-                        color: isDark
-                            ? AppColors.darkTextMuted
-                            : AppColors.lightTextMuted,
+              const SizedBox(height: AppSpacing.xs + 2),
+
+              // Neon Gradient Progress Track
+              Container(
+                height: 8,
+                decoration: BoxDecoration(
+                  color: Colors.white.withValues(alpha: 0.06),
+                  borderRadius: BorderRadius.circular(4),
+                ),
+                child: Stack(
+                  children: [
+                    FractionallySizedBox(
+                      widthFactor: ratio,
+                      child: Container(
+                        decoration: BoxDecoration(
+                          gradient: LinearGradient(
+                            colors: [
+                              progressColor.withValues(alpha: 0.7),
+                              progressColor,
+                            ],
+                          ),
+                          borderRadius: BorderRadius.circular(4),
+                          boxShadow: [
+                            BoxShadow(
+                              color: progressColor.withValues(alpha: 0.4),
+                              blurRadius: 6,
+                              offset: const Offset(0, 1),
+                            ),
+                          ],
+                        ),
                       ),
                     ),
-                ],
+                  ],
+                ),
               ),
             ],
           ),

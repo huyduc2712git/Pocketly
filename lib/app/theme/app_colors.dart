@@ -9,6 +9,12 @@ class AppColors {
   static const Color primaryLight = Color(0xFF818CF8);
   static const Color primaryContainer = Color(0xFF1E1E38);
 
+  // Radiant Secondary Accents
+  static const Color cyan = Color(0xFF06B6D4);
+  static const Color cyanLight = Color(0xFF67E8F9);
+  static const Color violet = Color(0xFF8B5CF6);
+  static const Color amber = Color(0xFFF59E0B);
+
   // Financial Semantics
   static const Color income = Color(0xFF10B981); // Emerald Green
   static const Color incomeLight = Color(0xFFD1FAE5);
@@ -31,12 +37,19 @@ class AppColors {
   // Dark Theme Backgrounds & Surfaces (Obsidian Slate)
   static const Color darkBackground = Color(0xFF090D16);
   static const Color darkSurface = Color(0xFF111827);
-  static const Color darkCard = Color(0xFF1E293B);
-  static const Color darkCardElevated = Color(0xFF26334D);
-  static const Color darkBorder = Color(0xFF334155);
+  static const Color darkCard = Color(0xFF161F30);
+  static const Color darkCardElevated = Color(0xFF1E293B);
+  static const Color darkBorder = Color(0xFF1E293B);
+  static const Color darkBorderLight = Color(0xFF334155);
   static const Color darkTextPrimary = Color(0xFFF8FAFC);
   static const Color darkTextSecondary = Color(0xFF94A3B8);
   static const Color darkTextMuted = Color(0xFF64748B);
+
+  // Glassmorphic Overlay Tokens
+  static final Color glassFillDark = const Color(0xFF111827).withValues(alpha: 0.65);
+  static final Color glassBorderDark = Colors.white.withValues(alpha: 0.12);
+  static final Color glassFillLight = Colors.white.withValues(alpha: 0.75);
+  static final Color glassBorderLight = Colors.black.withValues(alpha: 0.08);
 
   // Light Theme Backgrounds & Surfaces
   static const Color lightBackground = Color(0xFFF8FAFC);
@@ -48,15 +61,21 @@ class AppColors {
   static const Color lightTextSecondary = Color(0xFF475569);
   static const Color lightTextMuted = Color(0xFF94A3B8);
 
-  // Gradients
+  // Luxury Gradients
   static const LinearGradient primaryGradient = LinearGradient(
-    colors: [Color(0xFF6366F1), Color(0xFF8B5CF6)],
+    colors: [Color(0xFF6366F1), Color(0xFF8B5CF6), Color(0xFF06B6D4)],
     begin: Alignment.topLeft,
     end: Alignment.bottomRight,
   );
 
   static const LinearGradient balanceGradient = LinearGradient(
-    colors: [Color(0xFF1E1B4B), Color(0xFF312E81), Color(0xFF4338CA)],
+    colors: [Color(0xFF0F172A), Color(0xFF1E1B4B), Color(0xFF312E81), Color(0xFF4338CA)],
+    begin: Alignment.topLeft,
+    end: Alignment.bottomRight,
+  );
+
+  static const LinearGradient heroCardMesh = LinearGradient(
+    colors: [Color(0xFF1E1B4B), Color(0xFF2E1065), Color(0xFF0284C7)],
     begin: Alignment.topLeft,
     end: Alignment.bottomRight,
   );
@@ -69,6 +88,18 @@ class AppColors {
 
   static const LinearGradient expenseGradient = LinearGradient(
     colors: [Color(0xFF881337), Color(0xFFBE123C), Color(0xFFF43F5E)],
+    begin: Alignment.topLeft,
+    end: Alignment.bottomRight,
+  );
+
+  static const LinearGradient goldGradient = LinearGradient(
+    colors: [Color(0xFFFDE047), Color(0xFFEAB308), Color(0xFFCA8A04)],
+    begin: Alignment.topLeft,
+    end: Alignment.bottomRight,
+  );
+
+  static const LinearGradient purpleGradient = LinearGradient(
+    colors: [Color(0xFFA855F7), Color(0xFF7C3AED), Color(0xFF4C1D95)],
     begin: Alignment.topLeft,
     end: Alignment.bottomRight,
   );

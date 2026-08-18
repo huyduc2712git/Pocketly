@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import '../../../../app/router/route_names.dart';
-import '../../../../app/theme/app_colors.dart';
-import '../../../../app/theme/app_spacing.dart';
-import '../../../insight/presentation/controllers/insights_controller.dart';
+import 'package:finly/app/router/route_names.dart';
+import 'package:finly/app/theme/app_colors.dart';
+import 'package:finly/app/theme/app_icons.dart';
+import 'package:finly/app/theme/app_spacing.dart';
+import 'package:finly/features/insight/presentation/controllers/insights_controller.dart';
 import '../controllers/dashboard_controller.dart';
 import '../widgets/balance_card.dart';
 import '../widgets/budget_overview_card.dart';
@@ -22,35 +23,42 @@ class HomePage extends ConsumerWidget {
 
     return Scaffold(
       appBar: AppBar(
+        elevation: 0,
+        scrolledUnderElevation: 0,
         title: Row(
           children: [
+            // Glowing App Icon
             Container(
-              width: 36,
-              height: 36,
+              width: 38,
+              height: 38,
               decoration: BoxDecoration(
                 gradient: AppColors.primaryGradient,
-                borderRadius: BorderRadius.circular(10),
+                borderRadius: BorderRadius.circular(12),
+                boxShadow: [
+                  BoxShadow(
+                    color: AppColors.primary.withValues(alpha: 0.4),
+                    blurRadius: 10,
+                    offset: const Offset(0, 3),
+                  ),
+                ],
               ),
               child: const Center(
-                child: Text(
-                  'F',
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontWeight: FontWeight.w800,
-                    fontSize: 20,
-                  ),
+                child: Icon(
+                  Icons.account_balance_wallet_rounded,
+                  color: Colors.white,
+                  size: 20,
                 ),
               ),
             ),
             const SizedBox(width: AppSpacing.sm),
-            const Column(
+            Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(
-                  'Finly',
+                const Text(
+                  'Pocketly',
                   style: TextStyle(
                     fontSize: 18,
-                    fontWeight: FontWeight.w800,
+                    fontWeight: FontWeight.w900,
                     letterSpacing: -0.5,
                   ),
                 ),
@@ -58,8 +66,8 @@ class HomePage extends ConsumerWidget {
                   'Quản lý tài chính thông minh',
                   style: TextStyle(
                     fontSize: 11,
-                    fontWeight: FontWeight.w400,
-                    color: AppColors.darkTextMuted,
+                    fontWeight: FontWeight.w500,
+                    color: Colors.white.withValues(alpha: 0.6),
                   ),
                 ),
               ],
@@ -67,25 +75,42 @@ class HomePage extends ConsumerWidget {
           ],
         ),
         actions: [
-          IconButton(
-            icon: const Icon(Icons.notifications_none_rounded),
-            onPressed: () {},
+          // Notification Bell with Badge
+          Stack(
+            children: [
+              IconButton(
+                icon: const Icon(Icons.notifications_none_rounded),
+                onPressed: () => context.go(RouteNames.analytics),
+              ),
+              Positioned(
+                top: 10,
+                right: 10,
+                child: Container(
+                  width: 8,
+                  height: 8,
+                  decoration: const BoxDecoration(
+                    color: AppColors.expense,
+                    shape: BoxShape.circle,
+                  ),
+                ),
+              ),
+            ],
           ),
           const SizedBox(width: AppSpacing.xs),
         ],
       ),
       body: SingleChildScrollView(
-        physics: const AlwaysScrollableScrollPhysics(),
+        physics: const BouncingScrollPhysics(parent: AlwaysScrollableScrollPhysics()),
         padding: const EdgeInsets.fromLTRB(
           AppSpacing.md,
           AppSpacing.xs,
           AppSpacing.md,
-          AppSpacing.huge,
+          AppSpacing.huge + 20,
         ),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            // Main Balance Card
+            // Main Luxury Holographic Balance Card
             BalanceCard(
               summary: summary,
               onToggleVisibility: () {
@@ -93,7 +118,39 @@ class HomePage extends ConsumerWidget {
                 ref.read(isBalanceVisibleProvider.notifier).state = !current;
               },
             ),
-            const SizedBox(height: AppSpacing.md),
+            const SizedBox(height: AppSpacing.lg),
+
+            // Quick Actions 4-Pill Grid
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                _buildQuickActionItem(
+                  icon: AppIcons.wallet,
+                  label: 'Ví tiền',
+                  color: const Color(0xFF6366F1),
+                  onTap: () => context.go(RouteNames.wallets),
+                ),
+                _buildQuickActionItem(
+                  icon: AppIcons.transfer,
+                  label: 'Chuyển tiền',
+                  color: const Color(0xFF8B5CF6),
+                  onTap: () => context.go(RouteNames.transactions),
+                ),
+                _buildQuickActionItem(
+                  icon: AppIcons.budget,
+                  label: 'Ngân sách',
+                  color: const Color(0xFF06B6D4),
+                  onTap: () => context.go(RouteNames.budget),
+                ),
+                _buildQuickActionItem(
+                  icon: AppIcons.analytics,
+                  label: 'Báo cáo',
+                  color: const Color(0xFF10B981),
+                  onTap: () => context.go(RouteNames.analytics),
+                ),
+              ],
+            ),
+            const SizedBox(height: AppSpacing.lg),
 
             // Quick Metrics (Remaining budget & progress)
             QuickMetricsRow(summary: summary),
@@ -105,7 +162,7 @@ class HomePage extends ConsumerWidget {
                   ? topInsight.title
                   : (summary.topSpendingCategoryName != null
                         ? 'Khoản chi lớn nhất: ${summary.topSpendingCategoryName}'
-                        : 'Tổng quan chi tiêu thông minh'),
+                        : 'Pocketly Smart Insight'),
               message: topInsight != null
                   ? topInsight.message
                   : (summary.topSpendingCategoryName != null
@@ -123,6 +180,60 @@ class HomePage extends ConsumerWidget {
 
             // Recent Transactions List
             RecentTransactionsCard(summary: summary),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildQuickActionItem({
+    required IconData icon,
+    required String label,
+    required Color color,
+    required VoidCallback onTap,
+  }) {
+    return InkWell(
+      onTap: onTap,
+      borderRadius: BorderRadius.circular(16),
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 6),
+        child: Column(
+          children: [
+            Container(
+              width: 54,
+              height: 54,
+              decoration: BoxDecoration(
+                color: color.withValues(alpha: 0.15),
+                borderRadius: BorderRadius.circular(18),
+                border: Border.all(
+                  color: color.withValues(alpha: 0.3),
+                  width: 1.2,
+                ),
+                boxShadow: [
+                  BoxShadow(
+                    color: color.withValues(alpha: 0.15),
+                    blurRadius: 10,
+                    offset: const Offset(0, 3),
+                  ),
+                ],
+              ),
+              child: Center(
+                child: Icon(
+                  icon,
+                  color: color,
+                  size: 24,
+                ),
+              ),
+            ),
+            const SizedBox(height: 8),
+            Text(
+              label,
+              style: const TextStyle(
+                fontSize: 12,
+                fontWeight: FontWeight.w600,
+                color: Colors.white,
+              ),
+            ),
           ],
         ),
       ),

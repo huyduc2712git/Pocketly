@@ -1,9 +1,8 @@
 import 'package:flutter/material.dart';
-import '../../app/theme/app_colors.dart';
-import '../../app/theme/app_radius.dart';
-import '../../app/theme/app_spacing.dart';
-import '../../core/utils/date_formatter.dart';
-import 'amount_text.dart';
+import 'package:finly/app/theme/app_colors.dart';
+import 'package:finly/app/theme/app_spacing.dart';
+import 'package:finly/core/utils/date_formatter.dart';
+import 'package:finly/shared/widgets/amount_text.dart';
 
 class TransactionTile extends StatelessWidget {
   final String title;
@@ -58,25 +57,50 @@ class TransactionTile extends StatelessWidget {
       color: Colors.transparent,
       child: InkWell(
         onTap: onTap,
-        borderRadius: AppRadius.borderMd,
+        borderRadius: BorderRadius.circular(18),
         child: Padding(
           padding: const EdgeInsets.symmetric(
             horizontal: AppSpacing.sm,
-            vertical: AppSpacing.xs,
+            vertical: AppSpacing.sm - 2,
           ),
           child: Row(
             children: [
-              // Category Icon Container
+              // Rich Squircle Category Icon with Gradient Shadow
               Container(
-                width: 44,
-                height: 44,
+                width: 48,
+                height: 48,
                 decoration: BoxDecoration(
-                  color: iconColor.withValues(alpha: 0.12),
-                  borderRadius: AppRadius.borderMd,
+                  gradient: LinearGradient(
+                    colors: [
+                      iconColor.withValues(alpha: 0.25),
+                      iconColor.withValues(alpha: 0.08),
+                    ],
+                    begin: Alignment.topLeft,
+                    end: Alignment.bottomRight,
+                  ),
+                  borderRadius: BorderRadius.circular(16),
+                  border: Border.all(
+                    color: iconColor.withValues(alpha: 0.3),
+                    width: 1,
+                  ),
+                  boxShadow: [
+                    BoxShadow(
+                      color: iconColor.withValues(alpha: 0.15),
+                      blurRadius: 8,
+                      offset: const Offset(0, 2),
+                    ),
+                  ],
                 ),
-                child: Center(child: Icon(icon, size: 22, color: iconColor)),
+                child: Center(
+                  child: Icon(
+                    icon,
+                    size: 22,
+                    color: iconColor,
+                  ),
+                ),
               ),
               const SizedBox(width: AppSpacing.md),
+
               // Transaction Details
               Expanded(
                 child: Column(
@@ -89,7 +113,8 @@ class TransactionTile extends StatelessWidget {
                             title,
                             style: TextStyle(
                               fontSize: 15,
-                              fontWeight: FontWeight.w600,
+                              fontWeight: FontWeight.w700,
+                              letterSpacing: -0.2,
                               color: isDark
                                   ? AppColors.darkTextPrimary
                                   : AppColors.lightTextPrimary,
@@ -115,7 +140,7 @@ class TransactionTile extends StatelessWidget {
                         ],
                       ],
                     ),
-                    const SizedBox(height: 2),
+                    const SizedBox(height: 3),
                     Row(
                       children: [
                         if (walletDisplay.isNotEmpty) ...[
@@ -124,7 +149,7 @@ class TransactionTile extends StatelessWidget {
                               walletDisplay,
                               style: TextStyle(
                                 fontSize: 12,
-                                fontWeight: FontWeight.w500,
+                                fontWeight: FontWeight.w600,
                                 color: isDark
                                     ? AppColors.darkTextSecondary
                                     : AppColors.lightTextSecondary,
@@ -158,7 +183,8 @@ class TransactionTile extends StatelessWidget {
                 ),
               ),
               const SizedBox(width: AppSpacing.sm),
-              // Amount
+
+              // Amount Column
               Column(
                 crossAxisAlignment: CrossAxisAlignment.end,
                 children: [
@@ -168,7 +194,7 @@ class TransactionTile extends StatelessWidget {
                     type: amountType,
                     showSign: type != 'transfer',
                     fontSize: 15,
-                    fontWeight: FontWeight.w700,
+                    fontWeight: FontWeight.w800,
                   ),
                   if (subtitle != null && subtitle!.isNotEmpty) ...[
                     const SizedBox(height: 2),
@@ -178,6 +204,7 @@ class TransactionTile extends StatelessWidget {
                         subtitle!,
                         style: TextStyle(
                           fontSize: 11,
+                          fontWeight: FontWeight.w500,
                           color: isDark
                               ? AppColors.darkTextMuted
                               : AppColors.lightTextMuted,

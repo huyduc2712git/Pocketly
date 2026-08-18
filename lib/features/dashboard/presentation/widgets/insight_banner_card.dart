@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
-import '../../../../app/theme/app_colors.dart';
-import '../../../../app/theme/app_radius.dart';
-import '../../../../app/theme/app_spacing.dart';
+import 'package:finly/app/theme/app_colors.dart';
+import 'package:finly/app/theme/app_spacing.dart';
 
 class InsightBannerCard extends StatelessWidget {
   final String title;
@@ -19,80 +18,126 @@ class InsightBannerCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       decoration: BoxDecoration(
-        color: const Color(0xFF1E1B4B).withValues(alpha: 0.6),
-        borderRadius: AppRadius.borderMd,
-        border: Border.all(
-          color: AppColors.primary.withValues(alpha: 0.3),
-          width: 1,
+        gradient: const LinearGradient(
+          colors: [
+            Color(0xFF1E1B4B),
+            Color(0xFF172554),
+          ],
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
         ),
+        borderRadius: BorderRadius.circular(20),
+        border: Border.all(
+          color: const Color(0xFF6366F1).withValues(alpha: 0.35),
+          width: 1.2,
+        ),
+        boxShadow: [
+          BoxShadow(
+            color: const Color(0xFF6366F1).withValues(alpha: 0.18),
+            blurRadius: 16,
+            offset: const Offset(0, 4),
+          ),
+        ],
       ),
       child: Material(
         color: Colors.transparent,
-        borderRadius: AppRadius.borderMd,
+        borderRadius: BorderRadius.circular(20),
         child: InkWell(
           onTap: onTap,
-          borderRadius: AppRadius.borderMd,
+          borderRadius: BorderRadius.circular(20),
           child: Padding(
-            padding: const EdgeInsets.all(AppSpacing.md),
+            padding: const EdgeInsets.all(AppSpacing.md + 2),
             child: Row(
               children: [
+                // Glowing AI Star container
                 Container(
-                  padding: const EdgeInsets.all(8),
+                  width: 42,
+                  height: 42,
                   decoration: BoxDecoration(
-                    color: AppColors.primary.withValues(alpha: 0.2),
-                    shape: BoxShape.circle,
+                    gradient: AppColors.primaryGradient,
+                    borderRadius: BorderRadius.circular(14),
+                    boxShadow: [
+                      BoxShadow(
+                        color: AppColors.primary.withValues(alpha: 0.4),
+                        blurRadius: 10,
+                        offset: const Offset(0, 2),
+                      ),
+                    ],
                   ),
-                  child: const Icon(
-                    Icons.auto_awesome_rounded,
-                    color: AppColors.primaryLight,
-                    size: 20,
+                  child: const Center(
+                    child: Icon(
+                      Icons.auto_awesome_rounded,
+                      color: Colors.white,
+                      size: 22,
+                    ),
                   ),
                 ),
                 const SizedBox(width: AppSpacing.md),
+
+                // Text details
                 Expanded(
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      const Row(
+                      Row(
                         children: [
-                          Text(
-                            'Finly Smart Insight',
+                          const Text(
+                            'Pocketly Smart Insight',
                             style: TextStyle(
                               fontSize: 11,
                               fontWeight: FontWeight.w700,
-                              color: AppColors.primaryLight,
                               letterSpacing: 0.5,
+                              color: AppColors.cyanLight,
                             ),
                           ),
-                          Spacer(),
-                          Icon(
-                            Icons.chevron_right_rounded,
-                            size: 16,
-                            color: AppColors.darkTextMuted,
+                          const SizedBox(width: 4),
+                          Container(
+                            padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 1),
+                            decoration: BoxDecoration(
+                              color: AppColors.primary.withValues(alpha: 0.3),
+                              borderRadius: BorderRadius.circular(4),
+                            ),
+                            child: const Text(
+                              'AI',
+                              style: TextStyle(
+                                fontSize: 9,
+                                fontWeight: FontWeight.w800,
+                                color: Colors.white,
+                              ),
+                            ),
                           ),
                         ],
                       ),
-                      const SizedBox(height: 2),
+                      const SizedBox(height: 3),
                       Text(
                         title,
                         style: const TextStyle(
-                          fontSize: 13,
-                          fontWeight: FontWeight.w600,
-                          color: AppColors.darkTextPrimary,
+                          fontSize: 14,
+                          fontWeight: FontWeight.w700,
+                          color: Colors.white,
                         ),
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
                       ),
                       const SizedBox(height: 2),
                       Text(
                         message,
-                        style: const TextStyle(
+                        style: TextStyle(
                           fontSize: 12,
-                          color: AppColors.darkTextSecondary,
+                          fontWeight: FontWeight.w400,
+                          color: Colors.white.withValues(alpha: 0.7),
                         ),
                         maxLines: 2,
                         overflow: TextOverflow.ellipsis,
                       ),
                     ],
                   ),
+                ),
+                const SizedBox(width: AppSpacing.xs),
+                const Icon(
+                  Icons.arrow_forward_ios_rounded,
+                  color: AppColors.primaryLight,
+                  size: 14,
                 ),
               ],
             ),

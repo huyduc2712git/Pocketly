@@ -1,7 +1,9 @@
+import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import '../../app/theme/app_colors.dart';
-import 'quick_action_fab.dart';
+import 'package:finly/app/theme/app_colors.dart';
+import 'package:finly/app/theme/app_icons.dart';
+import 'package:finly/shared/widgets/quick_action_fab.dart';
 
 class AppShell extends StatelessWidget {
   final StatefulNavigationShell navigationShell;
@@ -26,79 +28,97 @@ class AppShell extends StatelessWidget {
     final isDark = theme.brightness == Brightness.dark;
 
     return Scaffold(
+      extendBody: true,
       body: navigationShell,
       floatingActionButton: onQuickAction != null
-          ? QuickActionFab(onActionSelected: onQuickAction!)
+          ? Padding(
+              padding: const EdgeInsets.only(bottom: 12),
+              child: QuickActionFab(onActionSelected: onQuickAction!),
+            )
           : null,
       floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
-      bottomNavigationBar: Container(
-        decoration: BoxDecoration(
-          color: isDark ? AppColors.darkSurface : AppColors.lightSurface,
-          border: Border(
-            top: BorderSide(
-              color: isDark ? AppColors.darkBorder : AppColors.lightBorder,
-              width: 1,
+      bottomNavigationBar: ClipRRect(
+        child: BackdropFilter(
+          filter: ImageFilter.blur(sigmaX: 24, sigmaY: 24),
+          child: Container(
+            decoration: BoxDecoration(
+              color: isDark
+                  ? const Color(0xFF0D131F).withValues(alpha: 0.82)
+                  : Colors.white.withValues(alpha: 0.85),
+              border: Border(
+                top: BorderSide(
+                  color: isDark
+                      ? Colors.white.withValues(alpha: 0.08)
+                      : Colors.black.withValues(alpha: 0.06),
+                  width: 1,
+                ),
+              ),
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.black.withValues(alpha: isDark ? 0.45 : 0.08),
+                  blurRadius: 24,
+                  offset: const Offset(0, -6),
+                ),
+              ],
             ),
-          ),
-          boxShadow: [
-            BoxShadow(
-              color: Colors.black.withValues(alpha: isDark ? 0.3 : 0.05),
-              blurRadius: 16,
-              offset: const Offset(0, -4),
+            child: SafeArea(
+              child: NavigationBar(
+                selectedIndex: navigationShell.currentIndex,
+                onDestinationSelected: _onItemTapped,
+                backgroundColor: Colors.transparent,
+                indicatorColor: AppColors.primary.withValues(alpha: 0.22),
+                elevation: 0,
+                height: 68,
+                labelBehavior: NavigationDestinationLabelBehavior.alwaysShow,
+                destinations: const [
+                  NavigationDestination(
+                    icon: Icon(AppIcons.dashboard, size: 22),
+                    selectedIcon: Icon(
+                      AppIcons.dashboard,
+                      color: AppColors.primaryLight,
+                      size: 24,
+                    ),
+                    label: 'Tổng quan',
+                  ),
+                  NavigationDestination(
+                    icon: Icon(AppIcons.transactions, size: 22),
+                    selectedIcon: Icon(
+                      AppIcons.transactions,
+                      color: AppColors.primaryLight,
+                      size: 24,
+                    ),
+                    label: 'Sổ thu chi',
+                  ),
+                  NavigationDestination(
+                    icon: Icon(AppIcons.budget, size: 22),
+                    selectedIcon: Icon(
+                      AppIcons.budget,
+                      color: AppColors.primaryLight,
+                      size: 24,
+                    ),
+                    label: 'Ngân sách',
+                  ),
+                  NavigationDestination(
+                    icon: Icon(AppIcons.analytics, size: 22),
+                    selectedIcon: Icon(
+                      AppIcons.analytics,
+                      color: AppColors.primaryLight,
+                      size: 24,
+                    ),
+                    label: 'Báo cáo',
+                  ),
+                  NavigationDestination(
+                    icon: Icon(AppIcons.profile, size: 22),
+                    selectedIcon: Icon(
+                      AppIcons.profile,
+                      color: AppColors.primaryLight,
+                      size: 24,
+                    ),
+                    label: 'Cá nhân',
+                  ),
+                ],
+              ),
             ),
-          ],
-        ),
-        child: SafeArea(
-          child: NavigationBar(
-            selectedIndex: navigationShell.currentIndex,
-            onDestinationSelected: _onItemTapped,
-            backgroundColor: Colors.transparent,
-            indicatorColor: AppColors.primary.withValues(alpha: 0.18),
-            elevation: 0,
-            height: 65,
-            labelBehavior: NavigationDestinationLabelBehavior.alwaysShow,
-            destinations: const [
-              NavigationDestination(
-                icon: Icon(Icons.home_outlined),
-                selectedIcon: Icon(
-                  Icons.home_rounded,
-                  color: AppColors.primary,
-                ),
-                label: 'Tổng quan',
-              ),
-              NavigationDestination(
-                icon: Icon(Icons.receipt_long_outlined),
-                selectedIcon: Icon(
-                  Icons.receipt_long_rounded,
-                  color: AppColors.primary,
-                ),
-                label: 'Sổ thu chi',
-              ),
-              NavigationDestination(
-                icon: Icon(Icons.pie_chart_outline_rounded),
-                selectedIcon: Icon(
-                  Icons.pie_chart_rounded,
-                  color: AppColors.primary,
-                ),
-                label: 'Ngân sách',
-              ),
-              NavigationDestination(
-                icon: Icon(Icons.insights_outlined),
-                selectedIcon: Icon(
-                  Icons.insights_rounded,
-                  color: AppColors.primary,
-                ),
-                label: 'Báo cáo',
-              ),
-              NavigationDestination(
-                icon: Icon(Icons.person_outline_rounded),
-                selectedIcon: Icon(
-                  Icons.person_rounded,
-                  color: AppColors.primary,
-                ),
-                label: 'Cá nhân',
-              ),
-            ],
           ),
         ),
       ),
