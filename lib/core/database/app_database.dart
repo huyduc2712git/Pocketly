@@ -38,6 +38,10 @@ class AppDatabase extends _$AppDatabase {
     return driftDatabase(
       name: DbConstants.databaseName,
       native: const DriftNativeOptions(shareAcrossIsolates: true),
+      web: DriftWebOptions(
+        sqlite3Wasm: Uri.parse('sqlite3.wasm'),
+        driftWorker: Uri.parse('drift_worker.js'),
+      ),
     );
   }
 
@@ -80,21 +84,21 @@ class AppDatabase extends _$AppDatabase {
         updatedAt: Value(now),
       ),
       CategoriesTableCompanion.insert(
-        id: 'cat_shopping',
-        name: 'Mua sắm',
+        id: 'cat_bills',
+        name: 'Hóa đơn & Tiện ích',
         type: 'expense',
-        icon: 'shopping_bag_rounded',
+        icon: 'receipt_long_rounded',
         color: '0xFFAB47BC',
         isSystem: const Value(true),
         createdAt: Value(now),
         updatedAt: Value(now),
       ),
       CategoriesTableCompanion.insert(
-        id: 'cat_bills',
-        name: 'Hóa đơn & Tiện ích',
+        id: 'cat_shopping',
+        name: 'Mua sắm',
         type: 'expense',
-        icon: 'receipt_long_rounded',
-        color: '0xFFFFA726',
+        icon: 'shopping_bag_rounded',
+        color: '0xFFEC407A',
         isSystem: const Value(true),
         createdAt: Value(now),
         updatedAt: Value(now),
@@ -103,17 +107,7 @@ class AppDatabase extends _$AppDatabase {
         id: 'cat_entertainment',
         name: 'Giải trí',
         type: 'expense',
-        icon: 'movie_rounded',
-        color: '0xFFEC407A',
-        isSystem: const Value(true),
-        createdAt: Value(now),
-        updatedAt: Value(now),
-      ),
-      CategoriesTableCompanion.insert(
-        id: 'cat_health',
-        name: 'Sức khỏe & Y tế',
-        type: 'expense',
-        icon: 'medical_services_rounded',
+        icon: 'sports_esports_rounded',
         color: '0xFF26A69A',
         isSystem: const Value(true),
         createdAt: Value(now),
