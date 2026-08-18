@@ -1,23 +1,31 @@
-enum InsightType {
-  spendingSpike,
-  budgetExceeded,
-  budgetForecastExceeded,
-  unusualTransaction,
-  lowBalance,
-  highDailySpend,
-  monthlySavingProgress,
-  subscriptionDetected,
-}
+enum InsightSeverity {
+  info,
+  warning,
+  critical,
+  positive;
 
-enum InsightSeverity { info, warning, critical, positive }
+  static InsightSeverity fromString(String val) {
+    switch (val.toLowerCase()) {
+      case 'warning':
+        return InsightSeverity.warning;
+      case 'critical':
+        return InsightSeverity.critical;
+      case 'positive':
+        return InsightSeverity.positive;
+      case 'info':
+      default:
+        return InsightSeverity.info;
+    }
+  }
+}
 
 class InsightEntity {
   final String id;
-  final InsightType type;
+  final String type; // 'category_spike', 'budget_risk', 'upcoming_subscription', 'savings_achievement', 'low_balance'
   final String title;
   final String message;
   final InsightSeverity severity;
-  final Map<String, dynamic>? metadata;
+  final String? metadata;
   final bool isDismissed;
   final DateTime createdAt;
 
@@ -31,4 +39,26 @@ class InsightEntity {
     this.isDismissed = false,
     required this.createdAt,
   });
+
+  InsightEntity copyWith({
+    String? id,
+    String? type,
+    String? title,
+    String? message,
+    InsightSeverity? severity,
+    String? metadata,
+    bool? isDismissed,
+    DateTime? createdAt,
+  }) {
+    return InsightEntity(
+      id: id ?? this.id,
+      type: type ?? this.type,
+      title: title ?? this.title,
+      message: message ?? this.message,
+      severity: severity ?? this.severity,
+      metadata: metadata ?? this.metadata,
+      isDismissed: isDismissed ?? this.isDismissed,
+      createdAt: createdAt ?? this.createdAt,
+    );
+  }
 }

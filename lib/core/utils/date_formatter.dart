@@ -1,18 +1,25 @@
-import 'package:intl/intl.dart';
-
 class DateFormatter {
   DateFormatter._();
 
-  static String formatFullDate(DateTime date, {String locale = 'vi_VN'}) {
-    return DateFormat('dd/MM/yyyy', locale).format(date);
+  static String formatDate(DateTime date) {
+    final day = date.day.toString().padLeft(2, '0');
+    final month = date.month.toString().padLeft(2, '0');
+    final year = date.year.toString();
+    return '$day/$month/$year';
   }
 
-  static String formatDateTime(DateTime date, {String locale = 'vi_VN'}) {
-    return DateFormat('HH:mm - dd/MM/yyyy', locale).format(date);
+  static String formatFullDate(DateTime date) {
+    return formatDate(date);
   }
 
-  static String formatMonthYear(DateTime date, {String locale = 'vi_VN'}) {
-    return DateFormat('MMMM yyyy', locale).format(date);
+  static String formatDateTime(DateTime date) {
+    final hour = date.hour.toString().padLeft(2, '0');
+    final minute = date.minute.toString().padLeft(2, '0');
+    return '$hour:$minute - ${formatDate(date)}';
+  }
+
+  static String formatMonthYear(DateTime date) {
+    return 'Tháng ${date.month}/${date.year}';
   }
 
   static String formatRelative(DateTime date) {

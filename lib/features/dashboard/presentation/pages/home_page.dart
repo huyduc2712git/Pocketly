@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 import '../../../../app/router/route_names.dart';
 import '../../../../app/theme/app_colors.dart';
 import '../../../../app/theme/app_spacing.dart';
+import '../../../insight/presentation/controllers/insights_controller.dart';
 import '../controllers/dashboard_controller.dart';
 import '../widgets/balance_card.dart';
 import '../widgets/budget_overview_card.dart';
@@ -17,6 +18,7 @@ class HomePage extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final summary = ref.watch(dashboardSummaryProvider);
+    final topInsight = ref.watch(topInsightProvider);
 
     return Scaffold(
       appBar: AppBar(
@@ -97,14 +99,18 @@ class HomePage extends ConsumerWidget {
             QuickMetricsRow(summary: summary),
             const SizedBox(height: AppSpacing.md),
 
-            // Smart Rule-based Insight Banner
+            // Smart Rule-based Insight Banner (Powered by InsightEngine)
             InsightBannerCard(
-              title: summary.topSpendingCategoryName != null
-                  ? 'Khoản chi lớn nhất: ${summary.topSpendingCategoryName}'
-                  : 'Tổng quan chi tiêu thông minh',
-              message: summary.topSpendingCategoryName != null
-                  ? 'Bạn đã chi tiêu cho ${summary.topSpendingCategoryName} trong tháng này.'
-                  : 'Ghi nhận thu chi đều đặn mỗi ngày để nhận phân tích tài chính thông minh.',
+              title: topInsight != null
+                  ? topInsight.title
+                  : (summary.topSpendingCategoryName != null
+                      ? 'Khoản chi lớn nhất: ${summary.topSpendingCategoryName}'
+                      : 'Tổng quan chi tiêu thông minh'),
+              message: topInsight != null
+                  ? topInsight.message
+                  : (summary.topSpendingCategoryName != null
+                      ? 'Bạn đã chi tiêu cho ${summary.topSpendingCategoryName} trong tháng này.'
+                      : 'Ghi nhận thu chi đều đặn mỗi ngày để nhận phân tích tài chính thông minh.'),
               onTap: () => context.go(RouteNames.analytics),
             ),
             const SizedBox(height: AppSpacing.md),
