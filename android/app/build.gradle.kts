@@ -7,7 +7,6 @@ plugins {
 android {
     namespace = "com.finly.app.finly"
     compileSdk = flutter.compileSdkVersion
-    ndkVersion = flutter.ndkVersion
 
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_17
