@@ -1,10 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import '../../../../app/router/route_names.dart';
 import '../../../../app/theme/app_colors.dart';
 import '../../../../app/theme/app_spacing.dart';
-import '../../../../shared/widgets/app_error_state.dart';
-import '../../../../shared/widgets/app_loading.dart';
 import '../controllers/dashboard_controller.dart';
 import '../widgets/balance_card.dart';
 import '../widgets/budget_overview_card.dart';
@@ -17,7 +16,7 @@ class HomePage extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final dashboardState = ref.watch(dashboardControllerProvider);
+    final summary = ref.watch(dashboardSummaryProvider);
 
     return Scaffold(
       appBar: AppBar(
@@ -68,72 +67,58 @@ class HomePage extends ConsumerWidget {
         actions: [
           IconButton(
             icon: const Icon(Icons.notifications_none_rounded),
-            onPressed: () {
-              // Notification center placeholder
-            },
+            onPressed: () {},
           ),
           const SizedBox(width: AppSpacing.xs),
         ],
       ),
-      body: dashboardState.when(
-        loading: () => const AppLoading(message: 'Đang tải dữ liệu tài chính...'),
-        error: (err, _) => AppErrorState(
-          title: 'Không thể tải dữ liệu',
-          message: err.toString(),
-          onRetry: () => ref.read(dashboardControllerProvider.notifier).loadDashboardData(),
+      body: SingleChildScrollView(
+        physics: const AlwaysScrollableScrollPhysics(),
+        padding: const EdgeInsets.fromLTRB(
+          AppSpacing.md,
+          AppSpacing.xs,
+          AppSpacing.md,
+          AppSpacing.huge,
         ),
-        data: (summary) {
-          return RefreshIndicator(
-            onRefresh: () =>
-                ref.read(dashboardControllerProvider.notifier).loadDashboardData(),
-            child: SingleChildScrollView(
-              physics: const AlwaysScrollableScrollPhysics(),
-              padding: const EdgeInsets.fromLTRB(
-                AppSpacing.md,
-                AppSpacing.xs,
-                AppSpacing.md,
-                AppSpacing.huge,
-              ),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                children: [
-                  // Main Balance Card
-                  BalanceCard(
-                    summary: summary,
-                    onToggleVisibility: () => ref
-                        .read(dashboardControllerProvider.notifier)
-                        .toggleBalanceVisibility(),
-                  ),
-                  const SizedBox(height: AppSpacing.md),
-
-                  // Quick Metrics (Remaining budget & progress)
-                  QuickMetricsRow(summary: summary),
-                  const SizedBox(height: AppSpacing.md),
-
-                  // Smart Rule-based Insight Banner
-                  InsightBannerCard(
-                    title: 'Chi tiêu ăn uống tăng 20%',
-                    message:
-                        'Bạn đã chi tiêu 3.2M ₫ cho Ăn uống trong tuần này, cao hơn 20% so với tuần trước.',
-                    onTap: () => context.go('/analytics'),
-                  ),
-                  const SizedBox(height: AppSpacing.md),
-
-                  // Category Budgets Overview
-                  BudgetOverviewCard(
-                    onManageBudget: () => context.go('/budget'),
-                  ),
-                  const SizedBox(height: AppSpacing.md),
-
-                  // Recent Transactions List
-                  RecentTransactionsCard(
-                    onViewAll: () => context.go('/transactions'),
-                  ),
-                ],
-              ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            // Main Balance Card
+            BalanceCard(
+              summary: summary,
+              onToggleVisibility: () {
+                final current = ref.read(isBalanceVisibleProvider);
+                ref.read(isBalanceVisibleProvider.notifier).state = !current;
+              },
             ),
-          );
-        },
+            const SizedBox(height: AppSpacing.md),
+
+            // Quick Metrics (Remaining budget & progress)
+            QuickMetricsRow(summary: summary),
+            const SizedBox(height: AppSpacing.md),
+
+            // Smart Rule-based Insight Banner
+            InsightBannerCard(
+              title: summary.topSpendingCategoryName != null
+                  ? 'Khoản chi lớn nhất: ${summary.topSpendingCategoryName}'
+                  : 'Tổng quan chi tiêu thông minh',
+              message: summary.topSpendingCategoryName != null
+                  ? 'Bạn đã chi tiêu cho ${summary.topSpendingCategoryName} trong tháng này.'
+                  : 'Ghi nhận thu chi đều đặn mỗi ngày để nhận phân tích tài chính thông minh.',
+              onTap: () => context.go(RouteNames.analytics),
+            ),
+            const SizedBox(height: AppSpacing.md),
+
+            // Category Budgets Overview
+            BudgetOverviewCard(
+              onManageBudget: () => context.go(RouteNames.budget),
+            ),
+            const SizedBox(height: AppSpacing.md),
+
+            // Recent Transactions List
+            RecentTransactionsCard(summary: summary),
+          ],
+        ),
       ),
     );
   }

@@ -1,101 +1,80 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
+import '../../../../app/router/route_names.dart';
 import '../../../../app/theme/app_colors.dart';
 import '../../../../app/theme/app_spacing.dart';
+import '../../../../core/utils/icon_helper.dart';
 import '../../../../shared/widgets/app_card.dart';
 import '../../../../shared/widgets/transaction_tile.dart';
+import '../controllers/dashboard_controller.dart';
 
 class RecentTransactionsCard extends StatelessWidget {
-  final VoidCallback? onViewAll;
+  final DashboardSummary summary;
 
-  const RecentTransactionsCard({super.key, this.onViewAll});
+  const RecentTransactionsCard({super.key, required this.summary});
 
   @override
   Widget build(BuildContext context) {
-    return AppCard(
-      padding: const EdgeInsets.symmetric(horizontal: AppSpacing.sm, vertical: AppSpacing.md),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: AppSpacing.sm),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            const Text(
+              'Giao dịch gần đây',
+              style: TextStyle(
+                fontSize: 16,
+                fontWeight: FontWeight.w700,
+                color: AppColors.darkTextPrimary,
+              ),
+            ),
+            TextButton(
+              onPressed: () => context.go(RouteNames.transactions),
+              child: const Text('Xem tất cả'),
+            ),
+          ],
+        ),
+        const SizedBox(height: AppSpacing.xs),
+        if (summary.recentTransactions.isEmpty)
+          const AppCard(
+            padding: EdgeInsets.all(AppSpacing.md),
+            child: Center(
+              child: Text(
+                'Chưa có giao dịch gần đây',
+                style: TextStyle(color: AppColors.darkTextSecondary, fontSize: 13),
+              ),
+            ),
+          )
+        else
+          AppCard(
+            padding: const EdgeInsets.symmetric(horizontal: AppSpacing.xs, vertical: AppSpacing.xs),
+            child: Column(
               children: [
-                const Text(
-                  'Giao dịch gần đây',
-                  style: TextStyle(
-                    fontSize: 16,
-                    fontWeight: FontWeight.w700,
-                    color: AppColors.darkTextPrimary,
+                for (int i = 0; i < summary.recentTransactions.length; i++) ...[
+                  if (i > 0) const Divider(height: 1, indent: 56),
+                  TransactionTile(
+                    title: summary.recentTransactions[i].note?.isNotEmpty == true
+                        ? summary.recentTransactions[i].note!
+                        : (summary.recentTransactions[i].categoryName ??
+                            (summary.recentTransactions[i].isTransfer ? 'Chuyển tiền' : 'Giao dịch')),
+                    subtitle: summary.recentTransactions[i].categoryName,
+                    walletName: summary.recentTransactions[i].walletName,
+                    toWalletName: summary.recentTransactions[i].toWalletName,
+                    occurredAt: summary.recentTransactions[i].occurredAt,
+                    amount: summary.recentTransactions[i].amount,
+                    currency: summary.recentTransactions[i].currency,
+                    type: summary.recentTransactions[i].type,
+                    icon: IconHelper.getIcon(summary.recentTransactions[i].categoryIcon),
+                    iconColor: IconHelper.getColor(summary.recentTransactions[i].categoryColor),
+                    syncStatus: summary.recentTransactions[i].syncStatus,
+                    onTap: () => context.go(RouteNames.transactions),
                   ),
-                ),
-                if (onViewAll != null)
-                  GestureDetector(
-                    onTap: onViewAll,
-                    child: const Text(
-                      'Xem tất cả',
-                      style: TextStyle(
-                        fontSize: 13,
-                        fontWeight: FontWeight.w600,
-                        color: AppColors.primaryLight,
-                      ),
-                    ),
-                  ),
+                ],
               ],
             ),
           ),
-          const SizedBox(height: AppSpacing.xs),
-          const Divider(height: 1),
-          const SizedBox(height: AppSpacing.xs),
-          TransactionTile(
-            title: 'Ăn tối cùng đồng nghiệp',
-            subtitle: 'Phở Thìn Lò Đúc',
-            walletName: 'Tiền mặt',
-            occurredAt: DateTime.now(),
-            amount: 145000.0,
-            type: 'expense',
-            icon: Icons.fastfood_rounded,
-            iconColor: const Color(0xFFFF7043),
-            syncStatus: 'synced',
-          ),
-          const Divider(height: 1, indent: 60),
-          TransactionTile(
-            title: 'Lương tháng 08/2026',
-            subtitle: 'Công ty Cổ phần Công nghệ',
-            walletName: 'Tài khoản Ngân hàng',
-            occurredAt: DateTime.now().subtract(const Duration(days: 1)),
-            amount: 25000000.0,
-            type: 'income',
-            icon: Icons.payments_rounded,
-            iconColor: const Color(0xFF66BB6A),
-            syncStatus: 'synced',
-          ),
-          const Divider(height: 1, indent: 60),
-          TransactionTile(
-            title: 'Chuyển tiền vào ví tiết kiệm',
-            walletName: 'Ngân hàng',
-            toWalletName: 'Tiết kiệm',
-            occurredAt: DateTime.now().subtract(const Duration(days: 2)),
-            amount: 5000000.0,
-            type: 'transfer',
-            icon: Icons.swap_horiz_rounded,
-            iconColor: AppColors.transfer,
-            syncStatus: 'synced',
-          ),
-          const Divider(height: 1, indent: 60),
-          TransactionTile(
-            title: 'Xăng xe máy',
-            subtitle: 'Petrolimex',
-            walletName: 'Tiền mặt',
-            occurredAt: DateTime.now().subtract(const Duration(days: 3)),
-            amount: 90000.0,
-            type: 'expense',
-            icon: Icons.local_gas_station_rounded,
-            iconColor: const Color(0xFF42A5F5),
-            syncStatus: 'pending',
-          ),
-        ],
-      ),
+      ],
     );
   }
 }
