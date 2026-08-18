@@ -1,0 +1,5 @@
+package com.finly.app.finly
+
+import io.flutter.embedding.android.FlutterActivity
+
+class MainActivity : FlutterActivity()
