@@ -1,42 +1,26 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import '../../features/analytics/presentation/pages/analytics_page.dart';
-import '../../features/auth/presentation/controllers/auth_controller.dart';
-import '../../features/auth/presentation/pages/login_page.dart';
-import '../../features/auth/presentation/pages/onboarding_page.dart';
-import '../../features/auth/presentation/pages/profile_page.dart';
-import '../../features/budget/presentation/pages/budget_page.dart';
-import '../../features/dashboard/presentation/pages/home_page.dart';
-import '../../features/transaction/presentation/pages/transactions_page.dart';
-import '../../features/transaction/presentation/widgets/quick_add_transaction_sheet.dart';
-import '../../features/wallet/presentation/pages/wallets_page.dart';
-import '../../shared/widgets/app_shell.dart';
+import 'package:finly/features/analytics/presentation/pages/analytics_page.dart';
+import 'package:finly/features/auth/presentation/controllers/auth_controller.dart';
+import 'package:finly/features/auth/presentation/pages/login_page.dart';
+import 'package:finly/features/auth/presentation/pages/onboarding_page.dart';
+import 'package:finly/features/auth/presentation/pages/profile_page.dart';
+import 'package:finly/features/budget/presentation/pages/budget_page.dart';
+import 'package:finly/features/dashboard/presentation/pages/home_page.dart';
+import 'package:finly/features/transaction/presentation/pages/transactions_page.dart';
+import 'package:finly/features/transaction/presentation/widgets/quick_add_transaction_sheet.dart';
+import 'package:finly/features/wallet/presentation/pages/wallets_page.dart';
+import 'package:finly/shared/widgets/app_shell.dart';
 import 'route_names.dart';
 
-final rootNavigatorKey = GlobalKey<NavigatorState>(debugLabel: 'root');
-final _shellNavigatorHome = GlobalKey<NavigatorState>(debugLabel: 'shellHome');
-final _shellNavigatorTransactions = GlobalKey<NavigatorState>(
-  debugLabel: 'shellTransactions',
-);
-final _shellNavigatorBudget = GlobalKey<NavigatorState>(
-  debugLabel: 'shellBudget',
-);
-final _shellNavigatorAnalytics = GlobalKey<NavigatorState>(
-  debugLabel: 'shellAnalytics',
-);
-final _shellNavigatorProfile = GlobalKey<NavigatorState>(
-  debugLabel: 'shellProfile',
-);
-
 final routerProvider = Provider<GoRouter>((ref) {
-  final authState = ref.watch(authControllerProvider);
-
   return GoRouter(
-    navigatorKey: rootNavigatorKey,
     initialLocation: RouteNames.home,
     debugLogDiagnostics: false,
+    refreshListenable: _AuthListenable(ref),
     redirect: (context, state) {
+      final authState = ref.read(authControllerProvider);
       final isAuth = authState is Authenticated;
       final isLoggingIn = state.matchedLocation == RouteNames.login;
       final isOnboarding = state.matchedLocation == RouteNames.onboarding;
@@ -77,7 +61,6 @@ final routerProvider = Provider<GoRouter>((ref) {
         branches: [
           // Branch 1: Home
           StatefulShellBranch(
-            navigatorKey: _shellNavigatorHome,
             routes: [
               GoRoute(
                 path: RouteNames.home,
@@ -87,7 +70,6 @@ final routerProvider = Provider<GoRouter>((ref) {
           ),
           // Branch 2: Transactions
           StatefulShellBranch(
-            navigatorKey: _shellNavigatorTransactions,
             routes: [
               GoRoute(
                 path: RouteNames.transactions,
@@ -97,7 +79,6 @@ final routerProvider = Provider<GoRouter>((ref) {
           ),
           // Branch 3: Budget
           StatefulShellBranch(
-            navigatorKey: _shellNavigatorBudget,
             routes: [
               GoRoute(
                 path: RouteNames.budget,
@@ -107,7 +88,6 @@ final routerProvider = Provider<GoRouter>((ref) {
           ),
           // Branch 4: Analytics
           StatefulShellBranch(
-            navigatorKey: _shellNavigatorAnalytics,
             routes: [
               GoRoute(
                 path: RouteNames.analytics,
@@ -117,7 +97,6 @@ final routerProvider = Provider<GoRouter>((ref) {
           ),
           // Branch 5: Profile
           StatefulShellBranch(
-            navigatorKey: _shellNavigatorProfile,
             routes: [
               GoRoute(
                 path: RouteNames.profile,
@@ -130,3 +109,9 @@ final routerProvider = Provider<GoRouter>((ref) {
     ],
   );
 });
+
+class _AuthListenable extends ChangeNotifier {
+  _AuthListenable(Ref ref) {
+    ref.listen(authControllerProvider, (previous, next) => notifyListeners());
+  }
+}
