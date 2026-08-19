@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../../../../app/theme/app_3d_icons.dart';
 import '../../../../app/theme/app_colors.dart';
 import '../../../../app/theme/app_spacing.dart';
 import '../../../../shared/widgets/app_card.dart';
@@ -45,7 +46,7 @@ class BudgetOverviewCard extends StatelessWidget {
           const SizedBox(height: AppSpacing.sm),
           const BudgetProgress(
             categoryName: 'Ăn uống',
-            icon: Icons.fastfood_rounded,
+            iconAsset: AppIcons3D.food,
             categoryColor: Color(0xFFFF7043),
             spent: 3200000.0,
             budgetAmount: 4500000.0,
@@ -54,7 +55,7 @@ class BudgetOverviewCard extends StatelessWidget {
           const SizedBox(height: AppSpacing.sm),
           const BudgetProgress(
             categoryName: 'Di chuyển',
-            icon: Icons.directions_car_rounded,
+            iconAsset: AppIcons3D.transport,
             categoryColor: Color(0xFF42A5F5),
             spent: 1100000.0,
             budgetAmount: 1500000.0,
@@ -62,16 +63,16 @@ class BudgetOverviewCard extends StatelessWidget {
           const SizedBox(height: AppSpacing.sm),
           const BudgetProgress(
             categoryName: 'Mua sắm & Quần áo',
-            icon: Icons.shopping_bag_rounded,
+            iconAsset: AppIcons3D.shopping,
             categoryColor: Color(0xFFAB47BC),
             spent: 1800000.0,
             budgetAmount: 2000000.0,
-            forecastAmount: 2300000.0, // Forecast exceed warning
+            forecastAmount: 2300000.0,
           ),
           const SizedBox(height: AppSpacing.sm),
           const BudgetProgress(
             categoryName: 'Hóa đơn & Tiện ích',
-            icon: Icons.receipt_long_rounded,
+            iconAsset: AppIcons3D.bills,
             categoryColor: Color(0xFFFFA726),
             spent: 600000.0,
             budgetAmount: 2000000.0,

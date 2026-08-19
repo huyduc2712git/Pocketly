@@ -5,6 +5,7 @@ import '../../../../app/theme/app_radius.dart';
 import '../../../../app/theme/app_spacing.dart';
 import '../../../../core/extensions/context_extensions.dart';
 import '../../../../core/utils/icon_helper.dart';
+import '../../../../shared/widgets/app_3d_icon.dart';
 import '../../../../shared/widgets/app_bottom_sheet.dart';
 import '../../../../shared/widgets/app_loading.dart';
 import '../../domain/entities/category_entity.dart';
@@ -74,13 +75,13 @@ class _CategoryPickerSheetState extends ConsumerState<CategoryPickerSheet> {
             crossAxisCount: 4,
             crossAxisSpacing: 12,
             mainAxisSpacing: 12,
-            childAspectRatio: 0.85,
+            childAspectRatio: 0.82,
           ),
           itemCount: categories.length,
           itemBuilder: (context, index) {
             final category = categories[index];
             final isSelected = widget.selectedCategoryId == category.id;
-            final iconData = IconHelper.getIcon(category.icon);
+            final iconAsset = IconHelper.get3DAsset(category.icon);
             final color = IconHelper.getColor(category.color);
 
             return InkWell(
@@ -106,13 +107,18 @@ class _CategoryPickerSheetState extends ConsumerState<CategoryPickerSheet> {
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     Container(
-                      width: 40,
-                      height: 40,
+                      width: 44,
+                      height: 44,
                       decoration: BoxDecoration(
-                        color: color.withValues(alpha: 0.15),
+                        color: color.withValues(alpha: 0.12),
                         shape: BoxShape.circle,
                       ),
-                      child: Icon(iconData, color: color, size: 20),
+                      child: Center(
+                        child: App3DIcon(
+                          assetPath: iconAsset,
+                          size: 26,
+                        ),
+                      ),
                     ),
                     const SizedBox(height: 6),
                     Text(

@@ -139,7 +139,7 @@ class AppTheme {
       colorScheme: const ColorScheme.light(
         primary: AppColors.primary,
         onPrimary: Colors.white,
-        primaryContainer: Color(0xFFEEF2FF),
+        primaryContainer: AppColors.primaryContainer,
         secondary: AppColors.transfer,
         surface: AppColors.lightSurface,
         onSurface: AppColors.lightTextPrimary,

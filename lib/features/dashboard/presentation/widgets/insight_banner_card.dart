@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:finly/app/theme/app_3d_icons.dart';
 import 'package:finly/app/theme/app_colors.dart';
 import 'package:finly/app/theme/app_spacing.dart';
+import 'package:finly/shared/widgets/app_3d_icon.dart';
 
 class InsightBannerCard extends StatelessWidget {
   final String title;
@@ -51,8 +53,8 @@ class InsightBannerCard extends StatelessWidget {
               children: [
                 // Glowing AI Star container
                 Container(
-                  width: 42,
-                  height: 42,
+                  width: 44,
+                  height: 44,
                   decoration: BoxDecoration(
                     gradient: AppColors.primaryGradient,
                     borderRadius: BorderRadius.circular(14),
@@ -65,10 +67,9 @@ class InsightBannerCard extends StatelessWidget {
                     ],
                   ),
                   child: const Center(
-                    child: Icon(
-                      Icons.auto_awesome_rounded,
-                      color: Colors.white,
-                      size: 22,
+                    child: App3DIcon(
+                      assetPath: AppIcons3D.insight,
+                      size: 28,
                     ),
                   ),
                 ),

@@ -2,10 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:finly/app/theme/app_colors.dart';
 import 'package:finly/app/theme/app_spacing.dart';
 import 'package:finly/shared/widgets/amount_text.dart';
+import 'package:finly/shared/widgets/app_3d_icon.dart';
 
 class BudgetProgress extends StatelessWidget {
   final String categoryName;
   final IconData? icon;
+  final String? iconAsset;
   final Color? categoryColor;
   final double spent;
   final double budgetAmount;
@@ -17,6 +19,7 @@ class BudgetProgress extends StatelessWidget {
     super.key,
     required this.categoryName,
     this.icon,
+    this.iconAsset,
     this.categoryColor,
     required this.spent,
     required this.budgetAmount,
@@ -59,10 +62,10 @@ class BudgetProgress extends StatelessWidget {
               Row(
                 children: [
                   // Squircle Category Icon with glow
-                  if (icon != null) ...[
+                  if (iconAsset != null || icon != null) ...[
                     Container(
-                      width: 36,
-                      height: 36,
+                      width: 38,
+                      height: 38,
                       decoration: BoxDecoration(
                         gradient: LinearGradient(
                           colors: [
@@ -77,11 +80,13 @@ class BudgetProgress extends StatelessWidget {
                         ),
                       ),
                       child: Center(
-                        child: Icon(
-                          icon,
-                          size: 18,
-                          color: resolvedColor,
-                        ),
+                        child: iconAsset != null
+                            ? App3DIcon(assetPath: iconAsset!, size: 24)
+                            : Icon(
+                                icon,
+                                size: 18,
+                                color: resolvedColor,
+                              ),
                       ),
                     ),
                     const SizedBox(width: AppSpacing.sm),

@@ -52,6 +52,7 @@ class AppDatabase extends _$AppDatabase {
         await m.createAll();
         await _seedDefaultCategories();
         await _seedInitialWallet();
+        await _seedInitialSubscriptions();
       },
       beforeOpen: (details) async {
         // Enable foreign keys in SQLite
@@ -175,6 +176,69 @@ class AppDatabase extends _$AppDatabase {
         currency: const Value('VND'),
         icon: const Value('account_balance_rounded'),
         color: const Value('0xFF3B82F6'),
+        createdAt: Value(now),
+        updatedAt: Value(now),
+      ),
+    );
+  }
+
+  Future<void> _seedInitialSubscriptions() async {
+    final now = DateTime.now();
+    await into(subscriptionsTable).insert(
+      SubscriptionsTableCompanion.insert(
+        id: 'sub_netflix',
+        name: 'Netflix',
+        amount: 260000.0,
+        currency: const Value('VND'),
+        walletId: 'wallet_bank_primary',
+        billingCycle: const Value('monthly'),
+        nextBillingDate: now.add(const Duration(days: 12)),
+        isActive: const Value(true),
+        createdAt: Value(now),
+        updatedAt: Value(now),
+      ),
+    );
+
+    await into(subscriptionsTable).insert(
+      SubscriptionsTableCompanion.insert(
+        id: 'sub_youtube',
+        name: 'YouTube Premium',
+        amount: 79000.0,
+        currency: const Value('VND'),
+        walletId: 'wallet_bank_primary',
+        billingCycle: const Value('monthly'),
+        nextBillingDate: now.add(const Duration(days: 5)),
+        isActive: const Value(true),
+        createdAt: Value(now),
+        updatedAt: Value(now),
+      ),
+    );
+
+    await into(subscriptionsTable).insert(
+      SubscriptionsTableCompanion.insert(
+        id: 'sub_spotify',
+        name: 'Spotify Premium',
+        amount: 59000.0,
+        currency: const Value('VND'),
+        walletId: 'wallet_default_cash',
+        billingCycle: const Value('monthly'),
+        nextBillingDate: now.add(const Duration(days: 20)),
+        isActive: const Value(true),
+        createdAt: Value(now),
+        updatedAt: Value(now),
+      ),
+    );
+
+    await into(subscriptionsTable).insert(
+      SubscriptionsTableCompanion.insert(
+        id: 'sub_chatgpt',
+        name: 'ChatGPT Plus',
+        amount: 500000.0,
+        currency: const Value('VND'),
+        walletId: 'wallet_bank_primary',
+        billingCycle: const Value('monthly'),
+        nextBillingDate: now.add(const Duration(days: 2)),
+        isActive: const Value(true),
         createdAt: Value(now),
         updatedAt: Value(now),
       ),

@@ -1,68 +1,64 @@
 import 'package:flutter/material.dart';
+import 'package:finly/app/theme/app_3d_icons.dart';
 import 'package:finly/app/theme/app_colors.dart';
-import 'package:finly/app/theme/app_icons.dart';
 import 'package:finly/app/theme/app_spacing.dart';
+import 'package:finly/core/extensions/context_extensions.dart';
 import 'package:finly/shared/widgets/amount_text.dart';
-import 'package:finly/shared/widgets/currency_text.dart';
+import 'package:finly/shared/widgets/app_3d_icon.dart';
 import '../controllers/dashboard_controller.dart';
 
 class BalanceCard extends StatelessWidget {
   final DashboardSummary summary;
   final VoidCallback onToggleVisibility;
+  final VoidCallback? onViewDetails;
 
   const BalanceCard({
     super.key,
     required this.summary,
     required this.onToggleVisibility,
+    this.onViewDetails,
   });
 
   @override
   Widget build(BuildContext context) {
+    final isDark = context.isDarkMode;
+
     return Container(
       decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(24),
-        gradient: const LinearGradient(
-          colors: [
-            Color(0xFF1E1B4B),
-            Color(0xFF1E293B),
-            Color(0xFF0F172A),
-          ],
-          begin: Alignment.topLeft,
-          end: Alignment.bottomRight,
-        ),
+        borderRadius: BorderRadius.circular(28),
+        gradient: isDark
+            ? AppColors.heroBalanceGradientDark
+            : AppColors.heroBalanceGradient,
         border: Border.all(
-          color: Colors.white.withValues(alpha: 0.15),
+          color: isDark
+              ? Colors.white.withValues(alpha: 0.1)
+              : const Color(0xFFFE4696).withValues(alpha: 0.15),
           width: 1.2,
         ),
         boxShadow: [
           BoxShadow(
-            color: const Color(0xFF6366F1).withValues(alpha: 0.25),
-            blurRadius: 28,
-            offset: const Offset(0, 10),
-          ),
-          BoxShadow(
-            color: Colors.black.withValues(alpha: 0.5),
-            blurRadius: 16,
-            offset: const Offset(0, 4),
+            color: const Color(0xFFFE4696).withValues(alpha: isDark ? 0.2 : 0.08),
+            blurRadius: 24,
+            offset: const Offset(0, 8),
           ),
         ],
       ),
       child: ClipRRect(
-        borderRadius: BorderRadius.circular(24),
+        borderRadius: BorderRadius.circular(28),
         child: Stack(
           children: [
-            // Ambient Glow Spheres
+            // Subtle ambient glow circles in the background
             Positioned(
-              top: -40,
-              right: -30,
+              top: -30,
+              right: -20,
               child: Container(
-                width: 150,
-                height: 150,
+                width: 140,
+                height: 140,
                 decoration: BoxDecoration(
                   shape: BoxShape.circle,
                   gradient: RadialGradient(
                     colors: [
-                      const Color(0xFF6366F1).withValues(alpha: 0.4),
+                      const Color(0xFFFE4696).withValues(alpha: isDark ? 0.25 : 0.12),
                       Colors.transparent,
                     ],
                   ),
@@ -73,13 +69,13 @@ class BalanceCard extends StatelessWidget {
               bottom: -20,
               left: -20,
               child: Container(
-                width: 120,
-                height: 120,
+                width: 100,
+                height: 100,
                 decoration: BoxDecoration(
                   shape: BoxShape.circle,
                   gradient: RadialGradient(
                     colors: [
-                      const Color(0xFF06B6D4).withValues(alpha: 0.3),
+                      const Color(0xFF8B5CF6).withValues(alpha: isDark ? 0.25 : 0.1),
                       Colors.transparent,
                     ],
                   ),
@@ -87,223 +83,194 @@ class BalanceCard extends StatelessWidget {
               ),
             ),
 
-            // Card Content
+            // Main Card Content
             Padding(
-              padding: const EdgeInsets.all(AppSpacing.xl),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
+              padding: const EdgeInsets.symmetric(
+                horizontal: AppSpacing.lg,
+                vertical: AppSpacing.lg,
+              ),
+              child: Row(
                 children: [
-                  // Top Row: Chip Icon, Contactless & Eye Toggle
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Row(
-                        children: [
-                          // Gold EMV Chip Simulation
-                          Container(
-                            width: 38,
-                            height: 28,
-                            decoration: BoxDecoration(
-                              gradient: AppColors.goldGradient,
-                              borderRadius: BorderRadius.circular(6),
-                              boxShadow: [
-                                BoxShadow(
-                                  color: Colors.amber.withValues(alpha: 0.4),
-                                  blurRadius: 6,
-                                ),
-                              ],
-                            ),
-                            child: Center(
-                              child: Container(
-                                width: 26,
-                                height: 18,
-                                decoration: BoxDecoration(
-                                  border: Border.all(
-                                    color: Colors.amber.shade900.withValues(alpha: 0.5),
-                                    width: 1,
-                                  ),
-                                  borderRadius: BorderRadius.circular(3),
-                                ),
-                              ),
-                            ),
-                          ),
-                          const SizedBox(width: AppSpacing.sm),
-                          Icon(
-                            Icons.contactless_rounded,
-                            color: Colors.white.withValues(alpha: 0.7),
-                            size: 24,
-                          ),
-                        ],
-                      ),
-                      // Eye Visibility Toggle
-                      Material(
-                        color: Colors.white.withValues(alpha: 0.1),
-                        borderRadius: BorderRadius.circular(12),
-                        child: InkWell(
-                          borderRadius: BorderRadius.circular(12),
-                          onTap: onToggleVisibility,
-                          child: Padding(
-                            padding: const EdgeInsets.all(8),
-                            child: Icon(
-                              summary.isBalanceHidden
-                                  ? Icons.visibility_off_rounded
-                                  : Icons.visibility_rounded,
-                              color: Colors.white.withValues(alpha: 0.9),
-                              size: 18,
-                            ),
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                  const SizedBox(height: AppSpacing.lg),
-
-                  // Total Balance Label & Currency
-                  Row(
-                    children: [
-                      Text(
-                        'Tổng số dư khả dụng',
-                        style: TextStyle(
-                          color: const Color(0xFFC7D2FE).withValues(alpha: 0.9),
-                          fontSize: 13,
-                          fontWeight: FontWeight.w600,
-                          letterSpacing: 0.3,
-                        ),
-                      ),
-                      const SizedBox(width: AppSpacing.xs),
-                      CurrencyText(currency: summary.currency),
-                    ],
-                  ),
-                  const SizedBox(height: 6),
-
-                  // Big Balance Number Display
-                  if (summary.isBalanceHidden)
-                    const Text(
-                      '•••••••• ₫',
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontSize: 34,
-                        fontWeight: FontWeight.w800,
-                        letterSpacing: 3.0,
-                      ),
-                    )
-                  else
-                    AmountText(
-                      amount: summary.totalBalance,
-                      currency: summary.currency,
-                      fontSize: 34,
-                      fontWeight: FontWeight.w900,
-                      color: Colors.white,
-                    ),
-
-                  const SizedBox(height: AppSpacing.xl),
-
-                  // Frosted Stats Glass Container
-                  Container(
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: AppSpacing.md,
-                      vertical: AppSpacing.sm + 2,
-                    ),
-                    decoration: BoxDecoration(
-                      color: Colors.black.withValues(alpha: 0.3),
-                      borderRadius: BorderRadius.circular(16),
-                      border: Border.all(
-                        color: Colors.white.withValues(alpha: 0.08),
-                      ),
-                    ),
-                    child: Row(
+                  // Left Content Column
+                  Expanded(
+                    flex: 6,
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      mainAxisSize: MainAxisSize.min,
                       children: [
-                        // Income Column
-                        Expanded(
-                          child: Row(
-                            children: [
-                              Container(
-                                padding: const EdgeInsets.all(7),
-                                decoration: BoxDecoration(
-                                  color: AppColors.income.withValues(alpha: 0.2),
-                                  shape: BoxShape.circle,
-                                ),
-                                child: const Icon(
-                                  AppIcons.income,
-                                  color: AppColors.income,
-                                  size: 15,
-                                ),
+                        // Greeting Header
+                        Row(
+                          children: [
+                            Text(
+                              'Xin chào,',
+                              style: TextStyle(
+                                fontSize: 17,
+                                fontWeight: FontWeight.w800,
+                                letterSpacing: -0.2,
+                                color: isDark
+                                    ? AppColors.darkTextPrimary
+                                    : AppColors.lightTextPrimary,
                               ),
-                              const SizedBox(width: AppSpacing.xs),
-                              Expanded(
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Text(
-                                      'Thu nhập',
-                                      style: TextStyle(
-                                        color: Colors.white.withValues(alpha: 0.7),
-                                        fontSize: 11,
-                                        fontWeight: FontWeight.w500,
-                                      ),
-                                    ),
-                                    AmountText(
-                                      amount: summary.monthlyIncome,
-                                      currency: summary.currency,
-                                      fontSize: 13,
-                                      fontWeight: FontWeight.w700,
-                                      color: const Color(0xFF6EE7B7),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                            ],
+                            ),
+                            const SizedBox(width: 4),
+                            const Text('👋', style: TextStyle(fontSize: 16)),
+                          ],
+                        ),
+                        const SizedBox(height: 2),
+                        Text(
+                          'Chào mừng bạn trở lại!',
+                          style: TextStyle(
+                            fontSize: 12,
+                            color: isDark
+                                ? AppColors.darkTextSecondary
+                                : AppColors.lightTextSecondary,
+                            fontWeight: FontWeight.w500,
                           ),
                         ),
-                        Container(
-                          width: 1,
-                          height: 30,
-                          color: Colors.white.withValues(alpha: 0.12),
+                        const SizedBox(height: AppSpacing.md),
+
+                        // Total Balance Label & Eye toggle
+                        Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Text(
+                              'Tổng số dư',
+                              style: TextStyle(
+                                fontSize: 12,
+                                fontWeight: FontWeight.w600,
+                                color: isDark
+                                    ? AppColors.darkTextSecondary
+                                    : AppColors.lightTextSecondary,
+                              ),
+                            ),
+                            const SizedBox(width: 6),
+                            GestureDetector(
+                              onTap: onToggleVisibility,
+                              child: Icon(
+                                summary.isBalanceHidden
+                                    ? Icons.visibility_off_outlined
+                                    : Icons.visibility_outlined,
+                                size: 16,
+                                color: isDark
+                                    ? AppColors.darkTextSecondary
+                                    : AppColors.lightTextSecondary,
+                              ),
+                            ),
+                          ],
                         ),
-                        const SizedBox(width: AppSpacing.md),
-                        // Expense Column
-                        Expanded(
-                          child: Row(
-                            children: [
-                              Container(
-                                padding: const EdgeInsets.all(7),
-                                decoration: BoxDecoration(
-                                  color: AppColors.expense.withValues(alpha: 0.2),
-                                  shape: BoxShape.circle,
-                                ),
-                                child: const Icon(
-                                  AppIcons.expense,
-                                  color: AppColors.expense,
-                                  size: 15,
+                        const SizedBox(height: 4),
+
+                        // Balance Amount
+                        if (summary.isBalanceHidden)
+                          Text(
+                            '•••••••• ₫',
+                            style: TextStyle(
+                              fontSize: 26,
+                              fontWeight: FontWeight.w900,
+                              letterSpacing: 2,
+                              color: isDark
+                                  ? AppColors.darkTextPrimary
+                                  : AppColors.lightTextPrimary,
+                            ),
+                          )
+                        else
+                          AmountText(
+                            amount: summary.totalBalance,
+                            currency: summary.currency,
+                            fontSize: 26,
+                            fontWeight: FontWeight.w900,
+                            color: isDark
+                                ? AppColors.darkTextPrimary
+                                : AppColors.lightTextPrimary,
+                          ),
+
+                        const SizedBox(height: AppSpacing.sm + 2),
+
+                        // "View account details >" Pill Button
+                        Material(
+                          color: isDark
+                              ? Colors.white.withValues(alpha: 0.08)
+                              : Colors.white.withValues(alpha: 0.75),
+                          borderRadius: BorderRadius.circular(20),
+                          child: InkWell(
+                            onTap: onViewDetails,
+                            borderRadius: BorderRadius.circular(20),
+                            child: Container(
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: 10,
+                                vertical: 5,
+                              ),
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(20),
+                                border: Border.all(
+                                  color: isDark
+                                      ? Colors.white.withValues(alpha: 0.12)
+                                      : Colors.white,
+                                  width: 1,
                                 ),
                               ),
-                              const SizedBox(width: AppSpacing.xs),
-                              Expanded(
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Text(
-                                      'Chi tiêu',
-                                      style: TextStyle(
-                                        color: Colors.white.withValues(alpha: 0.7),
-                                        fontSize: 11,
-                                        fontWeight: FontWeight.w500,
-                                      ),
+                              child: Row(
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  Text(
+                                    'Chi tiết tài khoản',
+                                    style: TextStyle(
+                                      fontSize: 11,
+                                      fontWeight: FontWeight.w600,
+                                      color: isDark
+                                          ? AppColors.darkTextPrimary
+                                          : AppColors.lightTextPrimary,
                                     ),
-                                    AmountText(
-                                      amount: summary.monthlyExpense,
-                                      currency: summary.currency,
-                                      fontSize: 13,
-                                      fontWeight: FontWeight.w700,
-                                      color: const Color(0xFFFDA4AF),
-                                    ),
-                                  ],
-                                ),
+                                  ),
+                                  const SizedBox(width: 3),
+                                  Icon(
+                                    Icons.chevron_right_rounded,
+                                    size: 14,
+                                    color: isDark
+                                        ? AppColors.darkTextSecondary
+                                        : AppColors.lightTextSecondary,
+                                  ),
+                                ],
                               ),
-                            ],
+                            ),
                           ),
                         ),
                       ],
+                    ),
+                  ),
+
+                  // Right 3D Illustration
+                  Expanded(
+                    flex: 4,
+                    child: Center(
+                      child: Stack(
+                        alignment: Alignment.center,
+                        children: [
+                          // Soft purple/pink glow circle behind the 3D asset
+                          Container(
+                            width: 86,
+                            height: 86,
+                            decoration: BoxDecoration(
+                              shape: BoxShape.circle,
+                              gradient: RadialGradient(
+                                colors: [
+                                  const Color(0xFFFE4696).withValues(alpha: 0.25),
+                                  const Color(0xFF8B5CF6).withValues(alpha: 0.15),
+                                  Colors.transparent,
+                                ],
+                              ),
+                            ),
+                          ),
+                          // 3D Piggy / Savings / Salary Bag
+                          const Hero(
+                            tag: 'hero_balance_3d_icon',
+                            child: App3DIcon(
+                              assetPath: AppIcons3D.savings,
+                              size: 84,
+                            ),
+                          ),
+                        ],
+                      ),
                     ),
                   ),
                 ],

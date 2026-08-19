@@ -51,6 +51,7 @@ class TransactionsPage extends ConsumerWidget {
               child: Row(
                 children: [
                   _buildFilterChip(
+                    context,
                     label: 'Tất cả loại',
                     isSelected: currentFilter.type == null,
                     onTap: () =>
@@ -59,6 +60,7 @@ class TransactionsPage extends ConsumerWidget {
                   ),
                   const SizedBox(width: AppSpacing.xs),
                   _buildFilterChip(
+                    context,
                     label: 'Khoản chi',
                     isSelected: currentFilter.type == 'expense',
                     onTap: () =>
@@ -67,6 +69,7 @@ class TransactionsPage extends ConsumerWidget {
                   ),
                   const SizedBox(width: AppSpacing.xs),
                   _buildFilterChip(
+                    context,
                     label: 'Khoản thu',
                     isSelected: currentFilter.type == 'income',
                     onTap: () =>
@@ -75,6 +78,7 @@ class TransactionsPage extends ConsumerWidget {
                   ),
                   const SizedBox(width: AppSpacing.xs),
                   _buildFilterChip(
+                    context,
                     label: 'Chuyển tiền',
                     isSelected: currentFilter.type == 'transfer',
                     onTap: () =>
@@ -88,6 +92,7 @@ class TransactionsPage extends ConsumerWidget {
                       (w) => Padding(
                         padding: const EdgeInsets.only(right: AppSpacing.xs),
                         child: _buildFilterChip(
+                          context,
                           label: w.name,
                           isSelected: currentFilter.walletId == w.id,
                           onTap: () {
@@ -132,7 +137,12 @@ class TransactionsPage extends ConsumerWidget {
                 final grouped = _groupTransactionsByDate(transactions);
 
                 return ListView.builder(
-                  padding: const EdgeInsets.all(AppSpacing.md),
+                  padding: const EdgeInsets.fromLTRB(
+                    AppSpacing.md,
+                    AppSpacing.md,
+                    AppSpacing.md,
+                    AppSpacing.bottomClearance,
+                  ),
                   itemCount: grouped.keys.length,
                   itemBuilder: (context, index) {
                     final dateKey = grouped.keys.elementAt(index);
@@ -212,6 +222,9 @@ class TransactionsPage extends ConsumerWidget {
                                       icon: IconHelper.getIcon(
                                         dayTransactions[i].categoryIcon,
                                       ),
+                                      iconAsset: IconHelper.get3DAsset(
+                                        dayTransactions[i].categoryIcon,
+                                      ),
                                       iconColor: IconHelper.getColor(
                                         dayTransactions[i].categoryColor,
                                       ),
@@ -258,29 +271,54 @@ class TransactionsPage extends ConsumerWidget {
     return groups;
   }
 
-  Widget _buildFilterChip({
+  Widget _buildFilterChip(
+    BuildContext context, {
     required String label,
     required bool isSelected,
     required VoidCallback onTap,
   }) {
-    return GestureDetector(
-      onTap: onTap,
-      child: AnimatedContainer(
-        duration: const Duration(milliseconds: 200),
-        padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 7),
-        decoration: BoxDecoration(
-          color: isSelected ? AppColors.primary : AppColors.darkCard,
-          borderRadius: BorderRadius.circular(20),
-          border: Border.all(
-            color: isSelected ? AppColors.primary : AppColors.darkBorder,
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+
+    return Material(
+      color: Colors.transparent,
+      child: InkWell(
+        onTap: onTap,
+        borderRadius: BorderRadius.circular(20),
+        child: AnimatedContainer(
+          duration: const Duration(milliseconds: 200),
+          padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 7),
+          decoration: BoxDecoration(
+            color: isSelected
+                ? AppColors.primary
+                : (isDark ? AppColors.darkSurface : Colors.white),
+            borderRadius: BorderRadius.circular(20),
+            border: Border.all(
+              color: isSelected
+                  ? AppColors.primary
+                  : (isDark ? AppColors.darkBorder : const Color(0xFFE5E7EB)),
+              width: 1,
+            ),
+            boxShadow: isSelected
+                ? [
+                    BoxShadow(
+                      color: AppColors.primary.withValues(alpha: 0.35),
+                      blurRadius: 8,
+                      offset: const Offset(0, 2),
+                    ),
+                  ]
+                : null,
           ),
-        ),
-        child: Text(
-          label,
-          style: TextStyle(
-            color: isSelected ? Colors.white : AppColors.darkTextSecondary,
-            fontSize: 12,
-            fontWeight: isSelected ? FontWeight.w700 : FontWeight.w500,
+          child: Text(
+            label,
+            style: TextStyle(
+              color: isSelected
+                  ? Colors.white
+                  : (isDark
+                      ? AppColors.darkTextPrimary
+                      : AppColors.lightTextPrimary),
+              fontSize: 12,
+              fontWeight: isSelected ? FontWeight.w700 : FontWeight.w500,
+            ),
           ),
         ),
       ),

@@ -4,7 +4,9 @@ import '../../../../app/theme/app_colors.dart';
 import '../../../../app/theme/app_radius.dart';
 import '../../../../app/theme/app_spacing.dart';
 import '../../../../core/utils/date_formatter.dart';
+import '../../../../core/utils/icon_helper.dart';
 import '../../../../shared/widgets/amount_text.dart';
+import '../../../../shared/widgets/app_3d_icon.dart';
 import '../../../../shared/widgets/app_card.dart';
 import '../../../../shared/widgets/app_empty_state.dart';
 import '../../../../shared/widgets/app_loading.dart';
@@ -22,6 +24,11 @@ class SubscriptionsPage extends ConsumerWidget {
 
     return Scaffold(
       appBar: AppBar(
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back_ios_new_rounded, size: 20),
+          tooltip: 'Quay lại',
+          onPressed: () => Navigator.of(context).maybePop(),
+        ),
         title: const Text('Gói Thuê Bao & Định Kỳ'),
         actions: [
           IconButton(
@@ -37,31 +44,48 @@ class SubscriptionsPage extends ConsumerWidget {
         error: (err, _) => Center(child: Text('Lỗi: $err')),
         data: (subscriptions) {
           return ListView(
-            padding: const EdgeInsets.all(AppSpacing.md),
+            padding: const EdgeInsets.fromLTRB(
+              AppSpacing.md,
+              AppSpacing.md,
+              AppSpacing.md,
+              AppSpacing.bottomClearance,
+            ),
             children: [
               // Monthly Burden Overview Card
               AppCard(
                 padding: const EdgeInsets.all(AppSpacing.lg),
-                gradient: AppColors.balanceGradient,
+                gradient: Theme.of(context).brightness == Brightness.dark
+                    ? AppColors.heroBalanceGradientDark
+                    : AppColors.heroBalanceGradient,
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    const Text(
+                    Text(
                       'Chi phí thuê bao hàng tháng',
-                      style: TextStyle(color: Color(0xFFC7D2FE), fontSize: 13),
+                      style: TextStyle(
+                        color: Theme.of(context).brightness == Brightness.dark
+                            ? AppColors.darkTextSecondary
+                            : AppColors.lightTextSecondary,
+                        fontSize: 13,
+                        fontWeight: FontWeight.w600,
+                      ),
                     ),
                     const SizedBox(height: 4),
                     AmountText(
                       amount: totalMonthlyCost,
                       fontSize: 26,
                       fontWeight: FontWeight.w800,
-                      color: Colors.white,
+                      color: Theme.of(context).brightness == Brightness.dark
+                          ? AppColors.darkTextPrimary
+                          : AppColors.lightTextPrimary,
                     ),
                     const SizedBox(height: 8),
                     Text(
                       '${subscriptions.where((s) => s.isActive).length} gói dịch vụ đang kích hoạt',
-                      style: const TextStyle(
-                        color: Color(0xFFC7D2FE),
+                      style: TextStyle(
+                        color: Theme.of(context).brightness == Brightness.dark
+                            ? AppColors.darkTextMuted
+                            : AppColors.lightTextSecondary,
                         fontSize: 12,
                       ),
                     ),
@@ -121,23 +145,29 @@ class _SubscriptionTile extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final isDueSoon = subscription.isDueSoon;
+    final iconAsset = IconHelper.getSubscription3DAsset(subscription.name);
 
     return AppCard(
       child: Row(
         children: [
           Container(
-            width: 44,
-            height: 44,
+            width: 48,
+            height: 48,
             decoration: BoxDecoration(
-              color: isDueSoon
-                  ? AppColors.warning.withValues(alpha: 0.15)
-                  : AppColors.primary.withValues(alpha: 0.15),
+              color: (isDueSoon ? AppColors.warning : AppColors.primary)
+                  .withValues(alpha: 0.12),
               borderRadius: AppRadius.borderMd,
+              border: Border.all(
+                color: (isDueSoon ? AppColors.warning : AppColors.primary)
+                    .withValues(alpha: 0.25),
+                width: 1,
+              ),
             ),
-            child: Icon(
-              Icons.subscriptions_rounded,
-              color: isDueSoon ? AppColors.warning : AppColors.primaryLight,
-              size: 22,
+            child: Center(
+              child: App3DIcon(
+                assetPath: iconAsset,
+                size: 30,
+              ),
             ),
           ),
           const SizedBox(width: AppSpacing.md),

@@ -57,7 +57,11 @@ class AppCard extends StatelessWidget {
             ),
         ],
       ),
-      child: child,
+      child: Material(
+        color: Colors.transparent,
+        borderRadius: effectiveRadius,
+        child: child,
+      ),
     );
 
     if (onTap != null) {

@@ -1,7 +1,126 @@
 import 'package:flutter/material.dart';
+import '../../app/theme/app_3d_icons.dart';
 
 class IconHelper {
   IconHelper._();
+
+  static String get3DAsset(String? iconName) {
+    switch (iconName) {
+      case 'fastfood_rounded':
+      case 'food':
+        return AppIcons3D.food;
+      case 'directions_car_rounded':
+      case 'transport':
+        return AppIcons3D.transport;
+      case 'shopping_bag_rounded':
+      case 'shopping':
+        return AppIcons3D.shopping;
+      case 'receipt_long_rounded':
+      case 'bills':
+        return AppIcons3D.bills;
+      case 'movie_rounded':
+      case 'entertainment':
+        return AppIcons3D.entertainment;
+      case 'medical_services_rounded':
+      case 'health':
+        return AppIcons3D.health;
+      case 'payments_rounded':
+      case 'salary':
+        return AppIcons3D.salary;
+      case 'trending_up_rounded':
+      case 'investment':
+        return AppIcons3D.investment;
+      case 'account_balance_wallet_rounded':
+      case 'wallet_rounded':
+      case 'wallet':
+      case 'cash':
+        return AppIcons3D.cash;
+      case 'account_balance_rounded':
+      case 'bank':
+        return AppIcons3D.bank;
+      case 'credit_card_rounded':
+      case 'credit':
+        return AppIcons3D.credit;
+      case 'savings_rounded':
+      case 'savings':
+        return AppIcons3D.savings;
+      case 'phone_android_rounded':
+      case 'ewallet':
+        return AppIcons3D.ewallet;
+      case 'home_rounded':
+      case 'home':
+        return AppIcons3D.housing;
+      case 'flight_takeoff_rounded':
+      case 'travel':
+        return AppIcons3D.travel;
+      case 'school_rounded':
+      case 'education':
+        return AppIcons3D.education;
+      case 'fitness_center_rounded':
+      case 'fitness':
+        return AppIcons3D.fitness;
+      case 'card_giftcard_rounded':
+      case 'gift':
+        return AppIcons3D.gift;
+      case 'coffee':
+        return AppIcons3D.coffee;
+      case 'netflix':
+        return AppIcons3D.netflix;
+      case 'youtube':
+        return AppIcons3D.youtube;
+      case 'spotify':
+        return AppIcons3D.spotify;
+      case 'apple':
+        return AppIcons3D.apple;
+      case 'google':
+        return AppIcons3D.google;
+      case 'chatgpt':
+        return AppIcons3D.chatgpt;
+      case 'icloud':
+        return AppIcons3D.icloud;
+      case 'discord':
+        return AppIcons3D.discord;
+      case 'telegram':
+        return AppIcons3D.telegram;
+      case 'github':
+        return AppIcons3D.github;
+      case 'amazon':
+        return AppIcons3D.amazon;
+      case 'playstation':
+        return AppIcons3D.playstation;
+      case 'twitch':
+        return AppIcons3D.twitch;
+      case 'tiktok':
+        return AppIcons3D.tiktok;
+      case 'instagram':
+        return AppIcons3D.instagram;
+      default:
+        return AppIcons3D.category;
+    }
+  }
+
+  static String getSubscription3DAsset(String? serviceName) {
+    if (serviceName == null || serviceName.isEmpty) {
+      return AppIcons3D.subscription;
+    }
+    final lower = serviceName.toLowerCase();
+    if (lower.contains('netflix')) return AppIcons3D.netflix;
+    if (lower.contains('youtube') || lower.contains('yt')) return AppIcons3D.youtube;
+    if (lower.contains('spotify')) return AppIcons3D.spotify;
+    if (lower.contains('icloud')) return AppIcons3D.icloud;
+    if (lower.contains('apple')) return AppIcons3D.apple;
+    if (lower.contains('google') || lower.contains('drive')) return AppIcons3D.google;
+    if (lower.contains('chatgpt') || lower.contains('openai') || lower.contains('gpt')) return AppIcons3D.chatgpt;
+    if (lower.contains('discord')) return AppIcons3D.discord;
+    if (lower.contains('telegram')) return AppIcons3D.telegram;
+    if (lower.contains('github')) return AppIcons3D.github;
+    if (lower.contains('amazon') || lower.contains('prime')) return AppIcons3D.amazon;
+    if (lower.contains('playstation') || lower.contains('psn') || lower.contains('ps plus')) return AppIcons3D.playstation;
+    if (lower.contains('twitch')) return AppIcons3D.twitch;
+    if (lower.contains('tiktok')) return AppIcons3D.tiktok;
+    if (lower.contains('instagram')) return AppIcons3D.instagram;
+    return AppIcons3D.subscription;
+  }
 
   static IconData getIcon(String? iconName) {
     switch (iconName) {

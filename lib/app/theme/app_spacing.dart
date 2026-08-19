@@ -13,6 +13,9 @@ class AppSpacing {
   static const double xxxl = 40.0;
   static const double huge = 48.0;
 
+  // Bottom clearance for floating BottomNavigationBar & FAB
+  static const double bottomClearance = 130.0;
+
   // EdgeInsets presets
   static const EdgeInsets pagePadding = EdgeInsets.symmetric(
     horizontal: 16.0,
@@ -20,4 +23,10 @@ class AppSpacing {
   );
   static const EdgeInsets cardPadding = EdgeInsets.all(16.0);
   static const EdgeInsets compactCardPadding = EdgeInsets.all(12.0);
+  static const EdgeInsets scrollablePagePadding = EdgeInsets.fromLTRB(
+    16.0,
+    8.0,
+    16.0,
+    bottomClearance,
+  );
 }

@@ -30,9 +30,9 @@ class CashflowBarChart extends StatelessWidget {
         Row(
           mainAxisAlignment: MainAxisAlignment.end,
           children: [
-            _buildLegendItem('Thu nhập', AppColors.income),
+            _buildLegendItem('Thu nhập', AppColors.income, isDark),
             const SizedBox(width: AppSpacing.md),
-            _buildLegendItem('Chi tiêu', AppColors.expense),
+            _buildLegendItem('Chi tiêu', AppColors.expense, isDark),
           ],
         ),
         const SizedBox(height: AppSpacing.md),
@@ -127,7 +127,7 @@ class CashflowBarChart extends StatelessWidget {
     );
   }
 
-  Widget _buildLegendItem(String label, Color color) {
+  Widget _buildLegendItem(String label, Color color, bool isDark) {
     return Row(
       mainAxisSize: MainAxisSize.min,
       children: [
@@ -148,10 +148,12 @@ class CashflowBarChart extends StatelessWidget {
         const SizedBox(width: 5),
         Text(
           label,
-          style: const TextStyle(
+          style: TextStyle(
             fontSize: 12,
             fontWeight: FontWeight.w600,
-            color: Colors.white,
+            color: isDark
+                ? AppColors.darkTextPrimary
+                : AppColors.lightTextPrimary,
           ),
         ),
       ],

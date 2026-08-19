@@ -55,12 +55,12 @@ class _SetBudgetSheetState extends ConsumerState<SetBudgetSheet> {
   void initState() {
     super.initState();
     if (widget.existingBudget != null) {
-      _totalLimitController.text = widget.existingBudget!.totalLimit > 0
-          ? widget.existingBudget!.totalLimit.toStringAsFixed(0)
-          : '';
+      _totalLimitController.text = CurrencyFormatter.formatInput(
+        widget.existingBudget!.totalLimit,
+      );
       for (final item in widget.existingBudget!.items) {
         _categoryControllers[item.categoryId] = TextEditingController(
-          text: item.limitAmount.toStringAsFixed(0),
+          text: CurrencyFormatter.formatInput(item.limitAmount),
         );
       }
     }
@@ -76,13 +76,9 @@ class _SetBudgetSheetState extends ConsumerState<SetBudgetSheet> {
   }
 
   Future<void> _onSave() async {
-    final totalText = _totalLimitController.text.replaceAll(
-      RegExp(r'[^0-9.]'),
-      '',
-    );
-    final totalLimit = double.tryParse(totalText);
+    final totalLimit = CurrencyFormatter.parse(_totalLimitController.text);
 
-    if (totalLimit == null || totalLimit <= 0) {
+    if (totalLimit <= 0) {
       context.showSnackBar(
         'Vui lòng nhập tổng hạn mức ngân sách tháng (> 0)',
         isError: true,
@@ -92,9 +88,8 @@ class _SetBudgetSheetState extends ConsumerState<SetBudgetSheet> {
 
     final List<BudgetItemEntity> items = [];
     _categoryControllers.forEach((catId, controller) {
-      final text = controller.text.replaceAll(RegExp(r'[^0-9.]'), '');
-      final limit = double.tryParse(text);
-      if (limit != null && limit > 0) {
+      final limit = CurrencyFormatter.parse(controller.text);
+      if (limit > 0) {
         items.add(
           BudgetItemEntity(
             id: '',
@@ -137,8 +132,9 @@ class _SetBudgetSheetState extends ConsumerState<SetBudgetSheet> {
         AppTextField(
           controller: _totalLimitController,
           label: 'Tổng hạn mức chi tiêu tháng (₫)',
-          hint: 'Ví dụ: 10000000',
+          hint: 'Ví dụ: 10.000.000',
           keyboardType: TextInputType.number,
+          inputFormatters: [CurrencyInputFormatter()],
           autofocus: true,
           prefixIcon: const Icon(
             Icons.account_balance_wallet_outlined,
@@ -201,6 +197,7 @@ class _SetBudgetSheetState extends ConsumerState<SetBudgetSheet> {
                         child: TextField(
                           controller: controller,
                           keyboardType: TextInputType.number,
+                          inputFormatters: [CurrencyInputFormatter()],
                           textAlign: TextAlign.right,
                           style: const TextStyle(
                             fontSize: 13,

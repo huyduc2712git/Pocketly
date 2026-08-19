@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import '../../../../app/app.dart';
+import '../../../../app/theme/app_3d_icons.dart';
 import '../../../../app/theme/app_colors.dart';
 import '../../../../app/theme/app_spacing.dart';
 import '../../../../core/extensions/context_extensions.dart';
+import '../../../../shared/widgets/app_3d_icon.dart';
 import '../../../../shared/widgets/app_button.dart';
 import '../../../../shared/widgets/app_card.dart';
 import '../../../settings/domain/usecases/export_data_usecase.dart';
@@ -20,34 +23,36 @@ class ProfilePage extends ConsumerWidget {
     final authState = ref.watch(authControllerProvider);
     final user = authState is Authenticated ? authState.user : null;
     final pendingSyncCount = ref.watch(pendingSyncCountProvider);
+    final currentThemeMode = ref.watch(themeModeProvider);
+    final isDark = context.isDarkMode;
 
     return Scaffold(
       appBar: AppBar(title: const Text('Cá Nhân & Cài Đặt')),
       body: ListView(
-        padding: const EdgeInsets.all(AppSpacing.md),
+        padding: const EdgeInsets.fromLTRB(
+          AppSpacing.md,
+          AppSpacing.md,
+          AppSpacing.md,
+          AppSpacing.bottomClearance,
+        ),
         children: [
-          // User Avatar & Details Card
+          // User Card
           AppCard(
-            padding: const EdgeInsets.all(AppSpacing.lg),
             child: Row(
               children: [
                 Container(
-                  width: 56,
-                  height: 56,
-                  decoration: const BoxDecoration(
-                    gradient: AppColors.primaryGradient,
+                  width: 58,
+                  height: 58,
+                  decoration: BoxDecoration(
+                    color: isDark
+                        ? const Color(0xFF2D1222)
+                        : AppColors.pastelPink,
                     shape: BoxShape.circle,
                   ),
-                  child: Center(
-                    child: Text(
-                      user?.name.isNotEmpty == true
-                          ? user!.name[0].toUpperCase()
-                          : 'U',
-                      style: const TextStyle(
-                        fontSize: 24,
-                        fontWeight: FontWeight.w800,
-                        color: Colors.white,
-                      ),
+                  child: const Center(
+                    child: App3DIcon(
+                      assetPath: AppIcons3D.profile,
+                      size: 40,
                     ),
                   ),
                 ),
@@ -58,37 +63,22 @@ class ProfilePage extends ConsumerWidget {
                     children: [
                       Text(
                         user?.name ?? 'Người dùng Finly',
-                        style: const TextStyle(
+                        style: TextStyle(
                           fontSize: 17,
-                          fontWeight: FontWeight.w700,
-                          color: AppColors.darkTextPrimary,
+                          fontWeight: FontWeight.w800,
+                          color: isDark
+                              ? AppColors.darkTextPrimary
+                              : AppColors.lightTextPrimary,
                         ),
                       ),
-                      const SizedBox(height: 2),
+                      const SizedBox(height: 3),
                       Text(
-                        user?.email ?? 'Chế độ ngoại tuyến (Offline)',
-                        style: const TextStyle(
-                          fontSize: 12,
-                          color: AppColors.darkTextSecondary,
-                        ),
-                      ),
-                      const SizedBox(height: 6),
-                      Container(
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: 8,
-                          vertical: 2,
-                        ),
-                        decoration: BoxDecoration(
-                          color: AppColors.primary.withValues(alpha: 0.15),
-                          borderRadius: BorderRadius.circular(4),
-                        ),
-                        child: const Text(
-                          'Finly Member Pro',
-                          style: TextStyle(
-                            fontSize: 10,
-                            fontWeight: FontWeight.w700,
-                            color: AppColors.primaryLight,
-                          ),
+                        user?.email ?? 'demo@finly.app',
+                        style: TextStyle(
+                          fontSize: 13,
+                          color: isDark
+                              ? AppColors.darkTextSecondary
+                              : AppColors.lightTextSecondary,
                         ),
                       ),
                     ],
@@ -99,68 +89,73 @@ class ProfilePage extends ConsumerWidget {
           ),
           const SizedBox(height: AppSpacing.md),
 
-          // Offline Sync Status Card
+          // Cloud Sync Card
           AppCard(
-            padding: const EdgeInsets.all(AppSpacing.md),
-            child: Row(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Container(
-                  padding: const EdgeInsets.all(8),
-                  decoration: BoxDecoration(
-                    color: pendingSyncCount > 0
-                        ? AppColors.warning.withValues(alpha: 0.15)
-                        : AppColors.income.withValues(alpha: 0.15),
-                    shape: BoxShape.circle,
-                  ),
-                  child: Icon(
-                    pendingSyncCount > 0
-                        ? Icons.cloud_upload_rounded
-                        : Icons.cloud_done_rounded,
-                    color: pendingSyncCount > 0
-                        ? AppColors.warning
-                        : AppColors.income,
-                    size: 20,
-                  ),
-                ),
-                const SizedBox(width: AppSpacing.md),
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        pendingSyncCount > 0
-                            ? 'Chờ đồng bộ ($pendingSyncCount tác vụ)'
-                            : 'Đã đồng bộ an toàn',
-                        style: const TextStyle(
-                          fontSize: 14,
-                          fontWeight: FontWeight.w700,
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Row(
+                      children: [
+                        Icon(
+                          Icons.cloud_sync_rounded,
+                          color: pendingSyncCount > 0
+                              ? AppColors.warning
+                              : AppColors.income,
+                          size: 22,
                         ),
+                        const SizedBox(width: 8),
+                        Text(
+                          'Đồng bộ dữ liệu cục bộ',
+                          style: TextStyle(
+                            fontSize: 15,
+                            fontWeight: FontWeight.w700,
+                            color: isDark
+                                ? AppColors.darkTextPrimary
+                                : AppColors.lightTextPrimary,
+                          ),
+                        ),
+                      ],
+                    ),
+                    Container(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 8,
+                        vertical: 3,
                       ),
-                      Text(
+                      decoration: BoxDecoration(
+                        color: (pendingSyncCount > 0
+                                ? AppColors.warning
+                                : AppColors.income)
+                            .withValues(alpha: 0.15),
+                        borderRadius: BorderRadius.circular(6),
+                      ),
+                      child: Text(
                         pendingSyncCount > 0
-                            ? 'Dữ liệu được lưu trữ offline cục bộ'
-                            : 'Tất cả dữ liệu đã được bảo vệ',
-                        style: const TextStyle(
+                            ? '$pendingSyncCount mục chờ'
+                            : 'Đã đồng bộ',
+                        style: TextStyle(
                           fontSize: 11,
-                          color: AppColors.darkTextSecondary,
+                          fontWeight: FontWeight.w700,
+                          color: pendingSyncCount > 0
+                              ? AppColors.warning
+                              : AppColors.income,
                         ),
                       ),
-                    ],
-                  ),
+                    ),
+                  ],
                 ),
-                TextButton(
-                  onPressed: () async {
-                    context.showSnackBar('Đang đồng bộ dữ liệu...');
-                    final count = await ref
-                        .read(syncControllerProvider.notifier)
-                        .syncNow();
-                    if (context.mounted) {
-                      context.showSnackBar(
-                        'Đã đồng bộ thành công $count tác vụ!',
-                      );
-                    }
-                  },
-                  child: const Text('Đồng bộ'),
+                const SizedBox(height: 8),
+                Text(
+                  'Ứng dụng hoạt động Offline-First. Toàn bộ giao dịch và thiết lập được lưu trữ an toàn trên thiết bị của bạn.',
+                  style: TextStyle(
+                    fontSize: 12,
+                    color: isDark
+                        ? AppColors.darkTextSecondary
+                        : AppColors.lightTextSecondary,
+                    height: 1.4,
+                  ),
                 ),
               ],
             ),
@@ -168,12 +163,14 @@ class ProfilePage extends ConsumerWidget {
           const SizedBox(height: AppSpacing.lg),
 
           // Section 1: Financial Utilities
-          const Text(
+          Text(
             'Tiện ích tài chính',
             style: TextStyle(
               fontSize: 14,
               fontWeight: FontWeight.w700,
-              color: AppColors.darkTextSecondary,
+              color: isDark
+                  ? AppColors.darkTextSecondary
+                  : AppColors.lightTextSecondary,
             ),
           ),
           const SizedBox(height: AppSpacing.xs),
@@ -181,19 +178,11 @@ class ProfilePage extends ConsumerWidget {
             padding: EdgeInsets.zero,
             child: Column(
               children: [
-                ListTile(
-                  leading: const Icon(
-                    Icons.subscriptions_outlined,
-                    color: AppColors.primaryLight,
-                  ),
-                  title: const Text(
-                    'Gói thuê bao & Định kỳ',
-                    style: TextStyle(fontSize: 14, fontWeight: FontWeight.w600),
-                  ),
-                  subtitle: const Text(
-                    'Quản lý Netflix, Spotify, iCloud...',
-                    style: TextStyle(fontSize: 11),
-                  ),
+                _buildSettingTile(
+                  context,
+                  iconAsset: AppIcons3D.subscription,
+                  title: 'Gói thuê bao & Định kỳ',
+                  subtitle: 'Quản lý Netflix, Spotify, iCloud...',
                   trailing: const Icon(Icons.chevron_right_rounded, size: 20),
                   onTap: () {
                     Navigator.of(context).push(
@@ -204,36 +193,20 @@ class ProfilePage extends ConsumerWidget {
                   },
                 ),
                 const Divider(height: 1, indent: 56),
-                ListTile(
-                  leading: const Icon(
-                    Icons.download_rounded,
-                    color: AppColors.income,
-                  ),
-                  title: const Text(
-                    'Xuất dữ liệu CSV',
-                    style: TextStyle(fontSize: 14, fontWeight: FontWeight.w600),
-                  ),
-                  subtitle: const Text(
-                    'Mở trên Excel, Google Sheets',
-                    style: TextStyle(fontSize: 11),
-                  ),
+                _buildSettingTile(
+                  context,
+                  iconAsset: AppIcons3D.download,
+                  title: 'Xuất dữ liệu CSV',
+                  subtitle: 'Mở trên Excel, Google Sheets',
                   trailing: const Icon(Icons.chevron_right_rounded, size: 20),
                   onTap: () => _exportData(context, ref, isCsv: true),
                 ),
                 const Divider(height: 1, indent: 56),
-                ListTile(
-                  leading: const Icon(
-                    Icons.code_rounded,
-                    color: AppColors.transfer,
-                  ),
-                  title: const Text(
-                    'Xuất dữ liệu JSON',
-                    style: TextStyle(fontSize: 14, fontWeight: FontWeight.w600),
-                  ),
-                  subtitle: const Text(
-                    'Sao lưu dự phòng hoàn chỉnh',
-                    style: TextStyle(fontSize: 11),
-                  ),
+                _buildSettingTile(
+                  context,
+                  iconAsset: AppIcons3D.category,
+                  title: 'Xuất dữ liệu JSON',
+                  subtitle: 'Sao lưu dự phòng hoàn chỉnh',
                   trailing: const Icon(Icons.chevron_right_rounded, size: 20),
                   onTap: () => _exportData(context, ref, isCsv: false),
                 ),
@@ -243,12 +216,14 @@ class ProfilePage extends ConsumerWidget {
           const SizedBox(height: AppSpacing.lg),
 
           // Section 2: Preferences
-          const Text(
+          Text(
             'Cài đặt ứng dụng',
             style: TextStyle(
               fontSize: 14,
               fontWeight: FontWeight.w700,
-              color: AppColors.darkTextSecondary,
+              color: isDark
+                  ? AppColors.darkTextSecondary
+                  : AppColors.lightTextSecondary,
             ),
           ),
           const SizedBox(height: AppSpacing.xs),
@@ -256,60 +231,45 @@ class ProfilePage extends ConsumerWidget {
             padding: EdgeInsets.zero,
             child: Column(
               children: [
-                ListTile(
-                  leading: const Icon(
-                    Icons.dark_mode_outlined,
-                    color: AppColors.primaryLight,
-                  ),
-                  title: const Text(
-                    'Giao diện tối (Dark Mode)',
-                    style: TextStyle(fontSize: 14, fontWeight: FontWeight.w600),
-                  ),
+                _buildSettingTile(
+                  context,
+                  iconAsset: AppIcons3D.insight,
+                  title: 'Giao diện tối (Dark Mode)',
+                  subtitle: 'Bật / tắt chế độ nền tối',
                   trailing: Switch(
-                    value: true,
+                    value: currentThemeMode == ThemeMode.dark,
                     activeThumbColor: AppColors.primary,
                     onChanged: (val) {
-                      context.showSnackBar(
-                        'Finly đã được tối ưu hóa chuẩn Obsidian Dark Mode.',
-                      );
+                      ref.read(themeModeProvider.notifier).state =
+                          val ? ThemeMode.dark : ThemeMode.light;
                     },
                   ),
                 ),
                 const Divider(height: 1, indent: 56),
-                const ListTile(
-                  leading: Icon(
-                    Icons.monetization_on_outlined,
-                    color: AppColors.income,
-                  ),
-                  title: Text(
-                    'Đơn vị tiền tệ chính',
-                    style: TextStyle(fontSize: 14, fontWeight: FontWeight.w600),
-                  ),
-                  trailing: Text(
+                _buildSettingTile(
+                  context,
+                  iconAsset: AppIcons3D.cash,
+                  title: 'Đơn vị tiền tệ chính',
+                  trailing: const Text(
                     'VND (₫)',
                     style: TextStyle(
                       fontSize: 13,
                       fontWeight: FontWeight.w700,
-                      color: AppColors.primaryLight,
+                      color: AppColors.primary,
                     ),
                   ),
                 ),
                 const Divider(height: 1, indent: 56),
-                const ListTile(
-                  leading: Icon(
-                    Icons.notifications_outlined,
-                    color: AppColors.warning,
-                  ),
-                  title: Text(
-                    'Nhắc nhở ghi chép hàng ngày',
-                    style: TextStyle(fontSize: 14, fontWeight: FontWeight.w600),
-                  ),
-                  trailing: Text(
+                _buildSettingTile(
+                  context,
+                  iconAsset: AppIcons3D.calendar,
+                  title: 'Nhắc nhở ghi chép hàng ngày',
+                  trailing: const Text(
                     '20:00',
                     style: TextStyle(
                       fontSize: 13,
                       fontWeight: FontWeight.w700,
-                      color: AppColors.primaryLight,
+                      color: AppColors.primary,
                     ),
                   ),
                 ),
@@ -334,6 +294,63 @@ class ProfilePage extends ConsumerWidget {
             ),
           ),
         ],
+      ),
+    );
+  }
+
+  Widget _buildSettingTile(
+    BuildContext context, {
+    required String iconAsset,
+    required String title,
+    String? subtitle,
+    Widget? trailing,
+    VoidCallback? onTap,
+  }) {
+    final isDark = context.isDarkMode;
+
+    return Material(
+      color: Colors.transparent,
+      child: InkWell(
+        onTap: onTap,
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+          child: Row(
+            children: [
+              App3DIcon(assetPath: iconAsset, size: 26),
+              const SizedBox(width: 14),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      title,
+                      style: TextStyle(
+                        fontSize: 14,
+                        fontWeight: FontWeight.w600,
+                        color: isDark
+                            ? AppColors.darkTextPrimary
+                            : AppColors.lightTextPrimary,
+                      ),
+                    ),
+                    if (subtitle != null) ...[
+                      const SizedBox(height: 2),
+                      Text(
+                        subtitle,
+                        style: TextStyle(
+                          fontSize: 11,
+                          color: isDark
+                              ? AppColors.darkTextSecondary
+                              : AppColors.lightTextSecondary,
+                        ),
+                      ),
+                    ],
+                  ],
+                ),
+              ),
+              ?trailing,
+            ],
+          ),
+        ),
       ),
     );
   }

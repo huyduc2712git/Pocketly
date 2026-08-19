@@ -26,16 +26,16 @@ void main() {
       // Initial pump and settle
       await tester.pumpAndSettle();
 
-      // Verify App title and navigation bar destinations
-      expect(find.text('Pocketly'), findsOneWidget);
+      // Verify Dashboard and Navigation Bar components
       expect(find.text('Tổng quan'), findsOneWidget);
-      expect(find.text('Sổ thu chi'), findsOneWidget);
+      expect(find.text('Sổ thu chi'), findsWidgets);
       expect(find.text('Ngân sách'), findsWidgets);
       expect(find.text('Báo cáo'), findsWidgets);
       expect(find.text('Cá nhân'), findsOneWidget);
 
       // Verify Dashboard Cards
-      expect(find.text('Tổng số dư khả dụng'), findsOneWidget);
+      expect(find.text('Xin chào,'), findsOneWidget);
+      expect(find.text('Tổng số dư'), findsOneWidget);
       expect(find.text('Pocketly Smart Insight'), findsWidgets);
       expect(find.text('Ngân sách danh mục'), findsOneWidget);
       expect(find.text('Giao dịch gần đây'), findsOneWidget);

@@ -110,7 +110,12 @@ class BudgetPage extends ConsumerWidget {
                 final forecast = budget.forecast;
 
                 return ListView(
-                  padding: const EdgeInsets.all(AppSpacing.md),
+                  padding: const EdgeInsets.fromLTRB(
+                    AppSpacing.md,
+                    AppSpacing.md,
+                    AppSpacing.md,
+                    AppSpacing.bottomClearance,
+                  ),
                   children: [
                     // Main Budget Progress Card
                     AppCard(
@@ -330,6 +335,7 @@ class BudgetPage extends ConsumerWidget {
                             spent: item.spentAmount,
                             budgetAmount: item.limitAmount,
                             icon: IconHelper.getIcon(item.categoryIcon),
+                            iconAsset: IconHelper.get3DAsset(item.categoryIcon),
                             categoryColor: IconHelper.getColor(
                               item.categoryColor,
                             ),

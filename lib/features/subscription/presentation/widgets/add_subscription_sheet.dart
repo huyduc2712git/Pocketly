@@ -6,6 +6,8 @@ import '../../../../app/theme/app_spacing.dart';
 import '../../../../core/extensions/context_extensions.dart';
 import '../../../../core/utils/currency_formatter.dart';
 import '../../../../core/utils/date_formatter.dart';
+import '../../../../core/utils/icon_helper.dart';
+import '../../../../shared/widgets/app_3d_icon.dart';
 import '../../../../shared/widgets/app_bottom_sheet.dart';
 import '../../../../shared/widgets/app_button.dart';
 import '../../../../shared/widgets/app_text_field.dart';
@@ -39,19 +41,14 @@ class _AddSubscriptionSheetState extends ConsumerState<AddSubscriptionSheet> {
   bool _isLoading = false;
 
   final List<Map<String, String>> _popularServices = [
-    {'name': 'Netflix', 'amount': '260000', 'icon': 'movie_rounded'},
-    {'name': 'Spotify Premium', 'amount': '59000', 'icon': 'entertainment'},
-    {
-      'name': 'ChatGPT Plus',
-      'amount': '500000',
-      'icon': 'phone_android_rounded',
-    },
-    {
-      'name': 'iCloud 200GB',
-      'amount': '59000',
-      'icon': 'phone_android_rounded',
-    },
-    {'name': 'YouTube Premium', 'amount': '79000', 'icon': 'movie_rounded'},
+    {'name': 'Netflix', 'amount': '260000'},
+    {'name': 'YouTube Premium', 'amount': '79000'},
+    {'name': 'Spotify Premium', 'amount': '59000'},
+    {'name': 'ChatGPT Plus', 'amount': '500000'},
+    {'name': 'iCloud 200GB', 'amount': '59000'},
+    {'name': 'Google One', 'amount': '45000'},
+    {'name': 'GitHub Copilot', 'amount': '250000'},
+    {'name': 'PlayStation Plus', 'amount': '150000'},
   ];
 
   @override
@@ -63,17 +60,13 @@ class _AddSubscriptionSheetState extends ConsumerState<AddSubscriptionSheet> {
 
   Future<void> _onSave() async {
     final name = _nameController.text.trim();
-    final amountText = _amountController.text.replaceAll(
-      RegExp(r'[^0-9.]'),
-      '',
-    );
-    final amount = double.tryParse(amountText);
+    final amount = CurrencyFormatter.parse(_amountController.text);
 
     if (name.isEmpty) {
       context.showSnackBar('Vui lòng nhập tên dịch vụ thuê bao', isError: true);
       return;
     }
-    if (amount == null || amount <= 0) {
+    if (amount <= 0) {
       context.showSnackBar('Vui lòng nhập số tiền hợp lệ (> 0)', isError: true);
       return;
     }
@@ -126,14 +119,14 @@ class _AddSubscriptionSheetState extends ConsumerState<AddSubscriptionSheet> {
                 padding: const EdgeInsets.only(right: AppSpacing.xs),
                 child: ActionChip(
                   label: Text(preset['name']!),
-                  avatar: const Icon(
-                    Icons.flash_on_rounded,
-                    size: 14,
-                    color: AppColors.primary,
+                  avatar: App3DIcon(
+                    assetPath: IconHelper.getSubscription3DAsset(preset['name']!),
+                    size: 18,
                   ),
                   onPressed: () {
                     _nameController.text = preset['name']!;
-                    _amountController.text = preset['amount']!;
+                    final rawAmount = double.tryParse(preset['amount']!) ?? 0;
+                    _amountController.text = CurrencyFormatter.formatInput(rawAmount);
                   },
                 ),
               );
@@ -159,6 +152,7 @@ class _AddSubscriptionSheetState extends ConsumerState<AddSubscriptionSheet> {
           label: 'Số tiền định kỳ (₫)',
           hint: '0',
           keyboardType: TextInputType.number,
+          inputFormatters: [CurrencyInputFormatter()],
           prefixIcon: const Icon(
             Icons.payments_outlined,
             color: AppColors.income,
@@ -218,19 +212,22 @@ class _AddSubscriptionSheetState extends ConsumerState<AddSubscriptionSheet> {
                       showModalBottomSheet(
                         context: context,
                         builder: (ctx) => SafeArea(
-                          child: Column(
-                            mainAxisSize: MainAxisSize.min,
-                            children: wallets
-                                .map(
-                                  (w) => ListTile(
-                                    title: Text(w.name),
-                                    onTap: () {
-                                      Navigator.of(ctx).pop();
-                                      setState(() => _selectedWallet = w);
-                                    },
-                                  ),
-                                )
-                                .toList(),
+                          child: Material(
+                            color: Colors.transparent,
+                            child: Column(
+                              mainAxisSize: MainAxisSize.min,
+                              children: wallets
+                                  .map(
+                                    (w) => ListTile(
+                                      title: Text(w.name),
+                                      onTap: () {
+                                        Navigator.of(ctx).pop();
+                                        setState(() => _selectedWallet = w);
+                                      },
+                                    ),
+                                  )
+                                  .toList(),
+                            ),
                           ),
                         ),
                       );

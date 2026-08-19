@@ -31,6 +31,8 @@ class DashboardSummary {
     this.topSpendingCategoryName,
     this.topSpendingCategoryAmount,
   });
+
+  double get netSavings => (monthlyIncome - monthlyExpense).clamp(0.0, double.infinity);
 }
 
 final isBalanceVisibleProvider = StateProvider<bool>((ref) => true);

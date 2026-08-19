@@ -4,6 +4,7 @@ import '../../../../app/theme/app_colors.dart';
 import '../../../../app/theme/app_radius.dart';
 import '../../../../app/theme/app_spacing.dart';
 import '../../../../core/extensions/context_extensions.dart';
+import '../../../../core/utils/currency_formatter.dart';
 import '../../../../shared/widgets/app_bottom_sheet.dart';
 import '../../../../shared/widgets/app_button.dart';
 import '../../../../shared/widgets/app_text_field.dart';
@@ -41,11 +42,7 @@ class _AddWalletSheetState extends ConsumerState<AddWalletSheet> {
 
   Future<void> _onSave() async {
     final name = _nameController.text.trim();
-    final balanceText = _balanceController.text.replaceAll(
-      RegExp(r'[^0-9.]'),
-      '',
-    );
-    final balance = double.tryParse(balanceText) ?? 0.0;
+    final balance = CurrencyFormatter.parse(_balanceController.text);
 
     if (name.isEmpty) {
       context.showSnackBar('Vui lòng nhập tên ví', isError: true);
@@ -94,6 +91,7 @@ class _AddWalletSheetState extends ConsumerState<AddWalletSheet> {
           label: 'Số dư ban đầu (₫)',
           hint: '0',
           keyboardType: TextInputType.number,
+          inputFormatters: [CurrencyInputFormatter()],
           prefixIcon: const Icon(
             Icons.payments_outlined,
             color: AppColors.income,
@@ -151,19 +149,22 @@ class _AddWalletSheetState extends ConsumerState<AddWalletSheet> {
         const SizedBox(height: AppSpacing.md),
 
         // Exclude from total checkbox
-        SwitchListTile(
-          title: const Text(
-            'Không tính vào tổng số dư',
-            style: TextStyle(fontSize: 14, fontWeight: FontWeight.w500),
+        Material(
+          color: Colors.transparent,
+          child: SwitchListTile(
+            title: const Text(
+              'Không tính vào tổng số dư',
+              style: TextStyle(fontSize: 14, fontWeight: FontWeight.w500),
+            ),
+            subtitle: const Text(
+              'Thích hợp cho quỹ vay nợ, tiền người khác gửi...',
+              style: TextStyle(fontSize: 12, color: AppColors.darkTextMuted),
+            ),
+            value: _isExcluded,
+            onChanged: (val) => setState(() => _isExcluded = val),
+            contentPadding: EdgeInsets.zero,
+            activeThumbColor: AppColors.primary,
           ),
-          subtitle: const Text(
-            'Thích hợp cho quỹ vay nợ, tiền người khác gửi...',
-            style: TextStyle(fontSize: 12, color: AppColors.darkTextMuted),
-          ),
-          value: _isExcluded,
-          onChanged: (val) => setState(() => _isExcluded = val),
-          contentPadding: EdgeInsets.zero,
-          activeThumbColor: AppColors.primary,
         ),
         const SizedBox(height: AppSpacing.lg),
 

@@ -3,6 +3,7 @@ import 'package:finly/app/theme/app_colors.dart';
 import 'package:finly/app/theme/app_spacing.dart';
 import 'package:finly/core/utils/date_formatter.dart';
 import 'package:finly/shared/widgets/amount_text.dart';
+import 'package:finly/shared/widgets/app_3d_icon.dart';
 
 class TransactionTile extends StatelessWidget {
   final String title;
@@ -14,6 +15,7 @@ class TransactionTile extends StatelessWidget {
   final String currency;
   final String type; // 'expense', 'income', 'transfer'
   final IconData icon;
+  final String? iconAsset;
   final Color iconColor;
   final String? syncStatus; // 'pending', 'syncing', 'synced', 'failed'
   final VoidCallback? onTap;
@@ -29,6 +31,7 @@ class TransactionTile extends StatelessWidget {
     this.currency = 'VND',
     required this.type,
     this.icon = Icons.receipt_long_rounded,
+    this.iconAsset,
     this.iconColor = AppColors.primary,
     this.syncStatus,
     this.onTap,
@@ -92,11 +95,13 @@ class TransactionTile extends StatelessWidget {
                   ],
                 ),
                 child: Center(
-                  child: Icon(
-                    icon,
-                    size: 22,
-                    color: iconColor,
-                  ),
+                  child: iconAsset != null
+                      ? App3DIcon(assetPath: iconAsset!, size: 28)
+                      : Icon(
+                          icon,
+                          size: 22,
+                          color: iconColor,
+                        ),
                 ),
               ),
               const SizedBox(width: AppSpacing.md),

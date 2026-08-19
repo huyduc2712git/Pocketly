@@ -84,13 +84,9 @@ class _QuickAddTransactionSheetState
   }
 
   Future<void> _onSave() async {
-    final amountText = _amountController.text.replaceAll(
-      RegExp(r'[^0-9.]'),
-      '',
-    );
-    final amount = double.tryParse(amountText);
+    final amount = CurrencyFormatter.parse(_amountController.text);
 
-    if (amount == null || amount <= 0) {
+    if (amount <= 0) {
       context.showSnackBar('Vui lòng nhập số tiền hợp lệ (> 0)', isError: true);
       return;
     }
@@ -197,6 +193,7 @@ class _QuickAddTransactionSheetState
           label: 'Số tiền (₫)',
           hint: '0',
           keyboardType: TextInputType.number,
+          inputFormatters: [CurrencyInputFormatter()],
           autofocus: true,
           prefixIcon: const Icon(
             Icons.monetization_on_outlined,
@@ -352,20 +349,22 @@ class _QuickAddTransactionSheetState
         borderRadius: BorderRadius.vertical(top: Radius.circular(AppRadius.lg)),
       ),
       builder: (ctx) => SafeArea(
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Padding(
-              padding: const EdgeInsets.all(AppSpacing.md),
-              child: Text(
-                isSource ? 'Chọn Ví Nguồn' : 'Chọn Ví Nhận',
-                style: const TextStyle(
-                  fontSize: 16,
-                  fontWeight: FontWeight.w700,
+        child: Material(
+          color: Colors.transparent,
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Padding(
+                padding: const EdgeInsets.all(AppSpacing.md),
+                child: Text(
+                  isSource ? 'Chọn Ví Nguồn' : 'Chọn Ví Nhận',
+                  style: const TextStyle(
+                    fontSize: 16,
+                    fontWeight: FontWeight.w700,
+                  ),
                 ),
               ),
-            ),
-            const Divider(height: 1),
+              const Divider(height: 1),
             ...wallets.map(
               (w) => ListTile(
                 leading: Container(
@@ -402,8 +401,9 @@ class _QuickAddTransactionSheetState
           ],
         ),
       ),
-    );
-  }
+    ),
+  );
+}
 
   Widget _buildTypeTab(String label, QuickActionType type, Color activeColor) {
     final isSelected = _type == type;

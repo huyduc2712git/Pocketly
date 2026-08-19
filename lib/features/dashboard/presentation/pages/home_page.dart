@@ -2,15 +2,18 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:finly/app/router/route_names.dart';
+import 'package:finly/app/theme/app_3d_icons.dart';
 import 'package:finly/app/theme/app_colors.dart';
-import 'package:finly/app/theme/app_icons.dart';
 import 'package:finly/app/theme/app_spacing.dart';
+import 'package:finly/core/extensions/context_extensions.dart';
 import 'package:finly/features/insight/presentation/controllers/insights_controller.dart';
+import 'package:finly/features/transaction/presentation/widgets/quick_add_transaction_sheet.dart';
+import 'package:finly/shared/widgets/quick_action_fab.dart';
 import '../controllers/dashboard_controller.dart';
 import '../widgets/balance_card.dart';
 import '../widgets/budget_overview_card.dart';
 import '../widgets/insight_banner_card.dart';
-import '../widgets/quick_metrics_row.dart';
+import '../widgets/metric_sparkline_card.dart';
 import '../widgets/recent_transactions_card.dart';
 
 class HomePage extends ConsumerWidget {
@@ -20,143 +23,232 @@ class HomePage extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final summary = ref.watch(dashboardSummaryProvider);
     final topInsight = ref.watch(topInsightProvider);
+    final isDark = context.isDarkMode;
 
     return Scaffold(
       appBar: AppBar(
         elevation: 0,
         scrolledUnderElevation: 0,
-        title: Row(
-          children: [
-            // Glowing App Icon
-            Container(
-              width: 38,
-              height: 38,
+        leading: Padding(
+          padding: const EdgeInsets.only(left: AppSpacing.md),
+          child: Center(
+            child: Container(
+              width: 40,
+              height: 40,
               decoration: BoxDecoration(
-                gradient: AppColors.primaryGradient,
-                borderRadius: BorderRadius.circular(12),
+                color: isDark ? AppColors.darkSurface : Colors.white,
+                shape: BoxShape.circle,
+                border: Border.all(
+                  color: isDark ? AppColors.darkBorder : const Color(0xFFF0F1F5),
+                  width: 1,
+                ),
                 boxShadow: [
                   BoxShadow(
-                    color: AppColors.primary.withValues(alpha: 0.4),
-                    blurRadius: 10,
-                    offset: const Offset(0, 3),
+                    color: Colors.black.withValues(alpha: isDark ? 0.2 : 0.03),
+                    blurRadius: 8,
+                    offset: const Offset(0, 2),
                   ),
                 ],
               ),
-              child: const Center(
-                child: Icon(
-                  Icons.account_balance_wallet_rounded,
-                  color: Colors.white,
+              child: IconButton(
+                icon: Icon(
+                  Icons.notes_rounded,
                   size: 20,
+                  color: isDark
+                      ? AppColors.darkTextPrimary
+                      : AppColors.lightTextPrimary,
                 ),
+                padding: EdgeInsets.zero,
+                onPressed: () => context.go(RouteNames.profile),
               ),
             ),
-            const SizedBox(width: AppSpacing.sm),
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
+          ),
+        ),
+        title: null,
+        centerTitle: false,
+        actions: [
+          Padding(
+            padding: const EdgeInsets.only(right: AppSpacing.md),
+            child: Stack(
+              clipBehavior: Clip.none,
               children: [
-                const Text(
-                  'Pocketly',
-                  style: TextStyle(
-                    fontSize: 18,
-                    fontWeight: FontWeight.w900,
-                    letterSpacing: -0.5,
+                Container(
+                  width: 40,
+                  height: 40,
+                  decoration: BoxDecoration(
+                    color: isDark ? AppColors.darkSurface : Colors.white,
+                    shape: BoxShape.circle,
+                    border: Border.all(
+                      color: isDark
+                          ? AppColors.darkBorder
+                          : const Color(0xFFF0F1F5),
+                      width: 1,
+                    ),
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.black.withValues(
+                          alpha: isDark ? 0.2 : 0.03,
+                        ),
+                        blurRadius: 8,
+                        offset: const Offset(0, 2),
+                      ),
+                    ],
+                  ),
+                  child: IconButton(
+                    icon: Icon(
+                      Icons.notifications_none_rounded,
+                      size: 20,
+                      color: isDark
+                          ? AppColors.darkTextPrimary
+                          : AppColors.lightTextPrimary,
+                    ),
+                    padding: EdgeInsets.zero,
+                    onPressed: () => context.go(RouteNames.analytics),
                   ),
                 ),
-                Text(
-                  'Quản lý tài chính thông minh',
-                  style: TextStyle(
-                    fontSize: 11,
-                    fontWeight: FontWeight.w500,
-                    color: Colors.white.withValues(alpha: 0.6),
+                // Red unread badge dot
+                Positioned(
+                  top: 3,
+                  right: 3,
+                  child: Container(
+                    width: 9,
+                    height: 9,
+                    decoration: BoxDecoration(
+                      color: const Color(0xFFFF3B30),
+                      shape: BoxShape.circle,
+                      border: Border.all(
+                        color: isDark ? AppColors.darkSurface : Colors.white,
+                        width: 1.5,
+                      ),
+                    ),
                   ),
                 ),
               ],
             ),
-          ],
-        ),
-        actions: [
-          // Notification Bell with Badge
-          Stack(
-            children: [
-              IconButton(
-                icon: const Icon(Icons.notifications_none_rounded),
-                onPressed: () => context.go(RouteNames.analytics),
-              ),
-              Positioned(
-                top: 10,
-                right: 10,
-                child: Container(
-                  width: 8,
-                  height: 8,
-                  decoration: const BoxDecoration(
-                    color: AppColors.expense,
-                    shape: BoxShape.circle,
-                  ),
-                ),
-              ),
-            ],
           ),
-          const SizedBox(width: AppSpacing.xs),
         ],
       ),
       body: SingleChildScrollView(
-        physics: const BouncingScrollPhysics(parent: AlwaysScrollableScrollPhysics()),
+        physics: const BouncingScrollPhysics(
+          parent: AlwaysScrollableScrollPhysics(),
+        ),
         padding: const EdgeInsets.fromLTRB(
           AppSpacing.md,
           AppSpacing.xs,
           AppSpacing.md,
-          AppSpacing.huge + 20,
+          AppSpacing.bottomClearance,
         ),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            // Main Luxury Holographic Balance Card
+            // Hero Balance Card
             BalanceCard(
               summary: summary,
               onToggleVisibility: () {
                 final current = ref.read(isBalanceVisibleProvider);
                 ref.read(isBalanceVisibleProvider.notifier).state = !current;
               },
+              onViewDetails: () => context.push(RouteNames.wallets),
             ),
             const SizedBox(height: AppSpacing.lg),
 
-            // Quick Actions 4-Pill Grid
+            // 4 Circular Quick Action Buttons (Send, Receive, Loan, Top Up)
             Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              mainAxisAlignment: MainAxisAlignment.spaceAround,
               children: [
-                _buildQuickActionItem(
-                  icon: AppIcons.wallet,
-                  label: 'Ví tiền',
-                  color: const Color(0xFF6366F1),
-                  onTap: () => context.go(RouteNames.wallets),
+                _buildCircularActionItem(
+                  context,
+                  label: 'Gửi tiền',
+                  icon: Icons.arrow_outward_rounded,
+                  iconColor: AppColors.primary,
+                  bgColor: isDark
+                      ? const Color(0xFF2E0F1A)
+                      : AppColors.pastelPink,
+                  onTap: () => QuickAddTransactionSheet.show(
+                    context,
+                    initialType: QuickActionType.transfer,
+                  ),
                 ),
-                _buildQuickActionItem(
-                  icon: AppIcons.transfer,
-                  label: 'Chuyển tiền',
-                  color: const Color(0xFF8B5CF6),
-                  onTap: () => context.go(RouteNames.transactions),
+                _buildCircularActionItem(
+                  context,
+                  label: 'Nhận tiền',
+                  icon: Icons.south_west_rounded,
+                  iconColor: AppColors.income,
+                  bgColor: isDark
+                      ? const Color(0xFF0D2818)
+                      : AppColors.pastelMint,
+                  onTap: () => QuickAddTransactionSheet.show(
+                    context,
+                    initialType: QuickActionType.income,
+                  ),
                 ),
-                _buildQuickActionItem(
-                  icon: AppIcons.budget,
-                  label: 'Ngân sách',
-                  color: const Color(0xFF06B6D4),
-                  onTap: () => context.go(RouteNames.budget),
+                _buildCircularActionItem(
+                  context,
+                  label: 'Sổ nợ / Ví',
+                  icon: Icons.attach_money_rounded,
+                  iconColor: const Color(0xFFF59E0B),
+                  bgColor: isDark
+                      ? const Color(0xFF2D2305)
+                      : AppColors.pastelAmber,
+                  onTap: () => context.push(RouteNames.wallets),
                 ),
-                _buildQuickActionItem(
-                  icon: AppIcons.analytics,
-                  label: 'Báo cáo',
-                  color: const Color(0xFF10B981),
-                  onTap: () => context.go(RouteNames.analytics),
+                _buildCircularActionItem(
+                  context,
+                  label: 'Nạp tiền',
+                  icon: Icons.add_rounded,
+                  iconColor: const Color(0xFF3B82F6),
+                  bgColor: isDark
+                      ? const Color(0xFF0C1F38)
+                      : AppColors.pastelSkyBlue,
+                  onTap: () => QuickAddTransactionSheet.show(
+                    context,
+                    initialType: QuickActionType.expense,
+                  ),
                 ),
               ],
             ),
             const SizedBox(height: AppSpacing.lg),
 
-            // Quick Metrics (Remaining budget & progress)
-            QuickMetricsRow(summary: summary),
+            // 3 Summary Metric Sparkline Cards (Income, Expense, Savings)
+            Row(
+              children: [
+                Expanded(
+                  child: MetricSparklineCard(
+                    title: 'Thu nhập',
+                    amount: summary.monthlyIncome,
+                    currency: summary.currency,
+                    type: SparklineType.income,
+                    iconAsset: AppIcons3D.salary,
+                    onTap: () => context.go(RouteNames.analytics),
+                  ),
+                ),
+                const SizedBox(width: AppSpacing.xs + 2),
+                Expanded(
+                  child: MetricSparklineCard(
+                    title: 'Chi tiêu',
+                    amount: summary.monthlyExpense,
+                    currency: summary.currency,
+                    type: SparklineType.expense,
+                    iconAsset: AppIcons3D.bills,
+                    onTap: () => context.go(RouteNames.analytics),
+                  ),
+                ),
+                const SizedBox(width: AppSpacing.xs + 2),
+                Expanded(
+                  child: MetricSparklineCard(
+                    title: 'Tiết kiệm',
+                    amount: summary.netSavings,
+                    currency: summary.currency,
+                    type: SparklineType.savings,
+                    iconAsset: AppIcons3D.savings,
+                    onTap: () => context.go(RouteNames.analytics),
+                  ),
+                ),
+              ],
+            ),
             const SizedBox(height: AppSpacing.md),
 
-            // Smart Rule-based Insight Banner (Powered by InsightEngine)
+            // Smart Rule-based Insight Banner
             InsightBannerCard(
               title: topInsight != null
                   ? topInsight.title
@@ -178,7 +270,7 @@ class HomePage extends ConsumerWidget {
             ),
             const SizedBox(height: AppSpacing.md),
 
-            // Recent Transactions List
+            // Recent Transactions List with Search & Filters
             RecentTransactionsCard(summary: summary),
           ],
         ),
@@ -186,55 +278,60 @@ class HomePage extends ConsumerWidget {
     );
   }
 
-  Widget _buildQuickActionItem({
-    required IconData icon,
+  Widget _buildCircularActionItem(
+    BuildContext context, {
     required String label,
-    required Color color,
+    required IconData icon,
+    required Color iconColor,
+    required Color bgColor,
     required VoidCallback onTap,
   }) {
-    return InkWell(
-      onTap: onTap,
-      borderRadius: BorderRadius.circular(16),
-      child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 6),
-        child: Column(
-          children: [
-            Container(
-              width: 54,
-              height: 54,
-              decoration: BoxDecoration(
-                color: color.withValues(alpha: 0.15),
-                borderRadius: BorderRadius.circular(18),
-                border: Border.all(
-                  color: color.withValues(alpha: 0.3),
-                  width: 1.2,
+    final isDark = context.isDarkMode;
+
+    return Material(
+      color: Colors.transparent,
+      child: InkWell(
+        onTap: onTap,
+        borderRadius: BorderRadius.circular(20),
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 4),
+          child: Column(
+            children: [
+              Container(
+                width: 58,
+                height: 58,
+                decoration: BoxDecoration(
+                  color: bgColor,
+                  shape: BoxShape.circle,
+                  boxShadow: [
+                    BoxShadow(
+                      color: bgColor.withValues(alpha: isDark ? 0.3 : 0.6),
+                      blurRadius: 10,
+                      offset: const Offset(0, 3),
+                    ),
+                  ],
                 ),
-                boxShadow: [
-                  BoxShadow(
-                    color: color.withValues(alpha: 0.15),
-                    blurRadius: 10,
-                    offset: const Offset(0, 3),
+                child: Center(
+                  child: Icon(
+                    icon,
+                    color: iconColor,
+                    size: 26,
                   ),
-                ],
-              ),
-              child: Center(
-                child: Icon(
-                  icon,
-                  color: color,
-                  size: 24,
                 ),
               ),
-            ),
-            const SizedBox(height: 8),
-            Text(
-              label,
-              style: const TextStyle(
-                fontSize: 12,
-                fontWeight: FontWeight.w600,
-                color: Colors.white,
+              const SizedBox(height: 8),
+              Text(
+                label,
+                style: TextStyle(
+                  fontSize: 12,
+                  fontWeight: FontWeight.w600,
+                  color: isDark
+                      ? AppColors.darkTextPrimary
+                      : AppColors.lightTextPrimary,
+                ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );

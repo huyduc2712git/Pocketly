@@ -1,11 +1,15 @@
 enum AnalyticsPeriod {
+  thisWeek,
   thisMonth,
   lastMonth,
   last3Months,
-  thisYear;
+  thisYear,
+  allTime;
 
   String get displayName {
     switch (this) {
+      case AnalyticsPeriod.thisWeek:
+        return 'Tuần này';
       case AnalyticsPeriod.thisMonth:
         return 'Tháng này';
       case AnalyticsPeriod.lastMonth:
@@ -14,12 +18,19 @@ enum AnalyticsPeriod {
         return '3 tháng gần nhất';
       case AnalyticsPeriod.thisYear:
         return 'Năm nay';
+      case AnalyticsPeriod.allTime:
+        return 'Tất cả thời gian';
     }
   }
 
   DateTimeRange get dateRange {
     final now = DateTime.now();
     switch (this) {
+      case AnalyticsPeriod.thisWeek:
+        final start = now.subtract(Duration(days: now.weekday - 1));
+        final startOfDay = DateTime(start.year, start.month, start.day);
+        final end = DateTime(now.year, now.month, now.day, 23, 59, 59, 999);
+        return DateTimeRange(start: startOfDay, end: end);
       case AnalyticsPeriod.thisMonth:
         final start = DateTime(now.year, now.month, 1);
         final end = DateTime(now.year, now.month + 1, 0, 23, 59, 59, 999);
@@ -35,6 +46,10 @@ enum AnalyticsPeriod {
       case AnalyticsPeriod.thisYear:
         final start = DateTime(now.year, 1, 1);
         final end = DateTime(now.year, 12, 31, 23, 59, 59, 999);
+        return DateTimeRange(start: start, end: end);
+      case AnalyticsPeriod.allTime:
+        final start = DateTime(2020, 1, 1);
+        final end = DateTime(now.year + 1, 12, 31, 23, 59, 59, 999);
         return DateTimeRange(start: start, end: end);
     }
   }
